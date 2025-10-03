@@ -43,7 +43,7 @@ export default function ThumbnailGenerator({ genre, onThumbnailGenerated, curren
           value={customPrompt}
           onChange={(e) => setCustomPrompt(e.target.value)}
           placeholder={`Aesthetic ${genre} music artwork, soft pastel colors, minimalist design...`}
-          className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none resize-none"
+          className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none resize-none text-gray-900 placeholder-gray-400"
           rows={3}
         />
       </div>

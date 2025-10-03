@@ -51,14 +51,17 @@ export async function POST(req: NextRequest) {
         songPath = path.join(process.cwd(), 'public', 'temp', `song_${Date.now()}_${i}.mp3`);
         await writeFile(songPath, buffer);
       } else if (song.path) {
-        // Use local file
-        songPath = path.join(process.cwd(), 'public', song.path);
+        // Use local file - need absolute path
+        const fullPath = song.path.startsWith(process.cwd())
+          ? song.path
+          : path.join(process.cwd(), 'public', song.path);
+        songPath = fullPath;
       } else {
         throw new Error(`Song ${i} has no URL or path`);
       }
 
       songPaths.push(songPath);
-      console.log(`Added to mix: ${i + 1}. ${song.title || 'Unknown'}`);
+      console.log(`Added to mix (${i + 1}/${orderedSongs.length}): ${song.title || 'Unknown'} -> ${songPath}`);
     }
 
     // Download thumbnail

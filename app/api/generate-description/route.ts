@@ -16,9 +16,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'API key not configured' }, { status: 500 });
     }
 
-    // Generate timestamps
+    // Generate timestamps accounting for 5-second crossfades
     const timestamps: string[] = [];
     let currentTime = 0;
+    const crossfadeDuration = 5; // seconds
 
     songs.forEach((song: Song, index: number) => {
       const hours = Math.floor(currentTime / 3600);
@@ -30,7 +31,9 @@ export async function POST(req: NextRequest) {
         : `${minutes}:${seconds.toString().padStart(2, '0')}`;
 
       timestamps.push(`${timeStr} - ${song.title}`);
-      currentTime += song.duration;
+
+      // Add duration minus crossfade (except for first song which has no previous crossfade)
+      currentTime += song.duration - (index > 0 ? crossfadeDuration : 0);
     });
 
     // Generate description using Google Gemini

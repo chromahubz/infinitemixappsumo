@@ -169,9 +169,11 @@ export default function Home() {
         setDescription(descResponse.data.description);
       } catch (descError) {
         console.error('Description generation failed, using default:', descError);
-        // Use default description
+        // Use default description with crossfade adjustments
+        const crossfadeDuration = 5; // seconds
         const timestamps = songs.map((song, i) => {
-          const time = songs.slice(0, i).reduce((sum, s) => sum + s.duration, 0);
+          // Each song after the first starts 5 seconds earlier due to crossfade overlap
+          const time = songs.slice(0, i).reduce((sum, s) => sum + s.duration, 0) - (i * crossfadeDuration);
           const mins = Math.floor(time / 60);
           const secs = Math.floor(time % 60);
           return `${mins}:${secs.toString().padStart(2, '0')} - ${song.title}`;
