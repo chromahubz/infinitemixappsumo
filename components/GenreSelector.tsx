@@ -16,7 +16,7 @@ export default function GenreSelector({ genre, onGenreChange }: GenreSelectorPro
       <select
         value={genre}
         onChange={(e) => onGenreChange(e.target.value)}
-        className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
+        className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none text-gray-900"
       >
         {GENRES.map((g) => (
           <option key={g} value={g}>

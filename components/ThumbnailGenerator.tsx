@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Image, RefreshCw } from 'lucide-react';
+import { Image, RefreshCw, Sparkles } from 'lucide-react';
 import axios from 'axios';
 
 interface ThumbnailGeneratorProps {
@@ -13,7 +13,22 @@ interface ThumbnailGeneratorProps {
 export default function ThumbnailGenerator({ genre, onThumbnailGenerated, currentThumbnail }: ThumbnailGeneratorProps) {
   const [customPrompt, setCustomPrompt] = useState('');
   const [loading, setLoading] = useState(false);
+  const [generatingPrompt, setGeneratingPrompt] = useState(false);
   const [error, setError] = useState('');
+
+  const generateAIPrompt = async () => {
+    setGeneratingPrompt(true);
+    setError('');
+
+    try {
+      const response = await axios.post('/api/generate-prompt', { genre });
+      setCustomPrompt(response.data.prompt);
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Failed to generate prompt');
+    } finally {
+      setGeneratingPrompt(false);
+    }
+  };
 
   const generateThumbnail = async () => {
     setLoading(true);
@@ -36,9 +51,28 @@ export default function ThumbnailGenerator({ genre, onThumbnailGenerated, curren
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-800 mb-2">
-          Custom Prompt (Optional)
-        </label>
+        <div className="flex items-center justify-between mb-2">
+          <label className="block text-sm font-medium text-gray-800">
+            Custom Prompt (Optional)
+          </label>
+          <button
+            onClick={generateAIPrompt}
+            disabled={generatingPrompt}
+            className="flex items-center gap-1 px-3 py-1 text-sm bg-purple-500 text-white rounded-md hover:bg-purple-600 disabled:bg-gray-300 transition-colors"
+          >
+            {generatingPrompt ? (
+              <>
+                <RefreshCw className="w-4 h-4 animate-spin" />
+                Generating...
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-4 h-4" />
+                AI Prompt
+              </>
+            )}
+          </button>
+        </div>
         <textarea
           value={customPrompt}
           onChange={(e) => setCustomPrompt(e.target.value)}

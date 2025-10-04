@@ -31,10 +31,10 @@ export default function FileUploader({ onFilesSelected, accept = 'audio/*' }: Fi
         onChange={handleFileChange}
         className="hidden"
       />
-      <Upload className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-      <p className="text-lg font-medium text-gray-800 mb-1">Upload Audio Files</p>
-      <p className="text-sm text-gray-600">Click to browse or drag and drop</p>
-      <p className="text-xs text-gray-500 mt-2">Supports MP3, WAV, M4A</p>
+      <Upload className="w-12 h-12 mx-auto mb-4 text-gray-500" />
+      <p className="text-lg font-medium text-gray-900 mb-1">Upload Audio Files</p>
+      <p className="text-sm text-gray-700">Click to browse or drag and drop</p>
+      <p className="text-xs text-gray-600 mt-2">Supports MP3, WAV, M4A</p>
     </div>
   );
 }

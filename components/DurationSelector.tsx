@@ -21,7 +21,7 @@ export default function DurationSelector({ duration, onDurationChange }: Duratio
             className={`p-3 rounded-lg border-2 transition-all font-medium ${
               duration === d.value
                 ? 'border-blue-500 bg-blue-50 text-blue-700'
-                : 'border-gray-200 bg-white hover:border-gray-300'
+                : 'border-gray-200 bg-white hover:border-gray-300 text-gray-900'
             }`}
           >
             {d.label}

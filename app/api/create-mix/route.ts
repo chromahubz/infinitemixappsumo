@@ -33,11 +33,16 @@ export async function POST(req: NextRequest) {
     }
 
     console.log('Creating mix with playlist order:', playlistOrder);
+    console.log('Received songs:', songs.map((s: any) => ({ filename: s.filename, title: s.title, path: s.path })));
 
     // Build song paths array in the order specified by playlistOrder (from analyzer)
     const songPaths: string[] = [];
     const orderedSongs = playlistOrder && playlistOrder.length > 0
-      ? playlistOrder.map((filename: string) => songs.find((s: any) => s.filename === filename)).filter(Boolean)
+      ? playlistOrder.map((filename: string) => {
+          const found = songs.find((s: any) => s.filename === filename);
+          console.log(`Looking for ${filename}, found:`, found ? { title: found.title, path: found.path } : 'NOT FOUND');
+          return found;
+        }).filter(Boolean)
       : songs;
 
     for (let i = 0; i < orderedSongs.length; i++) {

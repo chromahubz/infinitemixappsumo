@@ -137,21 +137,24 @@ export default function Home() {
     setStage('mixing');
 
     try {
-      // Upload files to temp directory first
-      const uploadedPaths: string[] = [];
+      // Upload files to temp directory first - create a map of filename to path
+      const filePathMap: Record<string, string> = {};
       for (const file of uploadedFiles) {
         const formData = new FormData();
         formData.append('files', file);
 
         const uploadResponse = await axios.post('/api/upload', formData);
-        uploadedPaths.push(uploadResponse.data.files[0].path);
+        filePathMap[file.name] = uploadResponse.data.files[0].path;
       }
+
+      console.log('File path map:', filePathMap);
+      console.log('Songs to send:', songs.map(s => ({ title: s.title, filename: s.filename, mappedPath: filePathMap[s.filename || ''] })));
 
       // Create the mix using the playlist order from analyzer
       const mixResponse = await axios.post('/api/create-mix', {
-        songs: songs.map((song, index) => ({
+        songs: songs.map((song) => ({
           ...song,
-          path: uploadedPaths[songs.findIndex(s => s.filename === song.filename)],
+          path: filePathMap[song.filename || ''],
         })),
         thumbnail: thumbnailBase64,
         playlistOrder: mixPlaylist, // Use the order from songkeybpmanalyzer
@@ -206,11 +209,17 @@ export default function Home() {
           <div className="flex items-center gap-2">
             {['Setup', 'Content', 'Playlist', 'Thumbnail', 'Export'].map((step, index) => (
               <div key={step} className="flex items-center">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium ${
-                  index + 1 <= currentStep ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-500'
-                }`}>
+                <button
+                  onClick={() => index + 1 <= currentStep && setCurrentStep(index + 1)}
+                  disabled={index + 1 > currentStep}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
+                    index + 1 <= currentStep
+                      ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer'
+                      : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                  }`}
+                >
                   {index + 1}
-                </div>
+                </button>
                 {index < 4 && <div className={`w-12 h-1 ${index + 1 < currentStep ? 'bg-blue-500' : 'bg-gray-200'}`} />}
               </div>
             ))}
