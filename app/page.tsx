@@ -33,6 +33,7 @@ export default function Home() {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [mixPlaylist, setMixPlaylist] = useState<string[]>([]);
   const [analysisProgress, setAnalysisProgress] = useState({ current: 0, total: 0, message: '' });
+  const [showCrossfade, setShowCrossfade] = useState(false);
 
   const handleFilesSelected = async (files: File[]) => {
     setUploadedFiles(files);
@@ -146,6 +147,7 @@ export default function Home() {
               title: statusResponse.data.title || `Track ${i + 1}`,
               duration: statusResponse.data.duration || 180,
               url: statusResponse.data.audioUrl,
+              filename: statusResponse.data.title || `Track ${i + 1}`,
               bpm: 120,
               key: 'C',
               energy: 0.5,
@@ -157,8 +159,10 @@ export default function Home() {
         }
       }
 
-      const sorted = sortSongsForMix(generatedSongs);
-      setSongs(sorted);
+      // If skip analysis is enabled, use songs as-is, otherwise sort them
+      const finalSongs = skipAnalysis ? generatedSongs : sortSongsForMix(generatedSongs);
+      setSongs(finalSongs);
+      setMixPlaylist(finalSongs.map(s => s.filename || s.title));
       setStage('idle');
       setCurrentStep(3);
     } catch (error) {
@@ -300,23 +304,60 @@ export default function Home() {
               <h2 className="text-2xl font-semibold text-gray-900 mb-6">Configure Your Mix</h2>
 
               <GenreSelector genre={genre} onGenreChange={setGenre} />
-              <DurationSelector duration={duration} onDurationChange={setDuration} />
-              <CrossfadeSelector duration={crossfadeDuration} onDurationChange={setCrossfadeDuration} />
+              <DurationSelector duration={duration} onDurationChange={setDuration} disabled={mode === 'manual'} />
 
-              {mode === 'manual' && (
-                <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+              {/* Collapsible Crossfade Section */}
+              <div className="border-2 border-gray-200 rounded-lg overflow-hidden">
+                <button
+                  onClick={() => setShowCrossfade(!showCrossfade)}
+                  className="w-full px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors flex items-center justify-between"
+                >
+                  <span className="text-sm font-medium text-gray-900">Advanced: Crossfade Duration</span>
+                  <svg
+                    className={`w-5 h-5 text-gray-600 transition-transform ${showCrossfade ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {showCrossfade && (
+                  <div className="p-4">
+                    <CrossfadeSelector duration={crossfadeDuration} onDurationChange={setCrossfadeDuration} />
+                  </div>
+                )}
+              </div>
+
+              <div className="bg-gray-50 rounded-lg p-4 border-2 border-gray-200">
+                <div className="flex items-start gap-3">
                   <input
                     type="checkbox"
                     id="skipAnalysis"
                     checked={skipAnalysis}
                     onChange={(e) => setSkipAnalysis(e.target.checked)}
-                    className="w-5 h-5 text-blue-500 rounded focus:ring-2 focus:ring-blue-500"
+                    className="w-5 h-5 text-blue-500 rounded focus:ring-2 focus:ring-blue-500 mt-0.5"
                   />
-                  <label htmlFor="skipAnalysis" className="text-sm font-medium text-gray-900 cursor-pointer">
-                    Skip audio analysis (just stitch songs in upload order)
-                  </label>
+                  <div className="flex-1">
+                    <label htmlFor="skipAnalysis" className="text-sm font-medium text-gray-900 cursor-pointer block mb-1">
+                      {mode === 'ai'
+                        ? 'Skip audio analysis (faster processing)'
+                        : 'Skip audio analysis (faster processing)'}
+                    </label>
+                    <p className="text-xs text-gray-600">
+                      {skipAnalysis ? (
+                        <span className="text-green-700 font-medium">
+                          ⚡ Quick mode enabled - Songs will be stitched {mode === 'ai' ? 'in generated order' : 'in upload order'} without harmonic analysis (saves 30-60 seconds)
+                        </span>
+                      ) : (
+                        <span>
+                          When unchecked, AI analyzes BPM, key, and energy to create perfectly harmonized transitions using our Smart Audio System (takes an extra 30-60 seconds)
+                        </span>
+                      )}
+                    </p>
+                  </div>
                 </div>
-              )}
+              </div>
 
               {mode === 'manual' ? (
                 <FileUploader onFilesSelected={handleFilesSelected} />
@@ -353,7 +394,7 @@ export default function Home() {
             <div className="bg-white rounded-2xl shadow-lg p-8">
               <h2 className="text-2xl font-semibold text-gray-900 mb-6">Edit Playlist Order</h2>
               <p className="text-sm text-gray-700 mb-4">
-                Songs are optimally sorted using Camelot wheel analysis. You can drag to reorder if needed.
+                Songs are optimally sorted using smart harmonic analysis. You can drag to reorder if needed.
               </p>
               <PlaylistEditor
                 songs={songs}
