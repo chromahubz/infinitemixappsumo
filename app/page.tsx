@@ -5,6 +5,7 @@ import { Song } from '@/lib/types';
 import ModeSelector from '@/components/ModeSelector';
 import GenreSelector from '@/components/GenreSelector';
 import DurationSelector from '@/components/DurationSelector';
+import CrossfadeSelector from '@/components/CrossfadeSelector';
 import FileUploader from '@/components/FileUploader';
 import PlaylistEditor from '@/components/PlaylistEditor';
 import ThumbnailGenerator from '@/components/ThumbnailGenerator';
@@ -19,9 +20,12 @@ export default function Home() {
   const [mode, setMode] = useState<'ai' | 'manual'>('ai');
   const [genre, setGenre] = useState('Lofi');
   const [duration, setDuration] = useState(30);
+  const [crossfadeDuration, setCrossfadeDuration] = useState(5);
+  const [skipAnalysis, setSkipAnalysis] = useState(false);
   const [songs, setSongs] = useState<Song[]>([]);
   const [thumbnail, setThumbnail] = useState('');
   const [thumbnailBase64, setThumbnailBase64] = useState('');
+  const [thumbnails, setThumbnails] = useState<Array<{ url: string; base64: string }>>([]);
   const [mixUrl, setMixUrl] = useState('');
   const [description, setDescription] = useState('');
   const [stage, setStage] = useState<'idle' | 'analyzing' | 'generating' | 'mixing' | 'complete'>('idle');
@@ -30,9 +34,49 @@ export default function Home() {
   const [mixPlaylist, setMixPlaylist] = useState<string[]>([]);
   const [analysisProgress, setAnalysisProgress] = useState({ current: 0, total: 0, message: '' });
 
-  const handleFilesSelected = (files: File[]) => {
+  const handleFilesSelected = async (files: File[]) => {
     setUploadedFiles(files);
-    setStage('analyzing');
+
+    if (skipAnalysis) {
+      // Skip analysis - get actual durations without analysis
+      setStage('analyzing');
+      const simpleSongs: Song[] = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        // Get actual audio duration
+        const duration = await new Promise<number>((resolve) => {
+          const audio = new Audio();
+          audio.src = URL.createObjectURL(file);
+          audio.onloadedmetadata = () => {
+            URL.revokeObjectURL(audio.src);
+            resolve(Math.floor(audio.duration));
+          };
+          audio.onerror = () => {
+            URL.revokeObjectURL(audio.src);
+            resolve(180); // Fallback to 3 minutes on error
+          };
+        });
+
+        simpleSongs.push({
+          id: `${Date.now()}-${i}`,
+          title: file.name.replace(/\.[^/.]+$/, ''),
+          duration: duration,
+          filename: file.name,
+          bpm: 120,
+          key: 'C',
+          energy: 0.5,
+        });
+      }
+
+      setSongs(simpleSongs);
+      setMixPlaylist(files.map(f => f.name));
+      setStage('idle');
+      setCurrentStep(3);
+    } else {
+      setStage('analyzing');
+    }
   };
 
   const handleAnalysisComplete = (analyzedSongs: any[], mixOrder: string[]) => {
@@ -126,6 +170,13 @@ export default function Home() {
   const handleThumbnailGenerated = (url: string, base64: string) => {
     setThumbnail(url);
     setThumbnailBase64(base64);
+    setThumbnails([]); // Clear multiple thumbnails if single is generated
+  };
+
+  const handleMultipleThumbnailsGenerated = (thumbs: Array<{ url: string; base64: string }>) => {
+    setThumbnails(thumbs);
+    setThumbnail(thumbs[0]?.url || '');
+    setThumbnailBase64(thumbs[0]?.base64 || '');
   };
 
   const handleCreateMix = async () => {
@@ -157,7 +208,9 @@ export default function Home() {
           path: filePathMap[song.filename || ''],
         })),
         thumbnail: thumbnailBase64,
+        thumbnails: thumbnails.length > 0 ? thumbnails.map(t => t.base64) : undefined,
         playlistOrder: mixPlaylist, // Use the order from songkeybpmanalyzer
+        crossfadeDuration,
       });
 
       setMixUrl(mixResponse.data.mixUrl);
@@ -168,14 +221,14 @@ export default function Home() {
           songs,
           genre,
           totalDuration: songs.reduce((sum, s) => sum + s.duration, 0),
+          crossfadeDuration,
         });
         setDescription(descResponse.data.description);
       } catch (descError) {
         console.error('Description generation failed, using default:', descError);
         // Use default description with crossfade adjustments
-        const crossfadeDuration = 5; // seconds
         const timestamps = songs.map((song, i) => {
-          // Each song after the first starts 5 seconds earlier due to crossfade overlap
+          // Each song after the first starts earlier due to crossfade overlap
           const time = songs.slice(0, i).reduce((sum, s) => sum + s.duration, 0) - (i * crossfadeDuration);
           const mins = Math.floor(time / 60);
           const secs = Math.floor(time % 60);
@@ -248,6 +301,22 @@ export default function Home() {
 
               <GenreSelector genre={genre} onGenreChange={setGenre} />
               <DurationSelector duration={duration} onDurationChange={setDuration} />
+              <CrossfadeSelector duration={crossfadeDuration} onDurationChange={setCrossfadeDuration} />
+
+              {mode === 'manual' && (
+                <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+                  <input
+                    type="checkbox"
+                    id="skipAnalysis"
+                    checked={skipAnalysis}
+                    onChange={(e) => setSkipAnalysis(e.target.checked)}
+                    className="w-5 h-5 text-blue-500 rounded focus:ring-2 focus:ring-blue-500"
+                  />
+                  <label htmlFor="skipAnalysis" className="text-sm font-medium text-gray-900 cursor-pointer">
+                    Skip audio analysis (just stitch songs in upload order)
+                  </label>
+                </div>
+              )}
 
               {mode === 'manual' ? (
                 <FileUploader onFilesSelected={handleFilesSelected} />
@@ -323,7 +392,9 @@ export default function Home() {
               <ThumbnailGenerator
                 genre={genre}
                 onThumbnailGenerated={handleThumbnailGenerated}
+                onMultipleThumbnailsGenerated={handleMultipleThumbnailsGenerated}
                 currentThumbnail={thumbnail}
+                songCount={songs.length}
               />
               <div className="flex gap-4 mt-6">
                 <button

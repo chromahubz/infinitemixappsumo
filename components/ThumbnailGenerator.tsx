@@ -7,13 +7,16 @@ import axios from 'axios';
 interface ThumbnailGeneratorProps {
   genre: string;
   onThumbnailGenerated: (url: string, base64: string) => void;
+  onMultipleThumbnailsGenerated?: (thumbnails: Array<{ url: string; base64: string }>) => void;
   currentThumbnail?: string;
+  songCount?: number;
 }
 
-export default function ThumbnailGenerator({ genre, onThumbnailGenerated, currentThumbnail }: ThumbnailGeneratorProps) {
+export default function ThumbnailGenerator({ genre, onThumbnailGenerated, onMultipleThumbnailsGenerated, currentThumbnail, songCount = 1 }: ThumbnailGeneratorProps) {
   const [customPrompt, setCustomPrompt] = useState('');
   const [loading, setLoading] = useState(false);
   const [generatingPrompt, setGeneratingPrompt] = useState(false);
+  const [useMultipleThumbnails, setUseMultipleThumbnails] = useState(false);
   const [error, setError] = useState('');
 
   const generateAIPrompt = async () => {
@@ -35,12 +38,30 @@ export default function ThumbnailGenerator({ genre, onThumbnailGenerated, curren
     setError('');
 
     try {
-      const response = await axios.post('/api/generate-thumbnail', {
-        prompt: customPrompt,
-        genre,
-      });
+      if (useMultipleThumbnails && onMultipleThumbnailsGenerated) {
+        // Generate multiple thumbnails (one per song)
+        const thumbnails = [];
+        for (let i = 0; i < songCount; i++) {
+          const response = await axios.post('/api/generate-thumbnail', {
+            prompt: customPrompt || `${genre} music artwork variation ${i + 1}`,
+            genre,
+          });
+          thumbnails.push({ url: response.data.url, base64: response.data.base64 });
 
-      onThumbnailGenerated(response.data.url, response.data.base64);
+          // Wait 2 seconds between requests to avoid rate limits
+          if (i < songCount - 1) {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+          }
+        }
+        onMultipleThumbnailsGenerated(thumbnails);
+      } else {
+        // Single thumbnail
+        const response = await axios.post('/api/generate-thumbnail', {
+          prompt: customPrompt,
+          genre,
+        });
+        onThumbnailGenerated(response.data.url, response.data.base64);
+      }
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to generate thumbnail');
     } finally {
@@ -50,6 +71,21 @@ export default function ThumbnailGenerator({ genre, onThumbnailGenerated, curren
 
   return (
     <div className="space-y-4">
+      {songCount > 1 && (
+        <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+          <input
+            type="checkbox"
+            id="useMultipleThumbnails"
+            checked={useMultipleThumbnails}
+            onChange={(e) => setUseMultipleThumbnails(e.target.checked)}
+            className="w-5 h-5 text-blue-500 rounded focus:ring-2 focus:ring-blue-500"
+          />
+          <label htmlFor="useMultipleThumbnails" className="text-sm font-medium text-gray-900 cursor-pointer">
+            Generate different image for each song ({songCount} images with fade transitions)
+          </label>
+        </div>
+      )}
+
       <div>
         <div className="flex items-center justify-between mb-2">
           <label className="block text-sm font-medium text-gray-800">

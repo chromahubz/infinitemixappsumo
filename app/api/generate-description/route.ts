@@ -8,7 +8,7 @@ interface Song {
 
 export async function POST(req: NextRequest) {
   try {
-    const { songs, genre, totalDuration } = await req.json();
+    const { songs, genre, totalDuration, crossfadeDuration = 5 } = await req.json();
 
     const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
 
@@ -16,10 +16,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'API key not configured' }, { status: 500 });
     }
 
-    // Generate timestamps accounting for 5-second crossfades
+    // Generate timestamps accounting for crossfades
     const timestamps: string[] = [];
     let currentTime = 0;
-    const crossfadeDuration = 5; // seconds
 
     songs.forEach((song: Song, index: number) => {
       const hours = Math.floor(currentTime / 3600);
