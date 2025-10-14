@@ -8,7 +8,7 @@ import DurationSelector from '@/components/DurationSelector';
 import CrossfadeSelector from '@/components/CrossfadeSelector';
 import FileUploader from '@/components/FileUploader';
 import PlaylistEditor from '@/components/PlaylistEditor';
-import ThumbnailGenerator from '@/components/ThumbnailGenerator';
+import ThumbnailGenerator, { VisualizerSettings } from '@/components/ThumbnailGenerator';
 import ProgressTracker from '@/components/ProgressTracker';
 import DescriptionPanel from '@/components/DescriptionPanel';
 import AudioAnalyzer from '@/components/AudioAnalyzer';
@@ -19,6 +19,14 @@ import { sortSongsForMix } from '@/lib/song-sorter';
 export default function Home() {
   const [mode, setMode] = useState<'ai' | 'manual'>('ai');
   const [genre, setGenre] = useState('Lofi');
+  const [visualizerSettings, setVisualizerSettings] = useState<VisualizerSettings>({
+    enabled: false,
+    position: 'bottom',
+    style: 'bars',
+    colorMode: 'gradient',
+    color1: '#00ff00',
+    color2: '#0000ff',
+  });
   const [duration, setDuration] = useState(30);
   const [crossfadeDuration, setCrossfadeDuration] = useState(5);
   const [skipAnalysis, setSkipAnalysis] = useState(false);
@@ -215,6 +223,7 @@ export default function Home() {
         thumbnails: thumbnails.length > 0 ? thumbnails.map(t => t.base64) : undefined,
         playlistOrder: mixPlaylist, // Use the order from songkeybpmanalyzer
         crossfadeDuration,
+        visualizer: visualizerSettings,
       });
 
       setMixUrl(mixResponse.data.mixUrl);
@@ -436,6 +445,7 @@ export default function Home() {
                 onMultipleThumbnailsGenerated={handleMultipleThumbnailsGenerated}
                 currentThumbnail={thumbnail}
                 songCount={songs.length}
+                onVisualizerSettingsChange={setVisualizerSettings}
               />
               <div className="flex gap-4 mt-6">
                 <button

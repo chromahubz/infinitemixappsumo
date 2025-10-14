@@ -80,6 +80,140 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Genres Showcase */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Generate Any Genre You Want
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-4">
+              From viral lofi beats to trap bangers - create professional mixes in any style. <strong className="text-gray-900">Each generation creates unique music just for you, never heard before.</strong>
+            </p>
+            <p className="text-lg text-gray-500">
+              These are just our top genres - many more available in the app!
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
+            {[
+              { name: 'Lofi', img: '/homepageimg/lofi.jpg', badge: '🔥 VIRAL' },
+              { name: 'Trap', img: '/homepageimg/trap.jpg', badge: '' },
+              { name: 'Ambient', img: '/homepageimg/ambient.jpg', badge: '' },
+              { name: 'Latin', img: '/homepageimg/latin.jpg', badge: '' },
+              { name: 'Synthwave', img: '/homepageimg/synthwave.jpg', badge: '' },
+              { name: 'Vaporwave', img: '/homepageimg/vaporwave.jpg', badge: '' },
+            ].map((genre) => (
+              <div key={genre.name} className="relative group cursor-pointer">
+                <div className="aspect-square rounded-xl overflow-hidden shadow-lg group-hover:shadow-2xl transition-all">
+                  <img
+                    src={genre.img}
+                    alt={`${genre.name} music`}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col items-center justify-end p-4">
+                    <h3 className="text-white font-bold text-lg">{genre.name}</h3>
+                    {genre.badge && (
+                      <span className="mt-1 px-2 py-1 bg-red-500 text-white text-xs font-bold rounded-full">
+                        {genre.badge}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center">
+            <p className="text-lg text-gray-600 mb-6">
+              <strong className="text-gray-900">AI not your style?</strong> Upload your own MP3s from local files and create professional mixes with real songs!
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Party Story Section */}
+      <section className="py-20 bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="inline-block bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-bold mb-6">
+                REAL-WORLD USE CASE
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                Throwing a Party Tonight? <br/>No DJ? No Problem.
+              </h2>
+              <p className="text-xl text-gray-700 mb-6 leading-relaxed">
+                You're hosting the party of the year, but you didn't have time to prepare the perfect playlist. Your DJ friend bailed. You have a folder full of songs but no time to manually mix them.
+              </p>
+              <p className="text-xl text-gray-700 mb-6 leading-relaxed">
+                <strong className="text-purple-600">InfiniteMix solves this in 3 minutes.</strong> Drop your local MP3s, and our AI instantly analyzes BPM and musical keys, sequences them for perfect energy flow, and adds professional crossfades between tracks.
+              </p>
+              <div className="space-y-4 mb-8">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">1</div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-1">Upload Your Songs</h3>
+                    <p className="text-gray-700">Drag and drop your music library - any MP3, WAV, or M4A files</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">2</div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-1">AI Sequences Perfectly</h3>
+                    <p className="text-gray-700">Smart harmonic mixing orders tracks for seamless transitions</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">3</div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-1">Download & Play</h3>
+                    <p className="text-gray-700">Professional mix with DJ-quality crossfades ready in minutes</p>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-purple-200">
+                <p className="text-gray-900 font-medium mb-2">✨ Professional DJ Techniques Built-In:</p>
+                <ul className="text-gray-700 space-y-1 text-sm">
+                  <li>• Automatic BPM matching</li>
+                  <li>• Harmonic key detection & compatibility</li>
+                  <li>• Energy-based track sequencing</li>
+                  <li>• Smooth crossfades (0-10 seconds customizable)</li>
+                  <li>• Perfect timing for fade in/out points</li>
+                </ul>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl p-8 text-white shadow-2xl">
+                <Music className="w-16 h-16 mb-6 opacity-90" />
+                <h3 className="text-2xl font-bold mb-4">Party Mode Activated 🎉</h3>
+                <div className="space-y-3 text-sm opacity-90">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                    <span>50 songs mixed in under 5 minutes</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                    <span>No awkward silence between tracks</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                    <span>Energy builds throughout the night</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                    <span>Guests asking "Who's your DJ?"</span>
+                  </div>
+                </div>
+                <div className="mt-6 pt-6 border-t border-white/20">
+                  <p className="text-xs italic">"Used this 30 mins before my housewarming party. Everyone thought I hired a professional DJ. Best $69 I ever spent." - Mike T.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Problem/Solution Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6">
@@ -149,9 +283,9 @@ export default function LandingPage() {
               <div className="w-14 h-14 bg-purple-100 rounded-lg flex items-center justify-center mb-6">
                 <Wand2 className="w-7 h-7 text-purple-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">AI Music Generation</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">AI Music Generation + Real Song Uploads</h3>
               <p className="text-gray-700 leading-relaxed">
-                Generate unique, royalty-free music tracks instantly using advanced AI models. Choose from Lofi, EDM, Hip-Hop, Jazz, and Classical genres. Perfect for creators who need fresh content without licensing issues or music library subscriptions.
+                Generate unique, royalty-free AI tracks instantly OR upload your own MP3s from local files. Choose from Lofi, EDM, Hip-Hop, Jazz, Classical and more. Perfect for creators who need fresh AI content, or DJs and party hosts who want to mix their existing music library with professional crossfades.
               </p>
             </div>
 
@@ -501,11 +635,14 @@ export default function LandingPage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
-              <Radio className="w-10 h-10 text-purple-600 mb-4" />
-              <h3 className="text-lg font-bold text-gray-900 mb-2">YouTube Music Channels</h3>
+            <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow border-2 border-purple-200">
+              <div className="flex items-center gap-2 mb-4">
+                <Radio className="w-10 h-10 text-purple-600" />
+                <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">🔥 VIRAL</span>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">YouTube Lofi & Music Channels</h3>
               <p className="text-gray-700">
-                Create lofi study mixes, chill beats compilations, and genre-specific playlists. Generate unlimited content for 24/7 music streams with automated thumbnails and descriptions.
+                Create viral lofi study mixes, chill beats compilations, and genre-specific playlists. Lofi content is exploding on YouTube! Generate unlimited content for 24/7 music streams with automated thumbnails and descriptions.
               </p>
             </div>
 
@@ -519,9 +656,9 @@ export default function LandingPage() {
 
             <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
               <Mic2 className="w-10 h-10 text-green-600 mb-4" />
-              <h3 className="text-lg font-bold text-gray-900 mb-2">DJs & Music Producers</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">DJs & Party Hosts</h3>
               <p className="text-gray-700">
-                Quick professional mixes for demos, practice sets, and client previews. Harmonic mixing analysis helps you understand key relationships and create better transitions.
+                Instant party mixes without a DJ! Quick professional mixes with your own songs, perfect crossfades, and energy-based sequencing. Upload your music library and get a dancefloor-ready mix in 5 minutes. Also great for demos and practice sets.
               </p>
             </div>
 

@@ -24,9 +24,64 @@ interface Song {
   duration: number;
 }
 
+interface VisualizerSettings {
+  enabled: boolean;
+  position: 'top' | 'middle' | 'bottom';
+  style: 'wave' | 'bars' | 'circle' | 'line';
+  colorMode: 'single' | 'gradient';
+  color1: string;
+  color2?: string;
+}
+
+// Helper function to generate visualizer filter based on settings
+function generateVisualizerFilter(
+  settings: VisualizerSettings,
+  audioLabel: string,
+  videoLabel: string,
+  width: number = 1920,
+  height: number = 1080
+): string {
+  if (!settings.enabled) return '';
+
+  const colors = settings.colorMode === 'gradient'
+    ? `${settings.color1}|${settings.color2 || settings.color1}`
+    : settings.color1;
+
+  // Calculate Y position based on setting
+  let yPos: string;
+  if (settings.position === 'top') {
+    yPos = 'h*0.15'; // 15% from top
+  } else if (settings.position === 'middle') {
+    yPos = 'h/2';
+  } else {
+    yPos = 'h*0.85'; // 85% from top (near bottom)
+  }
+
+  let visualizerFilter = '';
+
+  switch (settings.style) {
+    case 'bars':
+      visualizerFilter = `${audioLabel}showfreqs=mode=bar:size=${width}x200:colors=${colors}:scale=log[viz];${videoLabel}[viz]overlay=0:${yPos}`;
+      break;
+    case 'wave':
+      visualizerFilter = `${audioLabel}showwaves=size=${width}x200:mode=line:colors=${colors}:scale=sqrt[viz];${videoLabel}[viz]overlay=0:${yPos}`;
+      break;
+    case 'circle':
+      visualizerFilter = `${audioLabel}showfreqs=mode=line:size=${width}x200:colors=${colors}:scale=log[viz];${videoLabel}[viz]overlay=0:${yPos}`;
+      break;
+    case 'line':
+      visualizerFilter = `${audioLabel}showwaves=size=${width}x200:mode=p2p:colors=${colors}:scale=lin[viz];${videoLabel}[viz]overlay=0:${yPos}`;
+      break;
+    default:
+      visualizerFilter = `${audioLabel}showfreqs=mode=bar:size=${width}x200:colors=${colors}:scale=log[viz];${videoLabel}[viz]overlay=0:${yPos}`;
+  }
+
+  return visualizerFilter;
+}
+
 export async function POST(req: NextRequest) {
   try {
-    const { songs, thumbnail, thumbnails, playlistOrder, crossfadeDuration = 5 } = await req.json();
+    const { songs, thumbnail, thumbnails, playlistOrder, crossfadeDuration = 5, visualizer } = await req.json();
 
     if (!songs || songs.length === 0) {
       return NextResponse.json({ error: 'No songs provided' }, { status: 400 });
@@ -70,33 +125,73 @@ export async function POST(req: NextRequest) {
       console.log(`Added to mix (${i + 1}/${orderedSongs.length}): ${song.title || 'Unknown'} -> ${songPath}`);
     }
 
-    // Download thumbnail(s)
+    // Download thumbnail(s) - supports images and videos
     const thumbnailPaths: string[] = [];
+    const thumbnailTypes: string[] = []; // Track if it's video or image
+
     if (thumbnails && thumbnails.length > 0) {
-      // Multiple thumbnails - one per song
+      // Multiple thumbnails - flexible count, will repeat last if fewer than songs
       for (let i = 0; i < thumbnails.length; i++) {
         const thumb = thumbnails[i];
-        const base64Data = thumb.startsWith('data:')
-          ? thumb.replace(/^data:image\/\w+;base64,/, '')
-          : thumb;
+        const isVideo = thumb.startsWith('data:video/');
+        const isImage = thumb.startsWith('data:image/');
+
+        let fileExt = 'png';
+        let base64Data = thumb;
+
+        if (isVideo) {
+          // Extract video type and convert to appropriate extension
+          const videoType = thumb.match(/data:video\/(\w+);/)?.[1] || 'mp4';
+          fileExt = videoType === 'quicktime' ? 'mov' : videoType;
+          base64Data = thumb.replace(/^data:video\/\w+;base64,/, '');
+          thumbnailTypes.push('video');
+        } else if (isImage) {
+          base64Data = thumb.replace(/^data:image\/\w+;base64,/, '');
+          thumbnailTypes.push('image');
+        } else {
+          // Assume image if no data: prefix
+          thumbnailTypes.push('image');
+        }
+
         const buffer = Buffer.from(base64Data, 'base64');
-        const thumbPath = path.join(process.cwd(), 'public', 'temp', `thumbnail_${Date.now()}_${i}.png`);
+        const thumbPath = path.join(process.cwd(), 'public', 'temp', `thumbnail_${Date.now()}_${i}.${fileExt}`);
         await writeFile(thumbPath, buffer);
         thumbnailPaths.push(thumbPath);
+      }
+
+      // If fewer thumbnails than songs, repeat the last one
+      while (thumbnailPaths.length < orderedSongs.length) {
+        thumbnailPaths.push(thumbnailPaths[thumbnailPaths.length - 1]);
+        thumbnailTypes.push(thumbnailTypes[thumbnailTypes.length - 1]);
       }
     } else {
       // Single thumbnail
       let thumbnailPath: string;
+      const isVideo = thumbnail.startsWith('data:video/');
+
       if (thumbnail.startsWith('data:')) {
-        const base64Data = thumbnail.replace(/^data:image\/\w+;base64,/, '');
+        let fileExt = 'png';
+        let base64Data = thumbnail;
+
+        if (isVideo) {
+          const videoType = thumbnail.match(/data:video\/(\w+);/)?.[1] || 'mp4';
+          fileExt = videoType === 'quicktime' ? 'mov' : videoType;
+          base64Data = thumbnail.replace(/^data:video\/\w+;base64,/, '');
+          thumbnailTypes.push('video');
+        } else {
+          base64Data = thumbnail.replace(/^data:image\/\w+;base64,/, '');
+          thumbnailTypes.push('image');
+        }
+
         const buffer = Buffer.from(base64Data, 'base64');
-        thumbnailPath = path.join(process.cwd(), 'public', 'temp', `thumbnail_${Date.now()}.png`);
+        thumbnailPath = path.join(process.cwd(), 'public', 'temp', `thumbnail_${Date.now()}.${fileExt}`);
         await writeFile(thumbnailPath, buffer);
       } else {
         const response = await axios.get(thumbnail, { responseType: 'arraybuffer' });
         const buffer = Buffer.from(response.data);
         thumbnailPath = path.join(process.cwd(), 'public', 'temp', `thumbnail_${Date.now()}.png`);
         await writeFile(thumbnailPath, buffer);
+        thumbnailTypes.push('image');
       }
       thumbnailPaths.push(thumbnailPath);
     }
@@ -110,8 +205,16 @@ export async function POST(req: NextRequest) {
       const command = ffmpeg();
 
       if (thumbnailPaths.length === 1) {
-        // Single thumbnail mode (original behavior)
-        command.input(thumbnailPaths[0]).inputOptions(['-loop 1', '-framerate 1']);
+        // Single thumbnail mode
+        const isVideo = thumbnailTypes[0] === 'video';
+
+        if (isVideo) {
+          // For videos, enable looping with stream_loop
+          command.input(thumbnailPaths[0]).inputOptions(['-stream_loop -1']);
+        } else {
+          // For images, use loop with framerate
+          command.input(thumbnailPaths[0]).inputOptions(['-loop 1', '-framerate 1']);
+        }
 
         songPaths.forEach(songPath => {
           command.input(songPath);
@@ -119,6 +222,7 @@ export async function POST(req: NextRequest) {
 
         let filterComplex = '';
 
+        // Audio crossfading
         if (songPaths.length === 1 || crossfadeDuration === 0) {
           filterComplex = '[1:a]anull[aout]';
         } else {
@@ -140,24 +244,53 @@ export async function POST(req: NextRequest) {
           }
         }
 
-        command
-          .complexFilter(filterComplex)
-          .outputOptions([
-            '-map 0:v',
-            '-map [aout]',
-            '-c:v libx264',
-            '-preset fast',
-            '-pix_fmt yuv420p',
-            '-c:a aac',
-            '-b:a 192k',
-            '-shortest'
-          ])
-          .output(outputPath);
+        // Add visualizer if enabled
+        if (visualizer?.enabled) {
+          filterComplex += ';';
+          const audioLabel = songPaths.length === 1 || crossfadeDuration === 0 ? '[1:a]' : '[aout]';
+          const vizFilter = generateVisualizerFilter(visualizer, audioLabel, '[0:v]', 1920, 1080);
+          filterComplex += vizFilter + '[vout]';
+
+          command
+            .complexFilter(filterComplex)
+            .outputOptions([
+              '-map [vout]',
+              '-map [aout]',
+              '-c:v libx264',
+              '-preset fast',
+              '-pix_fmt yuv420p',
+              '-c:a aac',
+              '-b:a 192k',
+              '-shortest'
+            ])
+            .output(outputPath);
+        } else {
+          command
+            .complexFilter(filterComplex)
+            .outputOptions([
+              '-map 0:v',
+              '-map [aout]',
+              '-c:v libx264',
+              '-preset fast',
+              '-pix_fmt yuv420p',
+              '-c:a aac',
+              '-b:a 192k',
+              '-shortest'
+            ])
+            .output(outputPath);
+        }
       } else {
         // Multiple thumbnails mode with video transitions
         // Add all thumbnails and songs as inputs
-        thumbnailPaths.forEach(thumbPath => {
-          command.input(thumbPath).inputOptions(['-loop 1', '-framerate 1']);
+        thumbnailPaths.forEach((thumbPath, idx) => {
+          const isVideo = thumbnailTypes[idx] === 'video';
+          if (isVideo) {
+            // For videos, enable looping
+            command.input(thumbPath).inputOptions(['-stream_loop -1']);
+          } else {
+            // For images, use loop with framerate
+            command.input(thumbPath).inputOptions(['-loop 1', '-framerate 1']);
+          }
         });
 
         songPaths.forEach(songPath => {
@@ -221,7 +354,14 @@ export async function POST(req: NextRequest) {
           filterComplex = audioFilter + videoFilter;
         }
 
-        const finalVideoLabel = numThumbs > 1 && crossfadeDuration > 0 ? `[vt${numThumbs - 1}]` : '[vout]';
+        let finalVideoLabel = numThumbs > 1 && crossfadeDuration > 0 ? `[vt${numThumbs - 1}]` : '[vout]';
+
+        // Add visualizer if enabled
+        if (visualizer?.enabled) {
+          const vizFilter = generateVisualizerFilter(visualizer, '[aout]', finalVideoLabel, 1920, 1080);
+          filterComplex += vizFilter + '[vout_final]';
+          finalVideoLabel = '[vout_final]';
+        }
 
         command
           .complexFilter(filterComplex)

@@ -59,8 +59,11 @@ Write 2-3 engaging sentences that would attract viewers. Don't use hashtags.`;
 
     const description = response.data.candidates[0].content.parts[0].text;
 
-    // Combine description with timestamps
-    const fullDescription = `${description}\n\nTracklist:\n${timestamps.join('\n')}`;
+    // InfiniteMix branding
+    const branding = `\n✨ This mix was expertly crafted with InfiniteMix - AI-powered music curation at its finest. Experience perfectly blended transitions and harmonically matched tracks for the ultimate listening experience.\n🎵 Create your own professional mixes at InfiniteMix.com`;
+
+    // Combine description with branding and timestamps
+    const fullDescription = `${description}${branding}\n\nTracklist:\n${timestamps.join('\n')}`;
 
     return NextResponse.json({
       description: fullDescription,

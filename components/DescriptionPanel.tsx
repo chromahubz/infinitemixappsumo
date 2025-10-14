@@ -22,17 +22,17 @@ export default function DescriptionPanel({ description }: DescriptionPanelProps)
         <h3 className="font-semibold text-gray-900">Description & Timestamps</h3>
         <button
           onClick={copyToClipboard}
-          className="flex items-center gap-2 px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
         >
           {copied ? (
             <>
               <Check className="w-4 h-4 text-green-600" />
-              Copied!
+              <span className="text-gray-900">Copied!</span>
             </>
           ) : (
             <>
-              <Copy className="w-4 h-4" />
-              Copy
+              <Copy className="w-4 h-4 text-gray-900" />
+              <span className="text-gray-900">Copy</span>
             </>
           )}
         </button>
