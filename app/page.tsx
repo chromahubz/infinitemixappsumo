@@ -9,6 +9,7 @@ import CrossfadeSelector from '@/components/CrossfadeSelector';
 import FileUploader from '@/components/FileUploader';
 import PlaylistEditor from '@/components/PlaylistEditor';
 import ThumbnailGenerator, { VisualizerSettings } from '@/components/ThumbnailGenerator';
+import AudioEffects, { AudioEffectSettings } from '@/components/AudioEffects';
 import ProgressTracker from '@/components/ProgressTracker';
 import DescriptionPanel from '@/components/DescriptionPanel';
 import AudioAnalyzer from '@/components/AudioAnalyzer';
@@ -26,6 +27,9 @@ export default function Home() {
     colorMode: 'gradient',
     color1: '#00ff00',
     color2: '#0000ff',
+  });
+  const [audioEffects, setAudioEffects] = useState<AudioEffectSettings>({
+    preset: 'none',
   });
   const [duration, setDuration] = useState(30);
   const [crossfadeDuration, setCrossfadeDuration] = useState(5);
@@ -224,6 +228,7 @@ export default function Home() {
         playlistOrder: mixPlaylist, // Use the order from songkeybpmanalyzer
         crossfadeDuration,
         visualizer: visualizerSettings,
+        audioEffects: audioEffects,
       });
 
       setMixUrl(mixResponse.data.mixUrl);
@@ -432,6 +437,13 @@ export default function Home() {
                   Continue
                 </button>
               </div>
+            </div>
+          )}
+
+          {/* Step 3.5: Audio Effects (optional, shown inline with Step 3) */}
+          {currentStep === 3 && (
+            <div className="mt-6">
+              <AudioEffects onEffectsChange={setAudioEffects} />
             </div>
           )}
 

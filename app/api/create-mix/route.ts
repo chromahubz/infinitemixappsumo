@@ -5,15 +5,14 @@ import ffmpeg from 'fluent-ffmpeg';
 import ffmpegStatic from 'ffmpeg-static';
 import axios from 'axios';
 
-// Set FFmpeg path
-if (ffmpegStatic) {
-  // On Windows/Mac, ffmpegStatic may return a weird path like \ROOT\ or /ROOT/
-  // Use absolute path resolution
-  const ffmpegPath = (ffmpegStatic.includes('\\ROOT\\') || ffmpegStatic.includes('/ROOT/'))
-    ? path.resolve(process.cwd(), 'node_modules', 'ffmpeg-static', process.platform === 'win32' ? 'ffmpeg.exe' : 'ffmpeg')
-    : ffmpegStatic;
-
-  console.log('FFmpeg path:', ffmpegPath);
+// Set FFmpeg path - construct direct path to binary if ffmpeg-static path is invalid
+if (ffmpegStatic && !ffmpegStatic.includes('/ROOT/') && !ffmpegStatic.includes('\\ROOT\\')) {
+  console.log('Using ffmpeg-static path:', ffmpegStatic);
+  ffmpeg.setFfmpegPath(ffmpegStatic);
+} else {
+  // Construct path to ffmpeg binary in node_modules
+  const ffmpegPath = path.join(process.cwd(), 'node_modules', 'ffmpeg-static', 'ffmpeg');
+  console.log('Using direct path to ffmpeg-static binary:', ffmpegPath);
   ffmpeg.setFfmpegPath(ffmpegPath);
 }
 
@@ -31,6 +30,10 @@ interface VisualizerSettings {
   colorMode: 'single' | 'gradient';
   color1: string;
   color2?: string;
+}
+
+interface AudioEffectSettings {
+  preset: 'none' | 'bass-boost' | 'vintage' | 'club-reverb' | 'bathroom-reverb' | 'concert-hall';
 }
 
 // Helper function to generate visualizer filter based on settings
@@ -79,9 +82,39 @@ function generateVisualizerFilter(
   return visualizerFilter;
 }
 
+// Helper function to generate audio effect filter based on preset
+function generateAudioEffectFilter(preset: AudioEffectSettings['preset']): string {
+  if (preset === 'none') return '';
+
+  switch (preset) {
+    case 'bass-boost':
+      // Boost frequencies below 150Hz by +10dB
+      return ',equalizer=f=60:width_type=o:width=2:g=10,equalizer=f=100:width_type=o:width=2:g=8';
+
+    case 'vintage':
+      // Simulate phone/lo-fi filter: cut lows (<300Hz) and highs (>3500Hz)
+      return ',highpass=f=300,lowpass=f=3500,equalizer=f=1000:width_type=o:width=2:g=-2';
+
+    case 'club-reverb':
+      // Large club reverb with moderate wet/dry mix
+      return ',aecho=0.8:0.88:60:0.4,aecho=0.8:0.88:120:0.3';
+
+    case 'bathroom-reverb':
+      // Tight reverb space
+      return ',aecho=0.8:0.9:40:0.5,aecho=0.8:0.9:80:0.4';
+
+    case 'concert-hall':
+      // Large hall reverb with long decay
+      return ',aecho=0.8:0.85:100:0.3,aecho=0.8:0.85:200:0.25,aecho=0.8:0.85:300:0.2';
+
+    default:
+      return '';
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
-    const { songs, thumbnail, thumbnails, playlistOrder, crossfadeDuration = 5, visualizer } = await req.json();
+    const { songs, thumbnail, thumbnails, playlistOrder, crossfadeDuration = 5, visualizer, audioEffects } = await req.json();
 
     if (!songs || songs.length === 0) {
       return NextResponse.json({ error: 'No songs provided' }, { status: 400 });
@@ -224,7 +257,13 @@ export async function POST(req: NextRequest) {
 
         // Audio crossfading
         if (songPaths.length === 1 || crossfadeDuration === 0) {
-          filterComplex = '[1:a]anull[aout]';
+          // Single song or no crossfade - check if audio effects are enabled
+          const effectFilter = generateAudioEffectFilter(audioEffects?.preset || 'none');
+          if (effectFilter) {
+            filterComplex = `[1:a]anull${effectFilter}[aout]`;
+          } else {
+            filterComplex = '[1:a]anull[aout]';
+          }
         } else {
           for (let i = 0; i < songPaths.length; i++) {
             if (i === 0) {
@@ -237,10 +276,19 @@ export async function POST(req: NextRequest) {
           }
 
           const lastIndex = songPaths.length - 1;
+          // Apply audio effects if enabled
+          const effectFilter = generateAudioEffectFilter(audioEffects?.preset || 'none');
+          const finalLabel = effectFilter ? '[apre]' : '[aout]';
+
           if (songPaths.length === 2) {
-            filterComplex = filterComplex.replace('[a1];', '[aout]');
+            filterComplex = filterComplex.replace('[a1];', `${finalLabel};`);
           } else {
-            filterComplex = filterComplex.replace(`[a${lastIndex}];`, `[aout]`);
+            filterComplex = filterComplex.replace(`[a${lastIndex}];`, `${finalLabel};`);
+          }
+
+          // Add audio effect filter if present
+          if (effectFilter) {
+            filterComplex += `[apre]anull${effectFilter}[aout];`;
           }
         }
 
@@ -305,7 +353,13 @@ export async function POST(req: NextRequest) {
         // Audio crossfading
         let audioFilter = '';
         if (numSongs === 1 || crossfadeDuration === 0) {
-          audioFilter = `[${numThumbs}:a]anull[aout];`;
+          // Single song or no crossfade - check if audio effects are enabled
+          const effectFilter = generateAudioEffectFilter(audioEffects?.preset || 'none');
+          if (effectFilter) {
+            audioFilter = `[${numThumbs}:a]anull${effectFilter}[aout];`;
+          } else {
+            audioFilter = `[${numThumbs}:a]anull[aout];`;
+          }
         } else {
           for (let i = 0; i < numSongs; i++) {
             const audioIndex = numThumbs + i;
@@ -318,10 +372,19 @@ export async function POST(req: NextRequest) {
             }
           }
 
+          // Apply audio effects if enabled
+          const effectFilter = generateAudioEffectFilter(audioEffects?.preset || 'none');
+          const finalLabel = effectFilter ? '[apre]' : '[aout]';
+
           if (numSongs === 2) {
-            audioFilter = audioFilter.replace('[a1];', '[aout];');
+            audioFilter = audioFilter.replace('[a1];', `${finalLabel};`);
           } else {
-            audioFilter = audioFilter.replace(`[a${numSongs - 1}];`, `[aout];`);
+            audioFilter = audioFilter.replace(`[a${numSongs - 1}];`, `${finalLabel};`);
+          }
+
+          // Add audio effect filter if present
+          if (effectFilter) {
+            audioFilter += `[apre]anull${effectFilter}[aout];`;
           }
         }
 

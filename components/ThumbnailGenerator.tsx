@@ -28,6 +28,7 @@ export default function ThumbnailGenerator({ genre, onThumbnailGenerated, onMult
   const [generatingPrompt, setGeneratingPrompt] = useState(false);
   const [useMultipleThumbnails, setUseMultipleThumbnails] = useState(false);
   const [error, setError] = useState('');
+  const [generatedThumbnails, setGeneratedThumbnails] = useState<Array<{ url: string; base64: string }>>([]);
 
   // Visualizer settings
   const [visualizerEnabled, setVisualizerEnabled] = useState(false);
@@ -71,12 +72,17 @@ export default function ThumbnailGenerator({ genre, onThumbnailGenerated, onMult
 
     try {
       if (useMultipleThumbnails && onMultipleThumbnailsGenerated) {
-        // Generate multiple thumbnails (one per song)
+        // Generate multiple thumbnails (one per song) with different seeds
         const thumbnails = [];
+        const baseSeed = Math.floor(Math.random() * 1000000);
+
         for (let i = 0; i < songCount; i++) {
+          // Use different seed for each image to ensure variation
+          const seed = baseSeed + i * 1000;
           const response = await axios.post('/api/generate-thumbnail', {
             prompt: customPrompt || `${genre} music artwork variation ${i + 1}`,
             genre,
+            seed,
           });
           thumbnails.push({ url: response.data.url, base64: response.data.base64 });
 
@@ -85,13 +91,15 @@ export default function ThumbnailGenerator({ genre, onThumbnailGenerated, onMult
             await new Promise(resolve => setTimeout(resolve, 2000));
           }
         }
+        setGeneratedThumbnails(thumbnails);  // Store locally for gallery display
         onMultipleThumbnailsGenerated(thumbnails);
       } else {
-        // Single thumbnail
+        // Single thumbnail - let API generate random seed
         const response = await axios.post('/api/generate-thumbnail', {
           prompt: customPrompt,
           genre,
         });
+        setGeneratedThumbnails([]);  // Clear multiple thumbnails
         onThumbnailGenerated(response.data.url, response.data.base64);
       }
     } catch (err: any) {
@@ -128,6 +136,7 @@ export default function ThumbnailGenerator({ genre, onThumbnailGenerated, onMult
 
           // When all files are processed
           if (processedCount === files.length && onMultipleThumbnailsGenerated) {
+            setGeneratedThumbnails(thumbnails);  // Store locally for gallery display
             onMultipleThumbnailsGenerated(thumbnails);
           }
         };
@@ -145,6 +154,7 @@ export default function ThumbnailGenerator({ genre, onThumbnailGenerated, onMult
       reader.onload = (event) => {
         const base64 = event.target?.result as string;
         const url = URL.createObjectURL(file);
+        setGeneratedThumbnails([]);  // Clear multiple thumbnails
         onThumbnailGenerated(url, base64);
       };
       reader.readAsDataURL(file);
@@ -360,9 +370,35 @@ export default function ThumbnailGenerator({ genre, onThumbnailGenerated, onMult
         <p className="text-sm text-red-500">{error}</p>
       )}
 
-      {currentThumbnail && (
+      {/* Gallery for multiple thumbnails */}
+      {generatedThumbnails.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="font-semibold text-gray-900">Generated Images ({generatedThumbnails.length})</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {generatedThumbnails.map((thumb, index) => (
+              <div key={index} className="relative rounded-lg overflow-hidden border-2 border-blue-300 shadow-md">
+                {thumb.base64.startsWith('data:video/') ? (
+                  <video src={thumb.url} className="w-full h-auto" muted loop autoPlay />
+                ) : (
+                  <img src={thumb.url} alt={`Thumbnail ${index + 1}`} className="w-full h-auto" />
+                )}
+                <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white text-xs py-1 px-2 text-center">
+                  Image {index + 1}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Single thumbnail display */}
+      {currentThumbnail && generatedThumbnails.length === 0 && (
         <div className="relative rounded-lg overflow-hidden border-2 border-gray-200">
-          <img src={currentThumbnail} alt="Mix thumbnail" className="w-full h-auto" />
+          {currentThumbnail.startsWith('blob:') && currentThumbnail.includes('video') ? (
+            <video src={currentThumbnail} className="w-full h-auto" controls muted loop />
+          ) : (
+            <img src={currentThumbnail} alt="Mix thumbnail" className="w-full h-auto" />
+          )}
         </div>
       )}
     </div>

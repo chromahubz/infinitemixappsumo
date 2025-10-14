@@ -5,7 +5,7 @@ import path from 'path';
 
 export async function POST(req: NextRequest) {
   try {
-    const { prompt, genre } = await req.json();
+    const { prompt, genre, seed } = await req.json();
 
     const API_KEY = process.env.NEXT_PUBLIC_FIREWORKS_API_KEY || 'fw_3ZMLwprQ7PjXK1j9a8MmrsgU';
 
@@ -16,17 +16,23 @@ export async function POST(req: NextRequest) {
     // Default prompt if not provided
     const finalPrompt = prompt || `Aesthetic ${genre} music artwork, soft pastel colors, minimalist design, calming atmosphere, high quality, 16:9 aspect ratio`;
 
-    console.log('Generating thumbnail with Fireworks AI:', finalPrompt);
+    // Use provided seed or generate a random one
+    const finalSeed = seed !== undefined ? seed : Math.floor(Math.random() * 1000000);
+
+    console.log('Generating thumbnail with Fireworks AI:', finalPrompt, 'Seed:', finalSeed);
 
     // Fireworks AI returns image as blob
+    const requestBody: any = {
+      prompt: finalPrompt,
+      aspect_ratio: '16:9',
+      guidance_scale: 3.5,
+      num_inference_steps: 4,
+      seed: finalSeed,
+    };
+
     const response = await axios.post(
       'https://api.fireworks.ai/inference/v1/workflows/accounts/fireworks/models/flux-1-schnell-fp8/text_to_image',
-      {
-        prompt: finalPrompt,
-        aspect_ratio: '16:9',
-        guidance_scale: 3.5,
-        num_inference_steps: 4,
-      },
+      requestBody,
       {
         headers: {
           'Authorization': `Bearer ${API_KEY}`,
