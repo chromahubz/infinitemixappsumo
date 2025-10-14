@@ -379,7 +379,7 @@ export default function Home() {
               ) : null}
 
               {/* Audio Analyzer Component */}
-              {uploadedFiles.length > 0 && stage === 'analyzing' && (
+              {uploadedFiles.length > 0 && stage === 'analyzing' && currentStep === 2 && (
                 <AudioAnalyzer
                   files={uploadedFiles}
                   onAnalysisComplete={handleAnalysisComplete}

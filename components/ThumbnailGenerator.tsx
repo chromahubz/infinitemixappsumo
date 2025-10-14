@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Image, RefreshCw, Sparkles } from 'lucide-react';
+import { Image, RefreshCw, Sparkles, Upload } from 'lucide-react';
 import axios from 'axios';
 
 interface ThumbnailGeneratorProps {
@@ -66,6 +66,61 @@ export default function ThumbnailGenerator({ genre, onThumbnailGenerated, onMult
       setError(err.response?.data?.error || 'Failed to generate thumbnail');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setError('');
+
+    // Check if uploading multiple files
+    if (files.length > 1) {
+      // Multiple files - one per song
+      if (files.length !== songCount) {
+        setError(`Please upload exactly ${songCount} images (one per song)`);
+        return;
+      }
+
+      const thumbnails: Array<{ url: string; base64: string }> = [];
+      let processedCount = 0;
+
+      Array.from(files).forEach((file, index) => {
+        if (!file.type.startsWith('image/')) {
+          setError(`File ${index + 1} is not an image. Please upload only image files (JPG, PNG, etc.)`);
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const base64 = event.target?.result as string;
+          const url = URL.createObjectURL(file);
+          thumbnails.push({ url, base64 });
+          processedCount++;
+
+          // When all files are processed
+          if (processedCount === files.length && onMultipleThumbnailsGenerated) {
+            onMultipleThumbnailsGenerated(thumbnails);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    } else {
+      // Single file upload
+      const file = files[0];
+      if (!file.type.startsWith('image/')) {
+        setError('Please upload an image file (JPG, PNG, etc.)');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64 = event.target?.result as string;
+        const url = URL.createObjectURL(file);
+        onThumbnailGenerated(url, base64);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -135,6 +190,36 @@ export default function ThumbnailGenerator({ genre, onThumbnailGenerated, onMult
           </>
         )}
       </button>
+
+      {/* Divider */}
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-300"></div>
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-2 bg-white text-gray-500">OR</span>
+        </div>
+      </div>
+
+      {/* Upload Section */}
+      <div>
+        <label className="w-full flex flex-col items-center justify-center px-6 py-8 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-colors">
+          <Upload className="w-8 h-8 text-gray-400 mb-2" />
+          <span className="text-sm font-medium text-gray-900 mb-1">Upload Your Own Thumbnail{songCount > 1 ? 's' : ''}</span>
+          {songCount > 1 ? (
+            <span className="text-xs text-gray-500">Select {songCount} images (one per song) or 1 image for all</span>
+          ) : (
+            <span className="text-xs text-gray-500">JPG, PNG, or GIF (Max 5MB)</span>
+          )}
+          <input
+            type="file"
+            accept="image/*"
+            multiple={songCount > 1}
+            onChange={handleFileUpload}
+            className="hidden"
+          />
+        </label>
+      </div>
 
       {error && (
         <p className="text-sm text-red-500">{error}</p>

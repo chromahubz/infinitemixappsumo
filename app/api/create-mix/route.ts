@@ -7,10 +7,10 @@ import axios from 'axios';
 
 // Set FFmpeg path
 if (ffmpegStatic) {
-  // On Windows, ffmpegStatic may return a weird path like \ROOT\...
+  // On Windows/Mac, ffmpegStatic may return a weird path like \ROOT\ or /ROOT/
   // Use absolute path resolution
-  const ffmpegPath = ffmpegStatic.includes('\\ROOT\\')
-    ? path.resolve(process.cwd(), 'node_modules', 'ffmpeg-static', 'ffmpeg.exe')
+  const ffmpegPath = (ffmpegStatic.includes('\\ROOT\\') || ffmpegStatic.includes('/ROOT/'))
+    ? path.resolve(process.cwd(), 'node_modules', 'ffmpeg-static', process.platform === 'win32' ? 'ffmpeg.exe' : 'ffmpeg')
     : ffmpegStatic;
 
   console.log('FFmpeg path:', ffmpegPath);
