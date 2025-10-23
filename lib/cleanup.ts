@@ -11,14 +11,15 @@ const MAX_FILE_AGE_MS = 24 * 60 * 60 * 1000; // 24 hours (1 day)
  * @returns Object with cleanup statistics
  */
 export async function cleanupOldFiles(
-  directory: string = 'temp',
+  directory: string = '/tmp',
   maxAge: number = MAX_FILE_AGE_MS
 ): Promise<{ deletedCount: number; deletedFiles: string[]; errors: string[] }> {
   const deletedFiles: string[] = [];
   const errors: string[] = [];
 
   try {
-    const dirPath = path.join(process.cwd(), 'public', directory);
+    // Use /tmp for Vercel serverless, or specified directory
+    const dirPath = directory.startsWith('/') ? directory : path.join(process.cwd(), 'public', directory);
     const now = Date.now();
 
     // Read all files in directory
@@ -75,7 +76,7 @@ export async function cleanupAllTempFiles(): Promise<{
   totalDeleted: number;
   results: Record<string, CleanupResult>;
 }> {
-  const directories = ['temp']; // Add more directories here if needed
+  const directories = ['/tmp']; // Use /tmp for Vercel serverless
   const results: Record<string, CleanupResult> = {};
   let totalDeleted = 0;
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, unlink } from 'fs/promises';
+import { writeFile, unlink, readFile } from 'fs/promises';
 import path from 'path';
 import ffmpeg from 'fluent-ffmpeg';
 import ffmpegStatic from 'ffmpeg-static';
@@ -90,14 +90,11 @@ export async function POST(req: NextRequest) {
         // Download from URL
         const response = await axios.get(song.url, { responseType: 'arraybuffer' });
         const buffer = Buffer.from(response.data);
-        songPath = path.join(process.cwd(), 'public', 'temp', `song_${Date.now()}_${i}.mp3`);
+        songPath = path.join('/tmp', `song_${Date.now()}_${i}.mp3`);
         await writeFile(songPath, buffer);
       } else if (song.path) {
-        // Use local file - need absolute path
-        const fullPath = song.path.startsWith(process.cwd())
-          ? song.path
-          : path.join(process.cwd(), 'public', song.path);
-        songPath = fullPath;
+        // Use local file path (from upload API which now uses /tmp)
+        songPath = song.path;
       } else {
         throw new Error(`Song ${i} has no URL or path`);
       }
@@ -135,7 +132,7 @@ export async function POST(req: NextRequest) {
         }
 
         const buffer = Buffer.from(base64Data, 'base64');
-        const thumbPath = path.join(process.cwd(), 'public', 'temp', `thumbnail_${Date.now()}_${i}.${fileExt}`);
+        const thumbPath = path.join('/tmp', `thumbnail_${Date.now()}_${i}.${fileExt}`);
         await writeFile(thumbPath, buffer);
         thumbnailPaths.push(thumbPath);
       }
@@ -165,12 +162,12 @@ export async function POST(req: NextRequest) {
         }
 
         const buffer = Buffer.from(base64Data, 'base64');
-        thumbnailPath = path.join(process.cwd(), 'public', 'temp', `thumbnail_${Date.now()}.${fileExt}`);
+        thumbnailPath = path.join('/tmp', `thumbnail_${Date.now()}.${fileExt}`);
         await writeFile(thumbnailPath, buffer);
       } else {
         const response = await axios.get(thumbnail, { responseType: 'arraybuffer' });
         const buffer = Buffer.from(response.data);
-        thumbnailPath = path.join(process.cwd(), 'public', 'temp', `thumbnail_${Date.now()}.png`);
+        thumbnailPath = path.join('/tmp', `thumbnail_${Date.now()}.png`);
         await writeFile(thumbnailPath, buffer);
         thumbnailTypes.push('image');
       }
@@ -179,7 +176,7 @@ export async function POST(req: NextRequest) {
 
     // Create output path
     const outputFilename = `mix_${Date.now()}.mp4`;
-    const outputPath = path.join(process.cwd(), 'public', 'temp', outputFilename);
+    const outputPath = path.join('/tmp', outputFilename);
 
     // Build FFmpeg command with crossfades
     await new Promise<void>((resolve, reject) => {
@@ -391,9 +388,31 @@ export async function POST(req: NextRequest) {
       console.error('Cleanup error:', cleanupError);
     }
 
-    return NextResponse.json({
-      success: true,
-      mixUrl: `/temp/${outputFilename}`,
+    // Read the generated file and return it as a blob
+    const fileBuffer = await readFile(outputPath);
+
+    // Clean up temp files in background (don't block response)
+    setTimeout(async () => {
+      try {
+        await unlink(outputPath);
+        for (const songPath of songPaths) {
+          try { await unlink(songPath); } catch {}
+        }
+        for (const thumbPath of thumbnailPaths) {
+          try { await unlink(thumbPath); } catch {}
+        }
+      } catch (error) {
+        console.error('[Cleanup] Error:', error);
+      }
+    }, 1000);
+
+    // Return file as response (use Uint8Array for NextResponse compatibility)
+    return new NextResponse(new Uint8Array(fileBuffer), {
+      headers: {
+        'Content-Type': 'video/mp4',
+        'Content-Disposition': `attachment; filename="${outputFilename}"`,
+        'Content-Length': fileBuffer.length.toString(),
+      },
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';

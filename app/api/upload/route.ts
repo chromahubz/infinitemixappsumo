@@ -6,7 +6,7 @@ import { cleanupOldFiles } from '@/lib/cleanup';
 export async function POST(req: NextRequest) {
   try {
     // Run cleanup in background (non-blocking) - delete files older than 24 hours
-    cleanupOldFiles('temp', 24 * 60 * 60 * 1000).catch((error) => {
+    cleanupOldFiles('/tmp', 24 * 60 * 60 * 1000).catch((error) => {
       console.error('[Upload] Background cleanup error:', error);
     });
 
@@ -23,9 +23,9 @@ export async function POST(req: NextRequest) {
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
 
-      // Save to public/temp directory
+      // Save to /tmp directory (Vercel-compatible)
       const filename = `${Date.now()}_${file.name}`;
-      const filepath = path.join(process.cwd(), 'public', 'temp', filename);
+      const filepath = path.join('/tmp', filename);
 
       await writeFile(filepath, buffer);
 
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
         originalName: file.name,
         size: file.size,
         type: file.type,
-        path: `/temp/${filename}`,
+        path: filepath, // Full path for backend processing
       });
     }
 

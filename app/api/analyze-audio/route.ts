@@ -13,10 +13,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    // Save file temporarily
+    // Save file temporarily to /tmp (Vercel-compatible)
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    const tempPath = path.join(process.cwd(), 'public', 'temp', `temp_${Date.now()}_${file.name}`);
+    const tempPath = path.join('/tmp', `temp_${Date.now()}_${file.name}`);
     await writeFile(tempPath, buffer);
 
     try {

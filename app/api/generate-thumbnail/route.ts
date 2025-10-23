@@ -47,18 +47,12 @@ export async function POST(req: NextRequest) {
     const base64Image = Buffer.from(response.data).toString('base64');
     const base64DataUrl = `data:image/png;base64,${base64Image}`;
 
-    // Save to temp file for URL access
-    const filename = `thumbnail_${Date.now()}.png`;
-    const filepath = path.join(process.cwd(), 'public', 'temp', filename);
-    await writeFile(filepath, response.data);
-
-    const imageUrl = `/temp/${filename}`;
-
     console.log('Thumbnail generated successfully');
 
+    // On Vercel, return base64 only (no file storage needed)
     return NextResponse.json({
-      url: imageUrl,
       base64: base64DataUrl,
+      url: base64DataUrl, // Use base64 as URL for compatibility
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
