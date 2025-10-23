@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     console.log('Generating thumbnail with Fireworks AI:', finalPrompt, 'Seed:', finalSeed);
 
     // Fireworks AI returns image as blob
-    const requestBody: any = {
+    const requestBody: Record<string, string | number> = {
       prompt: finalPrompt,
       aspect_ratio: '16:9',
       guidance_scale: 3.5,
@@ -60,10 +60,12 @@ export async function POST(req: NextRequest) {
       url: imageUrl,
       base64: base64DataUrl,
     });
-  } catch (error: any) {
-    console.error('Thumbnail generation error:', error.response?.data || error.message);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorData = (error as { response?: { data?: unknown } }).response?.data;
+    console.error('Thumbnail generation error:', errorData || errorMessage);
     return NextResponse.json(
-      { error: 'Failed to generate thumbnail', details: error.response?.data || error.message },
+      { error: 'Failed to generate thumbnail', details: errorData || errorMessage },
       { status: 500 }
     );
   }

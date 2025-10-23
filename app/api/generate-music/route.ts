@@ -1,8 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateMusic, generateMusicMetadata } from '@/lib/kie-api';
 
+interface TaskStatus {
+  taskId: string;
+  status: string;
+  title?: string;
+  genre?: string;
+  index?: number;
+  audioUrl?: string;
+  audioUrl2?: string;
+  duration?: number;
+  error?: string;
+}
+
 // Store task status in memory (in production, use Redis or database)
-const taskStatusStore = new Map<string, any>();
+const taskStatusStore = new Map<string, TaskStatus>();
 
 export async function POST(req: NextRequest) {
   try {
@@ -59,10 +71,11 @@ export async function POST(req: NextRequest) {
       songs,
       message: `${count} tracks queued for generation`
     });
-  } catch (error: any) {
-    console.error('[Generate Music] Error:', error.message);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[Generate Music] Error:', errorMessage);
     return NextResponse.json(
-      { error: 'Failed to generate music', details: error.message },
+      { error: 'Failed to generate music', details: errorMessage },
       { status: 500 }
     );
   }
@@ -89,10 +102,11 @@ export async function GET(req: NextRequest) {
       success: true,
       ...taskStatus,
     });
-  } catch (error: any) {
-    console.error('[Generate Music] Status check error:', error.message);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[Generate Music] Status check error:', errorMessage);
     return NextResponse.json(
-      { error: 'Failed to check status', details: error.message },
+      { error: 'Failed to check status', details: errorMessage },
       { status: 500 }
     );
   }

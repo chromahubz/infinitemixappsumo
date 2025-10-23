@@ -42,10 +42,11 @@ export async function POST(req: NextRequest) {
       success: true,
       files: uploadedFiles,
     });
-  } catch (error: any) {
-    console.error('File upload error:', error.message);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('File upload error:', errorMessage);
     return NextResponse.json(
-      { error: 'Failed to upload files', details: error.message },
+      { error: 'Failed to upload files', details: errorMessage },
       { status: 500 }
     );
   }

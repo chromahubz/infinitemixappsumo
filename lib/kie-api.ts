@@ -49,7 +49,7 @@ export async function generateMusic(params: GenerateMusicParams): Promise<Genera
   }
 
   // Build the request payload
-  const payload: any = {
+  const payload: Record<string, string | boolean | number> = {
     customMode: params.customMode,
     instrumental: params.instrumental,
     model: params.model,
@@ -104,17 +104,24 @@ export async function generateMusic(params: GenerateMusicParams): Promise<Genera
     console.log('[Kie.ai] Music generation started. Task ID:', data.data?.taskId);
 
     return data;
-  } catch (error: any) {
-    console.error('[Kie.ai] Request failed:', error.message);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[Kie.ai] Request failed:', errorMessage);
     throw error;
   }
+}
+
+interface TaskStatusResponse {
+  code: number;
+  msg: string;
+  data?: MusicTaskStatus;
 }
 
 /**
  * Get music generation task details (for polling)
  * Note: You need to implement the GET endpoint for task status if needed
  */
-export async function getMusicTaskStatus(taskId: string): Promise<any> {
+export async function getMusicTaskStatus(taskId: string): Promise<TaskStatusResponse> {
   if (!KIE_API_KEY || KIE_API_KEY === 'your_kie_api_key_here') {
     throw new Error('KIE_API_KEY is not configured');
   }
@@ -134,8 +141,9 @@ export async function getMusicTaskStatus(taskId: string): Promise<any> {
     }
 
     return data;
-  } catch (error: any) {
-    console.error('[Kie.ai] Failed to get task status:', error.message);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[Kie.ai] Failed to get task status:', errorMessage);
     throw error;
   }
 }

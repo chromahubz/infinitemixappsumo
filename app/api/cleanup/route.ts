@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { cleanupAllTempFiles } from '@/lib/cleanup';
 
 /**
@@ -10,7 +10,7 @@ import { cleanupAllTempFiles } from '@/lib/cleanup';
  * 2. By a cron job (e.g., GitHub Actions, Vercel Cron, etc.)
  * 3. By external monitoring services
  */
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     console.log('[Cleanup API] Starting cleanup process...');
 
@@ -22,13 +22,14 @@ export async function GET(req: NextRequest) {
       ...result,
       timestamp: new Date().toISOString(),
     });
-  } catch (error: any) {
-    console.error('[Cleanup API] Error:', error.message);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[Cleanup API] Error:', errorMessage);
     return NextResponse.json(
       {
         success: false,
         error: 'Cleanup failed',
-        details: error.message,
+        details: errorMessage,
         timestamp: new Date().toISOString(),
       },
       { status: 500 }

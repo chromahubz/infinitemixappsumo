@@ -37,9 +37,10 @@ export async function cleanupOldFiles(
           deletedFiles.push(file);
           console.log(`[Cleanup] Deleted old file: ${file} (age: ${Math.round(fileAge / 1000 / 60)} minutes)`);
         }
-      } catch (error: any) {
-        errors.push(`Failed to delete ${file}: ${error.message}`);
-        console.error(`[Cleanup] Error deleting ${file}:`, error.message);
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        errors.push(`Failed to delete ${file}: ${errorMessage}`);
+        console.error(`[Cleanup] Error deleting ${file}:`, errorMessage);
       }
     }
 
@@ -50,14 +51,21 @@ export async function cleanupOldFiles(
       deletedFiles,
       errors,
     };
-  } catch (error: any) {
-    console.error(`[Cleanup] Error reading directory ${directory}:`, error.message);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error(`[Cleanup] Error reading directory ${directory}:`, errorMessage);
     return {
       deletedCount: 0,
       deletedFiles: [],
-      errors: [error.message],
+      errors: [errorMessage],
     };
   }
+}
+
+interface CleanupResult {
+  deletedCount: number;
+  deletedFiles: string[];
+  errors: string[];
 }
 
 /**
@@ -65,10 +73,10 @@ export async function cleanupOldFiles(
  */
 export async function cleanupAllTempFiles(): Promise<{
   totalDeleted: number;
-  results: Record<string, any>;
+  results: Record<string, CleanupResult>;
 }> {
   const directories = ['temp']; // Add more directories here if needed
-  const results: Record<string, any> = {};
+  const results: Record<string, CleanupResult> = {};
   let totalDeleted = 0;
 
   for (const dir of directories) {

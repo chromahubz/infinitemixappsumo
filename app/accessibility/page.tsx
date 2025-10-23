@@ -31,7 +31,7 @@ export default function AccessibilityPage() {
           <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 rounded-2xl p-8 mb-10 text-white shadow-xl">
             <h2 className="text-2xl font-bold mb-4">Our Commitment</h2>
             <p className="text-lg text-white/90">
-              We believe everyone should be able to create amazing music mixes. We're committed to meeting WCAG 2.1
+              We believe everyone should be able to create amazing music mixes. We&apos;re committed to meeting WCAG 2.1
               Level AA standards and continuously improving accessibility across our platform.
             </p>
           </div>
@@ -178,7 +178,7 @@ export default function AccessibilityPage() {
           <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-10 shadow-lg mb-10">
             <h2 className="text-3xl font-bold text-gray-900 mb-6">Known Accessibility Issues</h2>
             <p className="text-gray-700 mb-4">
-              We're actively working to resolve the following accessibility issues:
+              We&apos;re actively working to resolve the following accessibility issues:
             </p>
             <ul className="space-y-3 text-gray-700">
               <li className="flex items-start">

@@ -36,11 +36,11 @@ export default function AudioAnalyzer({ files, onAnalysisComplete, onProgress }:
       try {
         console.log('Loading Essentia.js...');
 
-        const Essentia = (await import('essentia.js/dist/essentia.js-core.es.js')).default;
+        const Essentia = (await import('essentia.js/dist/essentia.js-core.es.js')).default as new (wasm: unknown) => unknown;
         console.log('Essentia core loaded');
 
         // Load and initialize WASM module with custom locateFile
-        const EssentiaWASMFactory = (await import('essentia.js/dist/essentia-wasm.web.js')).default;
+        const EssentiaWASMFactory = (await import('essentia.js/dist/essentia-wasm.web.js')).default as (config: { locateFile: (path: string, prefix: string) => string }) => Promise<unknown>;
         console.log('WASM factory loaded, initializing...');
 
         const EssentiaWASM = await EssentiaWASMFactory({

@@ -81,12 +81,25 @@ const enharmonicMap: Record<string, string> = {
   'A# minor': 'Bb minor',
 };
 
+interface AudioMetadata {
+  common?: {
+    bpm?: number;
+    key?: string;
+    title?: string;
+    artist?: string;
+  };
+  native?: Record<string, Array<{ id?: string; value?: unknown }>>;
+  format?: {
+    duration?: number;
+  };
+}
+
 /**
  * Analyzes audio file using metadata and estimates BPM/key
  * For production: Integrate with actual audio analysis library
  * or use the browser-based Essentia.js analyzer from songkeybpmanalyzer
  */
-export async function analyzeAudio(filePath: string, metadata: any): Promise<AudioAnalysis> {
+export async function analyzeAudio(filePath: string, metadata: AudioMetadata): Promise<AudioAnalysis> {
   // Extract BPM from metadata if available
   let bpm = 120; // Default
 
@@ -96,12 +109,14 @@ export async function analyzeAudio(filePath: string, metadata: any): Promise<Aud
   } else if (metadata.native) {
     // Try to find BPM in native tags
     for (const tags of Object.values(metadata.native)) {
-      const bpmTag = (tags as any[]).find((tag: any) =>
+      const bpmTag = tags.find((tag) =>
         tag.id?.toLowerCase().includes('bpm') ||
         tag.id?.toLowerCase().includes('tempo')
       );
-      if (bpmTag?.value) {
+      if (bpmTag?.value && typeof bpmTag.value === 'string') {
         bpm = parseInt(bpmTag.value);
+      } else if (bpmTag?.value && typeof bpmTag.value === 'number') {
+        bpm = bpmTag.value;
         break;
       }
     }
@@ -157,7 +172,7 @@ function normalizeKey(keyString: string): string {
   return 'C major'; // Fallback
 }
 
-function estimateEnergy(metadata: any): number {
+function estimateEnergy(metadata: AudioMetadata): number {
   // Simplified energy estimation
   // In production, this would analyze actual audio samples
   const duration = metadata.format?.duration || 180;

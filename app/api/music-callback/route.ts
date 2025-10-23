@@ -74,10 +74,11 @@ export async function POST(req: NextRequest) {
       taskId,
       stage,
     });
-  } catch (error: any) {
-    console.error('[Music Callback] Error processing callback:', error.message);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[Music Callback] Error processing callback:', errorMessage);
     return NextResponse.json(
-      { error: 'Failed to process callback', details: error.message },
+      { error: 'Failed to process callback', details: errorMessage },
       { status: 500 }
     );
   }
@@ -101,8 +102,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Return all tasks
-    const allTasks = Array.from(taskStatusStore.entries()).map(([id, status]) => ({
-      taskId: id,
+    const allTasks = Array.from(taskStatusStore.entries()).map(([, status]) => ({
       ...status,
     }));
 
@@ -111,10 +111,11 @@ export async function GET(req: NextRequest) {
       tasks: allTasks,
       count: allTasks.length,
     });
-  } catch (error: any) {
-    console.error('[Music Callback] Error fetching status:', error.message);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[Music Callback] Error fetching status:', errorMessage);
     return NextResponse.json(
-      { error: 'Failed to fetch status', details: error.message },
+      { error: 'Failed to fetch status', details: errorMessage },
       { status: 500 }
     );
   }

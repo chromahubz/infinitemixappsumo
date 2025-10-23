@@ -69,14 +69,14 @@ export async function POST(req: NextRequest) {
     }
 
     console.log('Creating mix with playlist order:', playlistOrder);
-    console.log('Received songs:', songs.map((s: any) => ({ filename: s.filename, title: s.title, path: s.path })));
+    console.log('Received songs:', songs.map((s: Song) => ({ filename: s.title, title: s.title, path: s.path })));
     console.log('Multiple thumbnails mode:', thumbnails ? 'enabled' : 'disabled');
 
     // Build song paths array in the order specified by playlistOrder (from analyzer)
     const songPaths: string[] = [];
     const orderedSongs = playlistOrder && playlistOrder.length > 0
       ? playlistOrder.map((filename: string) => {
-          const found = songs.find((s: any) => s.filename === filename);
+          const found = songs.find((s: Song & { filename?: string }) => s.filename === filename);
           console.log(`Looking for ${filename}, found:`, found ? { title: found.title, path: found.path } : 'NOT FOUND');
           return found;
         }).filter(Boolean)
@@ -395,10 +395,11 @@ export async function POST(req: NextRequest) {
       success: true,
       mixUrl: `/temp/${outputFilename}`,
     });
-  } catch (error: any) {
-    console.error('Mix creation error:', error.message);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Mix creation error:', errorMessage);
     return NextResponse.json(
-      { error: 'Failed to create mix', details: error.message },
+      { error: 'Failed to create mix', details: errorMessage },
       { status: 500 }
     );
   }

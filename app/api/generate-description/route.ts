@@ -69,10 +69,12 @@ Write 2-3 engaging sentences that would attract viewers. Don't use hashtags.`;
       description: fullDescription,
       timestamps,
     });
-  } catch (error: any) {
-    console.error('Description generation error:', error.response?.data || error.message);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorData = (error as { response?: { data?: unknown } }).response?.data;
+    console.error('Description generation error:', errorData || errorMessage);
     return NextResponse.json(
-      { error: 'Failed to generate description', details: error.response?.data || error.message },
+      { error: 'Failed to generate description', details: errorData || errorMessage },
       { status: 500 }
     );
   }

@@ -67,7 +67,7 @@ export default function RoadmapPage() {
     }
   ];
 
-  const statusConfig = {
+  const statusConfig: Record<string, { icon: React.ComponentType<{ className?: string }>; color: string; bgColor: string; label: string }> = {
     completed: {
       icon: CheckCircle2,
       color: "text-green-600",

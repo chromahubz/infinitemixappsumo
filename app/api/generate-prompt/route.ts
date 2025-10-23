@@ -33,10 +33,12 @@ export async function POST(req: NextRequest) {
     const prompt = response.data.candidates[0].content.parts[0].text;
 
     return NextResponse.json({ prompt });
-  } catch (error: any) {
-    console.error('Prompt generation error:', error.response?.data || error.message);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorData = (error as { response?: { data?: unknown } }).response?.data;
+    console.error('Prompt generation error:', errorData || errorMessage);
     return NextResponse.json(
-      { error: 'Failed to generate prompt', details: error.response?.data || error.message },
+      { error: 'Failed to generate prompt', details: errorData || errorMessage },
       { status: 500 }
     );
   }

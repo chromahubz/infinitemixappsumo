@@ -51,17 +51,17 @@ export default function APIPage() {
               <div>
                 <h3 className="text-xl font-bold mb-3 text-gray-900">2. Make Your First Request</h3>
                 <p className="text-gray-600 mb-3">
-                  Use your API key to authenticate requests. Here's a simple example:
+                  Use your API key to authenticate requests. Here&apos;s a simple example:
                 </p>
                 <div className="bg-gray-900 rounded-lg p-4 font-mono text-sm text-green-400 overflow-x-auto">
                   curl -X POST https://api.infinitemix.com/v1/mix \<br />
-                  &nbsp;&nbsp;-H "Authorization: Bearer YOUR_API_KEY" \<br />
-                  &nbsp;&nbsp;-H "Content-Type: application/json" \<br />
-                  &nbsp;&nbsp;-d '{`{`}<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;"tracks": ["https://example.com/track1.mp3"],<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;"crossfade": 8,<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;"format": "mp3"<br />
-                  &nbsp;&nbsp;{`}`}'
+                  &nbsp;&nbsp;-H &quot;Authorization: Bearer YOUR_API_KEY&quot; \<br />
+                  &nbsp;&nbsp;-H &quot;Content-Type: application/json&quot; \<br />
+                  &nbsp;&nbsp;-d &apos;{`{`}<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;&quot;tracks&quot;: [&quot;https://example.com/track1.mp3&quot;],<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;&quot;crossfade&quot;: 8,<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;&quot;format&quot;: &quot;mp3&quot;<br />
+                  &nbsp;&nbsp;{`}`}&apos;
                 </div>
               </div>
 
@@ -72,9 +72,9 @@ export default function APIPage() {
                 </p>
                 <div className="bg-gray-900 rounded-lg p-4 font-mono text-sm text-green-400">
                   {`{`}<br />
-                  &nbsp;&nbsp;"job_id": "mix_abc123",<br />
-                  &nbsp;&nbsp;"status": "completed",<br />
-                  &nbsp;&nbsp;"download_url": "https://cdn.infinitemix.com/abc123.mp3"<br />
+                  &nbsp;&nbsp;&quot;job_id&quot;: &quot;mix_abc123&quot;,<br />
+                  &nbsp;&nbsp;&quot;status&quot;: &quot;completed&quot;,<br />
+                  &nbsp;&nbsp;&quot;download_url&quot;: &quot;https://cdn.infinitemix.com/abc123.mp3&quot;<br />
                   {`}`}
                 </div>
               </div>
@@ -132,10 +132,10 @@ export default function APIPage() {
                 <summary className="cursor-pointer font-semibold text-purple-600 mb-2">View Parameters</summary>
                 <div className="bg-gray-50 rounded-lg p-4 font-mono text-xs">
                   {`{`}<br />
-                  &nbsp;&nbsp;"tracks": ["url1", "url2"], // Required: Array of track URLs<br />
-                  &nbsp;&nbsp;"crossfade": 8, // Optional: Crossfade duration in seconds (0-20)<br />
-                  &nbsp;&nbsp;"format": "mp3", // Optional: Output format (mp3, wav, mp4)<br />
-                  &nbsp;&nbsp;"normalize": true // Optional: Enable volume normalization<br />
+                  &nbsp;&nbsp;&quot;tracks&quot;: [&quot;url1&quot;, &quot;url2&quot;], // Required: Array of track URLs<br />
+                  &nbsp;&nbsp;&quot;crossfade&quot;: 8, // Optional: Crossfade duration in seconds (0-20)<br />
+                  &nbsp;&nbsp;&quot;format&quot;: &quot;mp3&quot;, // Optional: Output format (mp3, wav, mp4)<br />
+                  &nbsp;&nbsp;&quot;normalize&quot;: true // Optional: Enable volume normalization<br />
                   {`}`}
                 </div>
               </details>
@@ -151,11 +151,11 @@ export default function APIPage() {
                 <summary className="cursor-pointer font-semibold text-purple-600 mb-2">View Response</summary>
                 <div className="bg-gray-50 rounded-lg p-4 font-mono text-xs">
                   {`{`}<br />
-                  &nbsp;&nbsp;"job_id": "mix_abc123",<br />
-                  &nbsp;&nbsp;"status": "completed", // pending, processing, completed, failed<br />
-                  &nbsp;&nbsp;"progress": 100,<br />
-                  &nbsp;&nbsp;"download_url": "https://cdn.infinitemix.com/abc123.mp3",<br />
-                  &nbsp;&nbsp;"duration": 245.6<br />
+                  &nbsp;&nbsp;&quot;job_id&quot;: &quot;mix_abc123&quot;,<br />
+                  &nbsp;&nbsp;&quot;status&quot;: &quot;completed&quot;, // pending, processing, completed, failed<br />
+                  &nbsp;&nbsp;&quot;progress&quot;: 100,<br />
+                  &nbsp;&nbsp;&quot;download_url&quot;: &quot;https://cdn.infinitemix.com/abc123.mp3&quot;,<br />
+                  &nbsp;&nbsp;&quot;duration&quot;: 245.6<br />
                   {`}`}
                 </div>
               </details>
@@ -171,7 +171,7 @@ export default function APIPage() {
                 <summary className="cursor-pointer font-semibold text-purple-600 mb-2">View Parameters</summary>
                 <div className="bg-gray-50 rounded-lg p-4 font-mono text-xs">
                   {`{`}<br />
-                  &nbsp;&nbsp;"track_url": "https://example.com/track.mp3" // Required<br />
+                  &nbsp;&nbsp;&quot;track_url&quot;: &quot;https://example.com/track.mp3&quot; // Required<br />
                   {`}`}
                 </div>
               </details>
@@ -198,15 +198,15 @@ export default function APIPage() {
               <h3 className="text-xl font-bold mb-4 text-gray-900">JavaScript / Node.js</h3>
               <div className="bg-gray-900 rounded-lg p-4 font-mono text-xs text-green-400 overflow-x-auto">
                 const response = await fetch(<br />
-                &nbsp;&nbsp;'https://api.infinitemix.com/v1/mix',<br />
+                &nbsp;&nbsp;&apos;https://api.infinitemix.com/v1/mix&apos;,<br />
                 &nbsp;&nbsp;{`{`}<br />
-                &nbsp;&nbsp;&nbsp;&nbsp;method: 'POST',<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;method: &apos;POST&apos;,<br />
                 &nbsp;&nbsp;&nbsp;&nbsp;headers: {`{`}<br />
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'Authorization': 'Bearer YOUR_API_KEY',<br />
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'Content-Type': 'application/json'<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&apos;Authorization&apos;: &apos;Bearer YOUR_API_KEY&apos;,<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&apos;Content-Type&apos;: &apos;application/json&apos;<br />
                 &nbsp;&nbsp;&nbsp;&nbsp;{`}`},<br />
                 &nbsp;&nbsp;&nbsp;&nbsp;body: JSON.stringify({`{`}<br />
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tracks: ['url1.mp3', 'url2.mp3'],<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tracks: [&apos;url1.mp3&apos;, &apos;url2.mp3&apos;],<br />
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;crossfade: 8<br />
                 &nbsp;&nbsp;&nbsp;&nbsp;{`}`})<br />
                 &nbsp;&nbsp;{`}`}<br />
@@ -220,13 +220,13 @@ export default function APIPage() {
                 import requests<br />
                 <br />
                 response = requests.post(<br />
-                &nbsp;&nbsp;'https://api.infinitemix.com/v1/mix',<br />
+                &nbsp;&nbsp;&apos;https://api.infinitemix.com/v1/mix&apos;,<br />
                 &nbsp;&nbsp;headers={`{`}<br />
-                &nbsp;&nbsp;&nbsp;&nbsp;'Authorization': 'Bearer YOUR_API_KEY'<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&apos;Authorization&apos;: &apos;Bearer YOUR_API_KEY&apos;<br />
                 &nbsp;&nbsp;{`}`},<br />
                 &nbsp;&nbsp;json={`{`}<br />
-                &nbsp;&nbsp;&nbsp;&nbsp;'tracks': ['url1.mp3', 'url2.mp3'],<br />
-                &nbsp;&nbsp;&nbsp;&nbsp;'crossfade': 8<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&apos;tracks&apos;: [&apos;url1.mp3&apos;, &apos;url2.mp3&apos;],<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&apos;crossfade&apos;: 8<br />
                 &nbsp;&nbsp;{`}`}<br />
                 )
               </div>

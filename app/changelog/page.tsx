@@ -91,14 +91,14 @@ export default function ChangelogPage() {
     }
   ];
 
-  const typeColors = {
+  const typeColors: Record<string, string> = {
     feature: "from-purple-500 to-pink-500",
     improvement: "from-blue-500 to-cyan-500",
     bugfix: "from-orange-500 to-red-500",
     security: "from-green-500 to-emerald-500"
   };
 
-  const typeBadges = {
+  const typeBadges: Record<string, string> = {
     feature: "bg-purple-100 text-purple-800",
     improvement: "bg-blue-100 text-blue-800",
     bugfix: "bg-orange-100 text-orange-800",

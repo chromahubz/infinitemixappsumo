@@ -48,10 +48,11 @@ export async function POST(req: NextRequest) {
       } catch {}
       throw error;
     }
-  } catch (error: any) {
-    console.error('Audio analysis error:', error.message);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Audio analysis error:', errorMessage);
     return NextResponse.json(
-      { error: 'Failed to analyze audio', details: error.message },
+      { error: 'Failed to analyze audio', details: errorMessage },
       { status: 500 }
     );
   }
