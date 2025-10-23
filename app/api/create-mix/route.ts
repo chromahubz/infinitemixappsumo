@@ -5,6 +5,9 @@ import ffmpeg from 'fluent-ffmpeg';
 import ffmpegStatic from 'ffmpeg-static';
 import axios from 'axios';
 
+// Increase timeout for processing (5 minutes)
+export const maxDuration = 300;
+
 // Set FFmpeg path - construct direct path to binary if ffmpeg-static path is invalid
 if (ffmpegStatic && !ffmpegStatic.includes('/ROOT/') && !ffmpegStatic.includes('\\ROOT\\')) {
   console.log('Using ffmpeg-static path:', ffmpegStatic);
@@ -23,63 +26,8 @@ interface Song {
   duration: number;
 }
 
-interface VisualizerSettings {
-  enabled: boolean;
-  position: 'top' | 'middle' | 'bottom';
-  style: 'wave' | 'bars' | 'circle' | 'line';
-  colorMode: 'single' | 'gradient';
-  color1: string;
-  color2?: string;
-}
-
 interface AudioEffectSettings {
   preset: 'none' | 'bass-boost' | 'vintage' | 'club-reverb' | 'bathroom-reverb' | 'concert-hall';
-}
-
-// Helper function to generate visualizer filter based on settings
-function generateVisualizerFilter(
-  settings: VisualizerSettings,
-  audioLabel: string,
-  videoLabel: string,
-  width: number = 1920,
-  height: number = 1080
-): string {
-  if (!settings.enabled) return '';
-
-  const colors = settings.colorMode === 'gradient'
-    ? `${settings.color1}|${settings.color2 || settings.color1}`
-    : settings.color1;
-
-  // Calculate Y position based on setting
-  let yPos: string;
-  if (settings.position === 'top') {
-    yPos = 'h*0.15'; // 15% from top
-  } else if (settings.position === 'middle') {
-    yPos = 'h/2';
-  } else {
-    yPos = 'h*0.85'; // 85% from top (near bottom)
-  }
-
-  let visualizerFilter = '';
-
-  switch (settings.style) {
-    case 'bars':
-      visualizerFilter = `${audioLabel}showfreqs=mode=bar:size=${width}x200:colors=${colors}:scale=log[viz];${videoLabel}[viz]overlay=0:${yPos}`;
-      break;
-    case 'wave':
-      visualizerFilter = `${audioLabel}showwaves=size=${width}x200:mode=line:colors=${colors}:scale=sqrt[viz];${videoLabel}[viz]overlay=0:${yPos}`;
-      break;
-    case 'circle':
-      visualizerFilter = `${audioLabel}showfreqs=mode=line:size=${width}x200:colors=${colors}:scale=log[viz];${videoLabel}[viz]overlay=0:${yPos}`;
-      break;
-    case 'line':
-      visualizerFilter = `${audioLabel}showwaves=size=${width}x200:mode=p2p:colors=${colors}:scale=lin[viz];${videoLabel}[viz]overlay=0:${yPos}`;
-      break;
-    default:
-      visualizerFilter = `${audioLabel}showfreqs=mode=bar:size=${width}x200:colors=${colors}:scale=log[viz];${videoLabel}[viz]overlay=0:${yPos}`;
-  }
-
-  return visualizerFilter;
 }
 
 // Helper function to generate audio effect filter based on preset
@@ -114,7 +62,7 @@ function generateAudioEffectFilter(preset: AudioEffectSettings['preset']): strin
 
 export async function POST(req: NextRequest) {
   try {
-    const { songs, thumbnail, thumbnails, playlistOrder, crossfadeDuration = 5, visualizer, audioEffects } = await req.json();
+    const { songs, thumbnail, thumbnails, playlistOrder, crossfadeDuration = 5, audioEffects } = await req.json();
 
     if (!songs || songs.length === 0) {
       return NextResponse.json({ error: 'No songs provided' }, { status: 400 });
@@ -292,41 +240,19 @@ export async function POST(req: NextRequest) {
           }
         }
 
-        // Add visualizer if enabled
-        if (visualizer?.enabled) {
-          filterComplex += ';';
-          const audioLabel = songPaths.length === 1 || crossfadeDuration === 0 ? '[1:a]' : '[aout]';
-          const vizFilter = generateVisualizerFilter(visualizer, audioLabel, '[0:v]', 1920, 1080);
-          filterComplex += vizFilter + '[vout]';
-
-          command
-            .complexFilter(filterComplex)
-            .outputOptions([
-              '-map [vout]',
-              '-map [aout]',
-              '-c:v libx264',
-              '-preset fast',
-              '-pix_fmt yuv420p',
-              '-c:a aac',
-              '-b:a 192k',
-              '-shortest'
-            ])
-            .output(outputPath);
-        } else {
-          command
-            .complexFilter(filterComplex)
-            .outputOptions([
-              '-map 0:v',
-              '-map [aout]',
-              '-c:v libx264',
-              '-preset fast',
-              '-pix_fmt yuv420p',
-              '-c:a aac',
-              '-b:a 192k',
-              '-shortest'
-            ])
-            .output(outputPath);
-        }
+        command
+          .complexFilter(filterComplex)
+          .outputOptions([
+            '-map 0:v',
+            '-map [aout]',
+            '-c:v libx264',
+            '-preset ultrafast',
+            '-pix_fmt yuv420p',
+            '-c:a aac',
+            '-b:a 192k',
+            '-shortest'
+          ])
+          .output(outputPath);
       } else {
         // Multiple thumbnails mode with video transitions
         // Add all thumbnails and songs as inputs
@@ -417,14 +343,7 @@ export async function POST(req: NextRequest) {
           filterComplex = audioFilter + videoFilter;
         }
 
-        let finalVideoLabel = numThumbs > 1 && crossfadeDuration > 0 ? `[vt${numThumbs - 1}]` : '[vout]';
-
-        // Add visualizer if enabled
-        if (visualizer?.enabled) {
-          const vizFilter = generateVisualizerFilter(visualizer, '[aout]', finalVideoLabel, 1920, 1080);
-          filterComplex += vizFilter + '[vout_final]';
-          finalVideoLabel = '[vout_final]';
-        }
+        const finalVideoLabel = numThumbs > 1 && crossfadeDuration > 0 ? `[vt${numThumbs - 1}]` : '[vout]';
 
         command
           .complexFilter(filterComplex)
@@ -432,7 +351,7 @@ export async function POST(req: NextRequest) {
             `-map ${finalVideoLabel}`,
             '-map [aout]',
             '-c:v libx264',
-            '-preset fast',
+            '-preset ultrafast',
             '-pix_fmt yuv420p',
             '-c:a aac',
             '-b:a 192k'

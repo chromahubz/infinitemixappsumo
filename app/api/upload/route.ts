@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { writeFile } from 'fs/promises';
 import path from 'path';
+import { cleanupOldFiles } from '@/lib/cleanup';
 
 export async function POST(req: NextRequest) {
   try {
+    // Run cleanup in background (non-blocking) - delete files older than 24 hours
+    cleanupOldFiles('temp', 24 * 60 * 60 * 1000).catch((error) => {
+      console.error('[Upload] Background cleanup error:', error);
+    });
+
     const formData = await req.formData();
     const files = formData.getAll('files') as File[];
 

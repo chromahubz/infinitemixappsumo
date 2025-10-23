@@ -1,59 +1,68 @@
 import { NextRequest, NextResponse } from 'next/server';
-import axios from 'axios';
+import { generateMusic, generateMusicMetadata } from '@/lib/kie-api';
+
+// Store task status in memory (in production, use Redis or database)
+const taskStatusStore = new Map<string, any>();
 
 export async function POST(req: NextRequest) {
   try {
     const { genre, count } = await req.json();
 
-    const API_KEY = process.env.NEXT_PUBLIC_KIE_API_KEY;
-
-    if (!API_KEY) {
-      return NextResponse.json({ error: 'API key not configured' }, { status: 500 });
-    }
-
-    // Generate genre-specific prompts
-    const genrePrompts: Record<string, string> = {
-      lofi: 'calm lofi hip hop with gentle piano and smooth beats',
-      chillhop: 'relaxing chillhop with jazzy elements and laid-back rhythm',
-      ambient: 'peaceful ambient soundscape with ethereal tones',
-      'lo-fi hip hop': 'mellow lo-fi hip hop with vinyl crackle and warm bass',
-      'study beats': 'focused study beats with soft melody and repetitive rhythm',
-      jazz: 'smooth jazz instrumental with saxophone and piano',
-      'electronic': 'downtempo electronic music with atmospheric synths',
-    };
-
-    const prompt = genrePrompts[genre.toLowerCase()] || `relaxing ${genre} instrumental music`;
+    console.log(`[Generate Music] Starting generation for ${count} ${genre} tracks`);
 
     // Generate multiple songs
     const songs = [];
     for (let i = 0; i < count; i++) {
-      const response = await axios.post(
-        'https://api.kie.ai/api/v1/generate',
-        {
-          prompt: `${prompt}, track ${i + 1}`,
-          customMode: false,
-          instrumental: true,
-          model: 'V4_5',
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${API_KEY}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const { style, title } = generateMusicMetadata(genre, i);
 
-      songs.push({
-        taskId: response.data.taskId,
-        index: i,
+      const response = await generateMusic({
+        customMode: true,
+        instrumental: true,
+        model: 'V5', // Use V5 for best quality
+        style,
+        title,
       });
+
+      if (response.code === 200 && response.data?.taskId) {
+        const taskId = response.data.taskId;
+
+        // Store initial task status
+        taskStatusStore.set(taskId, {
+          taskId,
+          status: 'pending',
+          title,
+          genre,
+          index: i,
+        });
+
+        songs.push({
+          taskId,
+          index: i,
+          title,
+        });
+
+        console.log(`[Generate Music] Track ${i + 1}/${count} queued. Task ID: ${taskId}`);
+      } else {
+        console.error(`[Generate Music] Failed to queue track ${i + 1}:`, response.msg);
+
+        // Check for specific error messages
+        if (response.msg?.includes('insufficient') || response.msg?.includes('credits')) {
+          throw new Error(`Insufficient credits on Kie.ai account. Please visit https://kie.ai/pricing to add credits. (Generated ${i}/${count} tracks successfully)`);
+        }
+
+        throw new Error(`Failed to generate track ${i + 1}: ${response.msg}`);
+      }
     }
 
-    return NextResponse.json({ songs });
+    return NextResponse.json({
+      success: true,
+      songs,
+      message: `${count} tracks queued for generation`
+    });
   } catch (error: any) {
-    console.error('Music generation error:', error.response?.data || error.message);
+    console.error('[Generate Music] Error:', error.message);
     return NextResponse.json(
-      { error: 'Failed to generate music', details: error.response?.data || error.message },
+      { error: 'Failed to generate music', details: error.message },
       { status: 500 }
     );
   }
@@ -69,23 +78,25 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Task ID required' }, { status: 400 });
     }
 
-    const API_KEY = process.env.NEXT_PUBLIC_KIE_API_KEY;
+    // Get status from in-memory store
+    const taskStatus = taskStatusStore.get(taskId);
 
-    const response = await axios.get(
-      `https://api.kie.ai/api/v1/task/${taskId}`,
-      {
-        headers: {
-          'Authorization': `Bearer ${API_KEY}`,
-        },
-      }
-    );
+    if (!taskStatus) {
+      return NextResponse.json({ error: 'Task not found' }, { status: 404 });
+    }
 
-    return NextResponse.json(response.data);
+    return NextResponse.json({
+      success: true,
+      ...taskStatus,
+    });
   } catch (error: any) {
-    console.error('Status check error:', error.response?.data || error.message);
+    console.error('[Generate Music] Status check error:', error.message);
     return NextResponse.json(
-      { error: 'Failed to check status', details: error.response?.data || error.message },
+      { error: 'Failed to check status', details: error.message },
       { status: 500 }
     );
   }
 }
+
+// Export task store for use in callback
+export { taskStatusStore };

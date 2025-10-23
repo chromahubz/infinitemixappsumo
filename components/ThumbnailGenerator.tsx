@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Image, RefreshCw, Sparkles, Upload } from 'lucide-react';
 import axios from 'axios';
 
@@ -10,47 +10,15 @@ interface ThumbnailGeneratorProps {
   onMultipleThumbnailsGenerated?: (thumbnails: Array<{ url: string; base64: string }>) => void;
   currentThumbnail?: string;
   songCount?: number;
-  onVisualizerSettingsChange?: (settings: VisualizerSettings) => void;
 }
 
-export interface VisualizerSettings {
-  enabled: boolean;
-  position: 'top' | 'middle' | 'bottom';
-  style: 'wave' | 'bars' | 'circle' | 'line';
-  colorMode: 'single' | 'gradient';
-  color1: string;
-  color2?: string;
-}
-
-export default function ThumbnailGenerator({ genre, onThumbnailGenerated, onMultipleThumbnailsGenerated, currentThumbnail, songCount = 1, onVisualizerSettingsChange }: ThumbnailGeneratorProps) {
+export default function ThumbnailGenerator({ genre, onThumbnailGenerated, onMultipleThumbnailsGenerated, currentThumbnail, songCount = 1 }: ThumbnailGeneratorProps) {
   const [customPrompt, setCustomPrompt] = useState('');
   const [loading, setLoading] = useState(false);
   const [generatingPrompt, setGeneratingPrompt] = useState(false);
   const [useMultipleThumbnails, setUseMultipleThumbnails] = useState(false);
   const [error, setError] = useState('');
   const [generatedThumbnails, setGeneratedThumbnails] = useState<Array<{ url: string; base64: string }>>([]);
-
-  // Visualizer settings
-  const [visualizerEnabled, setVisualizerEnabled] = useState(false);
-  const [visualizerPosition, setVisualizerPosition] = useState<'top' | 'middle' | 'bottom'>('bottom');
-  const [visualizerStyle, setVisualizerStyle] = useState<'wave' | 'bars' | 'circle' | 'line'>('bars');
-  const [colorMode, setColorMode] = useState<'single' | 'gradient'>('gradient');
-  const [color1, setColor1] = useState('#00ff00');
-  const [color2, setColor2] = useState('#0000ff');
-
-  // Notify parent when visualizer settings change
-  useEffect(() => {
-    if (onVisualizerSettingsChange) {
-      onVisualizerSettingsChange({
-        enabled: visualizerEnabled,
-        position: visualizerPosition,
-        style: visualizerStyle,
-        colorMode,
-        color1,
-        color2: colorMode === 'gradient' ? color2 : undefined,
-      });
-    }
-  }, [visualizerEnabled, visualizerPosition, visualizerStyle, colorMode, color1, color2, onVisualizerSettingsChange]);
 
   const generateAIPrompt = async () => {
     setGeneratingPrompt(true);
@@ -256,114 +224,6 @@ export default function ThumbnailGenerator({ genre, onThumbnailGenerated, onMult
             className="hidden"
           />
         </label>
-      </div>
-
-      {/* Audio Visualizer Settings */}
-      <div className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border-2 border-purple-200 space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <input
-              type="checkbox"
-              id="enableVisualizer"
-              checked={visualizerEnabled}
-              onChange={(e) => setVisualizerEnabled(e.target.checked)}
-              className="w-5 h-5 text-purple-500 rounded focus:ring-2 focus:ring-purple-500"
-            />
-            <label htmlFor="enableVisualizer" className="text-sm font-semibold text-gray-900 cursor-pointer">
-              🎵 Audio Visualizer
-            </label>
-          </div>
-        </div>
-
-        {visualizerEnabled && (
-          <div className="space-y-4 pl-8">
-            {/* Position */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-2">Position</label>
-              <div className="flex gap-2">
-                {(['top', 'middle', 'bottom'] as const).map((pos) => (
-                  <button
-                    key={pos}
-                    onClick={() => setVisualizerPosition(pos)}
-                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                      visualizerPosition === pos
-                        ? 'bg-purple-500 text-white'
-                        : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
-                    }`}
-                  >
-                    {pos.charAt(0).toUpperCase() + pos.slice(1)}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Style */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-2">Style</label>
-              <div className="grid grid-cols-2 gap-2">
-                {(['bars', 'wave', 'circle', 'line'] as const).map((style) => (
-                  <button
-                    key={style}
-                    onClick={() => setVisualizerStyle(style)}
-                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                      visualizerStyle === style
-                        ? 'bg-purple-500 text-white'
-                        : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
-                    }`}
-                  >
-                    {style.charAt(0).toUpperCase() + style.slice(1)}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Color Mode */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-2">Color Mode</label>
-              <div className="flex gap-2 mb-3">
-                {(['single', 'gradient'] as const).map((mode) => (
-                  <button
-                    key={mode}
-                    onClick={() => setColorMode(mode)}
-                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                      colorMode === mode
-                        ? 'bg-purple-500 text-white'
-                        : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
-                    }`}
-                  >
-                    {mode.charAt(0).toUpperCase() + mode.slice(1)}
-                  </button>
-                ))}
-              </div>
-
-              {/* Color Pickers */}
-              <div className="flex gap-3">
-                <div className="flex-1">
-                  <label className="block text-xs font-medium text-gray-600 mb-1">
-                    {colorMode === 'single' ? 'Color' : 'Color 1'}
-                  </label>
-                  <input
-                    type="color"
-                    value={color1}
-                    onChange={(e) => setColor1(e.target.value)}
-                    className="w-full h-10 rounded border border-gray-300 cursor-pointer"
-                  />
-                </div>
-                {colorMode === 'gradient' && (
-                  <div className="flex-1">
-                    <label className="block text-xs font-medium text-gray-600 mb-1">Color 2</label>
-                    <input
-                      type="color"
-                      value={color2}
-                      onChange={(e) => setColor2(e.target.value)}
-                      className="w-full h-10 rounded border border-gray-300 cursor-pointer"
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
       {error && (
