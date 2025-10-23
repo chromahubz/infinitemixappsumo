@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Ensure output is standalone for Railway deployment
+  output: 'standalone',
+
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
