@@ -283,9 +283,9 @@ export async function POST(req: NextRequest) {
           // Single song or no crossfade - check if audio effects are enabled
           const effectFilter = generateAudioEffectFilter(audioEffects?.preset || 'none');
           if (effectFilter) {
-            audioFilter = `[${numThumbs}:a]anull${effectFilter}[aout];`;
+            audioFilter = `[${numThumbs}:a]anull${effectFilter}[aout]`;
           } else {
-            audioFilter = `[${numThumbs}:a]anull[aout];`;
+            audioFilter = `[${numThumbs}:a]anull[aout]`;
           }
         } else {
           for (let i = 0; i < numSongs; i++) {
@@ -304,14 +304,14 @@ export async function POST(req: NextRequest) {
           const finalLabel = effectFilter ? '[apre]' : '[aout]';
 
           if (numSongs === 2) {
-            audioFilter = audioFilter.replace('[a1];', `${finalLabel};`);
+            audioFilter = audioFilter.replace('[a1];', finalLabel);
           } else {
-            audioFilter = audioFilter.replace(`[a${numSongs - 1}];`, `${finalLabel};`);
+            audioFilter = audioFilter.replace(`[a${numSongs - 1}];`, finalLabel);
           }
 
           // Add audio effect filter if present
           if (effectFilter) {
-            audioFilter += `[apre]anull${effectFilter}[aout];`;
+            audioFilter += `;[apre]anull${effectFilter}[aout]`;
           }
         }
 
@@ -337,11 +337,13 @@ export async function POST(req: NextRequest) {
             videoFilter += `[vt${i - 1}][v${i}]xfade=transition=fade:duration=${crossfadeDuration}:offset=${prevDuration - crossfadeDuration}[vt${i}];`;
           }
 
-          filterComplex = audioFilter + videoFilter;
+          // Remove trailing semicolon from video filter
+          videoFilter = videoFilter.replace(/;$/, '');
+          filterComplex = audioFilter + ';' + videoFilter;
         } else {
           // No transitions, just concatenate
-          videoFilter += numThumbs > 1 ? `${Array.from({ length: numThumbs }, (_, i) => `[v${i}]`).join('')}concat=n=${numThumbs}:v=1:a=0[vout];` : '[v0]null[vout];';
-          filterComplex = audioFilter + videoFilter;
+          videoFilter += numThumbs > 1 ? `${Array.from({ length: numThumbs }, (_, i) => `[v${i}]`).join('')}concat=n=${numThumbs}:v=1:a=0[vout]` : '[v0]null[vout]';
+          filterComplex = audioFilter + ';' + videoFilter;
         }
 
         const finalVideoLabel = numThumbs > 1 && crossfadeDuration > 0 ? `[vt${numThumbs - 1}]` : '[vout]';
