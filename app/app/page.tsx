@@ -123,22 +123,19 @@ export default function Home() {
     setAnalysisProgress({ current, total, message });
   };
 
-  // Generate unique descriptive names for song variations
-  const generateVariationName = (baseTitle: string, genre: string, variationIndex: number): string => {
-    const genreVariations: Record<string, string[]> = {
-      'Lofi': ['Mellow Remix', 'Chill Remix', 'Dreamy Mix', 'Jazzy Mix', 'Smooth Mix'],
-      'Trap': ['Dark Remix', 'Heavy Bass Mix', 'Club Mix', 'Street Mix', 'Hard Mix'],
-      'Ambient': ['Ethereal Mix', 'Cosmic Remix', 'Deep Space Mix', 'Floating Mix', 'Zen Mix'],
-      'EDM': ['Festival Mix', 'Club Remix', 'Peak Time Mix', 'Main Stage Mix', 'Rave Mix'],
-      'Hip-Hop': ['Beat Switch', 'Underground Mix', 'Street Remix', 'Raw Mix', 'Classic Mix'],
-      'Jazz': ['Smooth Jazz Mix', 'Late Night Remix', 'Bebop Mix', 'Cool Jazz Mix', 'Swing Mix'],
-      'Classical': ['Orchestral Mix', 'Chamber Remix', 'Symphonic Mix', 'Piano Mix', 'Strings Mix'],
-    };
+  // Generate variation by reordering words in the title
+  const generateVariationName = (baseTitle: string): string => {
+    // Split title into words
+    const words = baseTitle.trim().split(/\s+/);
 
-    const variations = genreVariations[genre] || ['Alternative Mix', 'Remix', 'Extended Mix', 'Alternate Take', 'Second Mix'];
-    const suffix = variations[variationIndex % variations.length];
+    // If only one word, just return as is
+    if (words.length <= 1) {
+      return baseTitle;
+    }
 
-    return `${baseTitle} (${suffix})`;
+    // Reverse the word order for variation
+    // "Midnight Dreams" -> "Dreams Midnight"
+    return words.reverse().join(' ');
   };
 
   const handleGenerateMusic = async () => {
@@ -180,9 +177,9 @@ export default function Home() {
               energy: 0.5,
             });
 
-            // Add second song variation with unique descriptive name
+            // Add second song variation with reordered title
             if (statusResponse.data.audioUrl2) {
-              const variationTitle = generateVariationName(baseTitle, genre, i);
+              const variationTitle = generateVariationName(baseTitle);
               generatedSongs.push({
                 id: `${Date.now()}-${i}-v2`,
                 title: variationTitle,
