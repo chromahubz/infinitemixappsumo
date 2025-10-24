@@ -370,15 +370,18 @@ export async function POST(req: NextRequest) {
           console.log('Processing:', progress.percent + '% done');
         })
         .on('end', () => {
-          console.log('Mix creation completed');
+          console.log('✅ Mix creation completed successfully');
           resolve();
         })
         .on('error', (err) => {
-          console.error('FFmpeg error:', err.message);
+          console.error('❌ FFmpeg error:', err.message);
           reject(err);
         })
         .run();
     });
+
+    console.log('✅ FFmpeg processing finished, reading output file...');
+    console.log('Output path:', outputPath);
 
     // Clean up temporary files
     try {
@@ -396,6 +399,7 @@ export async function POST(req: NextRequest) {
 
     // Read the generated file and return it as a blob
     const fileBuffer = await readFile(outputPath);
+    console.log(`✅ File read successfully: ${fileBuffer.length} bytes (${(fileBuffer.length / 1024 / 1024).toFixed(2)} MB)`);
 
     // Clean up temp files in background (don't block response)
     setTimeout(async () => {
@@ -412,6 +416,7 @@ export async function POST(req: NextRequest) {
       }
     }, 1000);
 
+    console.log('✅ Sending response to client...');
     // Return file as response (use Uint8Array for NextResponse compatibility)
     return new NextResponse(new Uint8Array(fileBuffer), {
       headers: {
