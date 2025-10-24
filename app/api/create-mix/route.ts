@@ -195,7 +195,7 @@ export async function POST(req: NextRequest) {
           command.input(thumbnailPaths[0]).inputOptions(['-stream_loop -1']);
         } else {
           // For images, use loop with framerate
-          command.input(thumbnailPaths[0]).inputOptions(['-loop 1', '-framerate 1']);
+          command.input(thumbnailPaths[0]).inputOptions(['-loop 1', '-framerate 1', '-r 1']);
         }
 
         songPaths.forEach(songPath => {
@@ -241,14 +241,19 @@ export async function POST(req: NextRequest) {
           }
         }
 
+        // Add video filter for 16:9 YouTube format with black letterboxing
+        const videoFilter = filterComplex ? filterComplex + ';[0:v]scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:black[vout]' : '[0:v]scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:black[vout];' + filterComplex;
+
         command
-          .complexFilter(filterComplex)
+          .complexFilter(videoFilter)
           .outputOptions([
-            '-map 0:v',
+            '-map [vout]',
             '-map [aout]',
             '-c:v libx264',
             '-preset ultrafast',
             '-pix_fmt yuv420p',
+            '-s 1920x1080',
+            '-aspect 16:9',
             '-c:a aac',
             '-b:a 192k',
             '-shortest'
@@ -315,14 +320,14 @@ export async function POST(req: NextRequest) {
           }
         }
 
-        // Video fading - create segments with crossfade transitions
+        // Video fading - create segments with crossfade transitions and 16:9 format
         let videoFilter = '';
         for (let i = 0; i < numThumbs; i++) {
           const songDuration = orderedSongs[i]?.duration || 180;
           const segmentDuration = i === 0 ? songDuration : songDuration - crossfadeDuration;
 
-          // Trim each thumbnail to song duration
-          videoFilter += `[${i}:v]trim=duration=${segmentDuration},setpts=PTS-STARTPTS[v${i}];`;
+          // Scale to 16:9 (1920x1080) with black letterboxing, then trim
+          videoFilter += `[${i}:v]scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:black,trim=duration=${segmentDuration},setpts=PTS-STARTPTS[v${i}];`;
         }
 
         // Apply xfade transitions between segments
@@ -356,6 +361,8 @@ export async function POST(req: NextRequest) {
             '-c:v libx264',
             '-preset ultrafast',
             '-pix_fmt yuv420p',
+            '-s 1920x1080',
+            '-aspect 16:9',
             '-c:a aac',
             '-b:a 192k'
           ])

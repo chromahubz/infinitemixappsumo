@@ -461,6 +461,7 @@ export default function Home() {
                 onMultipleThumbnailsGenerated={handleMultipleThumbnailsGenerated}
                 currentThumbnail={thumbnail}
                 songCount={songs.length}
+                skipAnalysis={skipAnalysis}
               />
               <div className="flex gap-4 mt-6">
                 <button

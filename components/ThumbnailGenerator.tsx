@@ -10,9 +10,10 @@ interface ThumbnailGeneratorProps {
   onMultipleThumbnailsGenerated?: (thumbnails: Array<{ url: string; base64: string }>) => void;
   currentThumbnail?: string;
   songCount?: number;
+  skipAnalysis?: boolean;
 }
 
-export default function ThumbnailGenerator({ genre, onThumbnailGenerated, onMultipleThumbnailsGenerated, currentThumbnail, songCount = 1 }: ThumbnailGeneratorProps) {
+export default function ThumbnailGenerator({ genre, onThumbnailGenerated, onMultipleThumbnailsGenerated, currentThumbnail, songCount = 1, skipAnalysis = false }: ThumbnailGeneratorProps) {
   const [customPrompt, setCustomPrompt] = useState('');
   const [loading, setLoading] = useState(false);
   const [generatingPrompt, setGeneratingPrompt] = useState(false);
@@ -21,6 +22,12 @@ export default function ThumbnailGenerator({ genre, onThumbnailGenerated, onMult
   const [generatedThumbnails, setGeneratedThumbnails] = useState<Array<{ url: string; base64: string }>>([]);
 
   const generateAIPrompt = async () => {
+    // Don't call API if analysis was skipped
+    if (skipAnalysis) {
+      setCustomPrompt(`A vibrant ${genre} music thumbnail with bold colors and modern design`);
+      return;
+    }
+
     setGeneratingPrompt(true);
     setError('');
 
