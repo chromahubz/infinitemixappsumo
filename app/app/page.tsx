@@ -153,6 +153,7 @@ export default function Home() {
       // Poll for completion
       const taskIds = response.data.songs.map((s: any) => s.taskId);
       const generatedSongs: Song[] = [];
+      const downloadedFiles: File[] = [];
 
       for (let i = 0; i < taskIds.length; i++) {
         let completed = false;
@@ -164,6 +165,12 @@ export default function Home() {
           // Kie.ai sends: 'text', 'first', 'complete' (complete has audio URL)
           if (statusResponse.data.status === 'complete' && statusResponse.data.audioUrl) {
             const baseTitle = statusResponse.data.title || `Track ${i + 1}`;
+
+            // Download first song as File for analysis
+            const response1 = await fetch(statusResponse.data.audioUrl);
+            const blob1 = await response1.blob();
+            const file1 = new File([blob1], `${baseTitle}.mp3`, { type: 'audio/mpeg' });
+            downloadedFiles.push(file1);
 
             // Add first song variation
             generatedSongs.push({
@@ -180,6 +187,13 @@ export default function Home() {
             // Add second song variation with reordered title
             if (statusResponse.data.audioUrl2) {
               const variationTitle = generateVariationName(baseTitle);
+
+              // Download second song as File for analysis
+              const response2 = await fetch(statusResponse.data.audioUrl2);
+              const blob2 = await response2.blob();
+              const file2 = new File([blob2], `${variationTitle}.mp3`, { type: 'audio/mpeg' });
+              downloadedFiles.push(file2);
+
               generatedSongs.push({
                 id: `${Date.now()}-${i}-v2`,
                 title: variationTitle,
@@ -200,12 +214,23 @@ export default function Home() {
         }
       }
 
-      // If skip analysis is enabled, use songs as-is, otherwise sort them
-      const finalSongs = skipAnalysis ? generatedSongs : sortSongsForMix(generatedSongs);
-      setSongs(finalSongs);
-      setMixPlaylist(finalSongs.map(s => s.filename || s.title));
-      setStage('idle');
-      setCurrentStep(3);
+      // Store songs temporarily
+      setSongs(generatedSongs);
+
+      // If skip analysis, use as-is and sort, otherwise analyze them first
+      if (skipAnalysis) {
+        const finalSongs = sortSongsForMix(generatedSongs);
+        setSongs(finalSongs);
+        setMixPlaylist(finalSongs.map(s => s.filename || s.title));
+        setStage('idle');
+        setCurrentStep(3);
+      } else {
+        // Analyze downloaded files with Essentia (same as manual uploads)
+        setUploadedFiles(downloadedFiles);
+        setStage('analyzing');
+        setCurrentStep(2);
+        // AudioAnalyzer will be triggered and call handleAnalysisComplete
+      }
     } catch (error) {
       console.error('Error generating music:', error);
       setStage('idle');
