@@ -260,38 +260,54 @@ export async function POST(req: NextRequest) {
           }
         }
 
-        // Add video format filter (original/youtube/tiktok)
-        const formatFilter = generateVideoFormatFilter(videoFormat, '0:v', 'vout');
-        const videoFilter = filterComplex ? filterComplex + ';' + formatFilter : formatFilter + ';' + filterComplex;
+        // For 'original' format, use old fast method: direct video mapping without filter
+        if (videoFormat === 'original') {
+          // OLD FAST METHOD: Direct video mapping, no filter chain for video
+          command
+            .complexFilter(filterComplex)
+            .outputOptions([
+              '-map 0:v',  // Direct video input mapping (FAST!)
+              '-map [aout]',
+              '-c:v libx264',
+              '-preset ultrafast',
+              '-pix_fmt yuv420p',
+              '-c:a aac',
+              '-b:a 192k',
+              '-shortest'
+            ])
+            .output(outputPath);
+        } else {
+          // For youtube/tiktok formats, use video filter for padding
+          const formatFilter = generateVideoFormatFilter(videoFormat, '0:v', 'vout');
+          const videoFilter = filterComplex + ';' + formatFilter;
 
-        // Build output options based on format
-        const outputOptions = [
-          '-map [vout]',
-          '-map [aout]',
-          '-c:v libx264',
-          '-preset ultrafast',
-          '-pix_fmt yuv420p',
-        ];
+          const outputOptions = [
+            '-map [vout]',
+            '-map [aout]',
+            '-c:v libx264',
+            '-preset ultrafast',
+            '-pix_fmt yuv420p',
+          ];
 
-        // Add output framerate for static images to match input framerate (critical for performance)
-        if (!isVideo) {
-          outputOptions.push('-r 25');
+          // Add output framerate for static images to match input framerate (critical for performance)
+          if (!isVideo) {
+            outputOptions.push('-r 25');
+          }
+
+          // Add resolution/aspect for specific formats
+          if (videoFormat === 'youtube') {
+            outputOptions.push('-s 1920x1080', '-aspect 16:9');
+          } else if (videoFormat === 'tiktok') {
+            outputOptions.push('-s 1080x1920', '-aspect 9:16');
+          }
+
+          outputOptions.push('-c:a aac', '-b:a 192k', '-shortest');
+
+          command
+            .complexFilter(videoFilter)
+            .outputOptions(outputOptions)
+            .output(outputPath);
         }
-
-        // Only add resolution/aspect if user selected a specific format
-        if (videoFormat === 'youtube') {
-          outputOptions.push('-s 1920x1080', '-aspect 16:9');
-        } else if (videoFormat === 'tiktok') {
-          outputOptions.push('-s 1080x1920', '-aspect 9:16');
-        }
-        // For 'original', don't force any resolution or aspect ratio
-
-        outputOptions.push('-c:a aac', '-b:a 192k', '-shortest');
-
-        command
-          .complexFilter(videoFilter)
-          .outputOptions(outputOptions)
-          .output(outputPath);
       } else {
         // Multiple thumbnails mode with video transitions
         // Add all thumbnails and songs as inputs
