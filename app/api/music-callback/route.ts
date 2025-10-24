@@ -13,12 +13,17 @@ export async function POST(req: NextRequest) {
   try {
     const payload = await req.json();
 
-    console.log('[Music Callback] Received callback:', JSON.stringify(payload, null, 2));
+    console.log('[Music Callback] ===== FULL CALLBACK PAYLOAD =====');
+    console.log(JSON.stringify(payload, null, 2));
+    console.log('[Music Callback] ===================================');
 
-    const { taskId, stage, data } = payload;
+    // Kie.ai might send different structures, handle all cases
+    const taskId = payload.taskId || payload.task_id || payload.id;
+    const stage = payload.stage || payload.status;
+    const data = payload.data || payload;
 
     if (!taskId) {
-      console.error('[Music Callback] Missing taskId in callback');
+      console.error('[Music Callback] Missing taskId in callback. Full payload:', payload);
       return NextResponse.json({ error: 'Missing taskId' }, { status: 400 });
     }
 
@@ -26,12 +31,17 @@ export async function POST(req: NextRequest) {
     const existingStatus = taskStatusStore.get(taskId);
 
     if (!existingStatus) {
-      console.warn(`[Music Callback] Task ${taskId} not found in store`);
+      console.warn(`[Music Callback] Task ${taskId} not found in store, creating new entry`);
       // Still update the store with the callback data
       taskStatusStore.set(taskId, {
         taskId,
         status: stage || 'complete',
         ...data,
+        // Try multiple possible field names for audio URLs
+        audioUrl: data.audioUrl || data.audio_url || data.url || payload.audioUrl,
+        audioUrl2: data.audioUrl2 || data.audio_url_2 || payload.audioUrl2,
+        duration: data.duration || payload.duration,
+        title: data.title || payload.title,
       });
     } else {
       // Update task status based on callback
@@ -41,31 +51,29 @@ export async function POST(req: NextRequest) {
         ...data,
       };
 
-      // Extract audio URLs from callback data
-      if (data?.audioUrl) {
-        updatedStatus.audioUrl = data.audioUrl;
+      // Extract audio URLs from callback data - try multiple field names
+      const audioUrl = data?.audioUrl || data?.audio_url || data?.url || payload.audioUrl;
+      const audioUrl2 = data?.audioUrl2 || data?.audio_url_2 || payload.audioUrl2;
+
+      if (audioUrl) {
+        updatedStatus.audioUrl = audioUrl;
+        console.log(`[Music Callback] ✅ Found Audio URL 1: ${audioUrl}`);
       }
-      if (data?.audioUrl2) {
-        updatedStatus.audioUrl2 = data.audioUrl2;
+      if (audioUrl2) {
+        updatedStatus.audioUrl2 = audioUrl2;
+        console.log(`[Music Callback] ✅ Found Audio URL 2: ${audioUrl2}`);
       }
-      if (data?.duration) {
-        updatedStatus.duration = data.duration;
+      if (data?.duration || payload.duration) {
+        updatedStatus.duration = data.duration || payload.duration;
       }
-      if (data?.title) {
-        updatedStatus.title = data.title;
+      if (data?.title || payload.title) {
+        updatedStatus.title = data.title || payload.title;
       }
 
       taskStatusStore.set(taskId, updatedStatus);
 
       console.log(`[Music Callback] Task ${taskId} updated to status: ${stage}`);
-
-      // Log audio URLs when available
-      if (updatedStatus.audioUrl) {
-        console.log(`[Music Callback] Audio URL 1 available: ${updatedStatus.audioUrl}`);
-      }
-      if (updatedStatus.audioUrl2) {
-        console.log(`[Music Callback] Audio URL 2 available: ${updatedStatus.audioUrl2}`);
-      }
+      console.log(`[Music Callback] Updated task data:`, JSON.stringify(updatedStatus, null, 2));
     }
 
     return NextResponse.json({
