@@ -148,8 +148,9 @@ export default function Home() {
 
           // Kie.ai sends: 'text', 'first', 'complete' (complete has audio URL)
           if (statusResponse.data.status === 'complete' && statusResponse.data.audioUrl) {
+            // Add first song variation
             generatedSongs.push({
-              id: `${Date.now()}-${i}`,
+              id: `${Date.now()}-${i}-v1`,
               title: statusResponse.data.title || `Track ${i + 1}`,
               duration: statusResponse.data.duration || 180,
               url: statusResponse.data.audioUrl,
@@ -158,6 +159,21 @@ export default function Home() {
               key: 'C',
               energy: 0.5,
             });
+
+            // Add second song variation if it exists (Kie.ai generates 2 variations)
+            if (statusResponse.data.audioUrl2) {
+              generatedSongs.push({
+                id: `${Date.now()}-${i}-v2`,
+                title: `${statusResponse.data.title || `Track ${i + 1}`} (Variation)`,
+                duration: statusResponse.data.duration || 180,
+                url: statusResponse.data.audioUrl2,
+                filename: `${statusResponse.data.title || `Track ${i + 1}`} (Variation)`,
+                bpm: 120,
+                key: 'C',
+                energy: 0.5,
+              });
+            }
+
             completed = true;
           } else if (statusResponse.data.status === 'failed') {
             throw new Error('Music generation failed');
