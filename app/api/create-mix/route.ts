@@ -213,8 +213,8 @@ export async function POST(req: NextRequest) {
           // For videos, enable looping with stream_loop
           command.input(thumbnailPaths[0]).inputOptions(['-stream_loop -1']);
         } else {
-          // For images, use loop with framerate
-          command.input(thumbnailPaths[0]).inputOptions(['-loop 1', '-framerate 1', '-r 1']);
+          // For images, use loop with standard framerate for faster encoding
+          command.input(thumbnailPaths[0]).inputOptions(['-loop 1', '-framerate 25']);
         }
 
         songPaths.forEach(songPath => {
@@ -296,8 +296,8 @@ export async function POST(req: NextRequest) {
             // For videos, enable looping
             command.input(thumbPath).inputOptions(['-stream_loop -1']);
           } else {
-            // For images, use loop with framerate
-            command.input(thumbPath).inputOptions(['-loop 1', '-framerate 1']);
+            // For images, use loop with standard framerate for faster encoding
+            command.input(thumbPath).inputOptions(['-loop 1', '-framerate 25']);
           }
         });
 
