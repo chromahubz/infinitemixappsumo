@@ -263,18 +263,24 @@ export async function POST(req: NextRequest) {
         // For 'original' format, use old fast method: direct video mapping without filter
         if (videoFormat === 'original') {
           // OLD FAST METHOD: Direct video mapping, no filter chain for video
+          const outputOpts = [
+            '-map 0:v',  // Direct video input mapping (FAST!)
+            '-map [aout]',
+            '-c:v libx264',
+            '-preset ultrafast',
+            '-pix_fmt yuv420p',
+          ];
+
+          // Add output fps for static images (h264 needs minimum fps)
+          if (!isVideo) {
+            outputOpts.push('-r 1');
+          }
+
+          outputOpts.push('-c:a aac', '-b:a 192k', '-shortest');
+
           command
             .complexFilter(filterComplex)
-            .outputOptions([
-              '-map 0:v',  // Direct video input mapping (FAST!)
-              '-map [aout]',
-              '-c:v libx264',
-              '-preset ultrafast',
-              '-pix_fmt yuv420p',
-              '-c:a aac',
-              '-b:a 192k',
-              '-shortest'
-            ])
+            .outputOptions(outputOpts)
             .output(outputPath);
         } else {
           // For youtube/tiktok formats, use video filter for padding
