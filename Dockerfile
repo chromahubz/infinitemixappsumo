@@ -34,5 +34,8 @@ RUN npm run build
 # Expose port
 EXPOSE 3000
 
-# Start the application
-CMD ["npm", "start"]
+# Copy standalone server files for optimized startup
+RUN cp -r .next/standalone/. ./standalone/ || echo "Standalone not needed for dev"
+
+# Start the application (standalone mode for production)
+CMD ["node", ".next/standalone/server.js"]
