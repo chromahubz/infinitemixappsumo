@@ -67,7 +67,7 @@ function generateAudioEffectFilter(preset: AudioEffectSettings['preset']): strin
 // Helper function to generate video format filter (letterboxing/pillarboxing only - NO SCALING)
 function generateVideoFormatFilter(format: 'original' | 'youtube' | 'tiktok', inputLabel: string = '0:v', outputLabel: string = 'vout'): string {
   if (format === 'original') {
-    return `[${inputLabel}]copy[${outputLabel}]`;
+    return `[${inputLabel}]null[${outputLabel}]`;
   }
 
   if (format === 'youtube') {
@@ -80,7 +80,7 @@ function generateVideoFormatFilter(format: 'original' | 'youtube' | 'tiktok', in
     return `[${inputLabel}]pad=1080:1920:(ow-iw)/2:(oh-ih)/2:black[${outputLabel}]`;
   }
 
-  return `[${inputLabel}]copy[${outputLabel}]`;
+  return `[${inputLabel}]null[${outputLabel}]`;
 }
 
 export async function POST(req: NextRequest) {
