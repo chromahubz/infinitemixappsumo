@@ -273,6 +273,11 @@ export async function POST(req: NextRequest) {
           '-pix_fmt yuv420p',
         ];
 
+        // Add output framerate for static images to match input framerate (critical for performance)
+        if (!isVideo) {
+          outputOptions.push('-r 25');
+        }
+
         // Only add resolution/aspect if user selected a specific format
         if (videoFormat === 'youtube') {
           outputOptions.push('-s 1920x1080', '-aspect 16:9');
@@ -420,6 +425,11 @@ export async function POST(req: NextRequest) {
           '-preset ultrafast',
           '-pix_fmt yuv420p',
         ];
+
+        // Add output framerate for static images to match input framerate (critical for performance)
+        if (hasStaticImages) {
+          outputOptions.push('-r 25');
+        }
 
         // Only add resolution/aspect if user selected a specific format
         if (videoFormat === 'youtube') {
