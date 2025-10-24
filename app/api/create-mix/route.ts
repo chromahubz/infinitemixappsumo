@@ -348,46 +348,69 @@ export async function POST(req: NextRequest) {
           }
         }
 
-        // Video fading - create segments with crossfade transitions
+        // Video filter - xfade doesn't work with static images, use concat instead
         let videoFilter = '';
-        for (let i = 0; i < numThumbs; i++) {
-          const songDuration = orderedSongs[i]?.duration || 180;
-          const segmentDuration = i === 0 ? songDuration : songDuration - crossfadeDuration;
 
-          // Apply format filter (original/youtube/tiktok), then trim
-          let formatPart = '';
-          if (videoFormat === 'youtube') {
-            formatPart = 'pad=1920:1080:(ow-iw)/2:(oh-ih)/2:black,';
-          } else if (videoFormat === 'tiktok') {
-            formatPart = 'pad=1080:1920:(ow-iw)/2:(oh-ih)/2:black,';
-          }
-          // For 'original', formatPart stays empty (no padding)
+        // Check if we have any static images (non-video thumbnails)
+        const hasStaticImages = thumbnailTypes.some(type => type !== 'video');
 
-          videoFilter += `[${i}:v]${formatPart}trim=duration=${segmentDuration},setpts=PTS-STARTPTS[v${i}];`;
-        }
+        if (hasStaticImages) {
+          // For static images, we can't use xfade - just prepare segments and concatenate
+          for (let i = 0; i < numThumbs; i++) {
+            const songDuration = orderedSongs[i]?.duration || 180;
 
-        // Apply xfade transitions between segments
-        if (numThumbs > 1 && crossfadeDuration > 0) {
-          // First transition
-          const firstDuration = orderedSongs[0]?.duration || 180;
-          videoFilter += `[v0][v1]xfade=transition=fade:duration=${crossfadeDuration}:offset=${firstDuration - crossfadeDuration}[vt1];`;
+            // Apply format filter (original/youtube/tiktok), then trim
+            let formatPart = '';
+            if (videoFormat === 'youtube') {
+              formatPart = 'pad=1920:1080:(ow-iw)/2:(oh-ih)/2:black,';
+            } else if (videoFormat === 'tiktok') {
+              formatPart = 'pad=1080:1920:(ow-iw)/2:(oh-ih)/2:black,';
+            }
 
-          // Subsequent transitions
-          for (let i = 2; i < numThumbs; i++) {
-            const prevDuration = orderedSongs.slice(0, i).reduce((sum: number, s: Song) => sum + s.duration, 0) - (i * crossfadeDuration);
-            videoFilter += `[vt${i - 1}][v${i}]xfade=transition=fade:duration=${crossfadeDuration}:offset=${prevDuration - crossfadeDuration}[vt${i}];`;
+            // Full song duration for each segment when concatenating
+            videoFilter += `[${i}:v]${formatPart}trim=duration=${songDuration},setpts=PTS-STARTPTS[v${i}];`;
           }
 
-          // Remove trailing semicolon from video filter
-          videoFilter = videoFilter.replace(/;$/, '');
-          filterComplex = audioFilter + ';' + videoFilter;
-        } else {
-          // No transitions, just concatenate
+          // Simple concatenation without crossfade
           videoFilter += numThumbs > 1 ? `${Array.from({ length: numThumbs }, (_, i) => `[v${i}]`).join('')}concat=n=${numThumbs}:v=1:a=0[vout]` : '[v0]null[vout]';
           filterComplex = audioFilter + ';' + videoFilter;
+        } else {
+          // For video thumbnails, we can use xfade
+          for (let i = 0; i < numThumbs; i++) {
+            const songDuration = orderedSongs[i]?.duration || 180;
+            const segmentDuration = i === 0 ? songDuration : songDuration - crossfadeDuration;
+
+            // Apply format filter (original/youtube/tiktok), then trim
+            let formatPart = '';
+            if (videoFormat === 'youtube') {
+              formatPart = 'pad=1920:1080:(ow-iw)/2:(oh-ih)/2:black,';
+            } else if (videoFormat === 'tiktok') {
+              formatPart = 'pad=1080:1920:(ow-iw)/2:(oh-ih)/2:black,';
+            }
+
+            videoFilter += `[${i}:v]${formatPart}trim=duration=${segmentDuration},setpts=PTS-STARTPTS[v${i}];`;
+          }
+
+          // Apply xfade transitions between video segments
+          if (numThumbs > 1 && crossfadeDuration > 0) {
+            const firstDuration = orderedSongs[0]?.duration || 180;
+            videoFilter += `[v0][v1]xfade=transition=fade:duration=${crossfadeDuration}:offset=${firstDuration - crossfadeDuration}[vt1];`;
+
+            for (let i = 2; i < numThumbs; i++) {
+              const prevDuration = orderedSongs.slice(0, i).reduce((sum: number, s: Song) => sum + s.duration, 0) - (i * crossfadeDuration);
+              videoFilter += `[vt${i - 1}][v${i}]xfade=transition=fade:duration=${crossfadeDuration}:offset=${prevDuration - crossfadeDuration}[vt${i}];`;
+            }
+
+            videoFilter = videoFilter.replace(/;$/, '');
+            filterComplex = audioFilter + ';' + videoFilter;
+          } else {
+            videoFilter += '[v0]null[vout]';
+            filterComplex = audioFilter + ';' + videoFilter;
+          }
         }
 
-        const finalVideoLabel = numThumbs > 1 && crossfadeDuration > 0 ? `[vt${numThumbs - 1}]` : '[vout]';
+        // Determine final video label based on whether xfade was used
+        const finalVideoLabel = (!hasStaticImages && numThumbs > 1 && crossfadeDuration > 0) ? `[vt${numThumbs - 1}]` : '[vout]';
 
         // Build output options based on format
         const outputOptions = [
