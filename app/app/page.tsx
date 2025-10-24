@@ -220,9 +220,22 @@ export default function Home() {
         playlistOrder: mixPlaylist, // Use the order from songkeybpmanalyzer
         crossfadeDuration,
         audioEffects: audioEffects,
+      }, {
+        responseType: 'blob' // Receive binary video data
       });
 
-      setMixUrl(mixResponse.data.mixUrl);
+      // Create blob URL from the response
+      const blob = new Blob([mixResponse.data], { type: 'video/mp4' });
+      const blobUrl = URL.createObjectURL(blob);
+      setMixUrl(blobUrl);
+
+      // Auto-download the file
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = `mix_${Date.now()}.mp4`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
       // Generate description (optional - don't fail if it errors)
       try {
