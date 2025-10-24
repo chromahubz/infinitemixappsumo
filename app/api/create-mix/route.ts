@@ -213,8 +213,8 @@ export async function POST(req: NextRequest) {
           // For videos, enable looping with stream_loop
           command.input(thumbnailPaths[0]).inputOptions(['-stream_loop -1']);
         } else {
-          // For images, use loop with standard framerate for faster encoding
-          command.input(thumbnailPaths[0]).inputOptions(['-loop 1', '-framerate 25']);
+          // For images, use loop with framerate (1fps is efficient for static images)
+          command.input(thumbnailPaths[0]).inputOptions(['-loop 1', '-framerate 1']);
         }
 
         songPaths.forEach(songPath => {
@@ -289,11 +289,6 @@ export async function POST(req: NextRequest) {
             '-pix_fmt yuv420p',
           ];
 
-          // Add output framerate for static images to match input framerate (critical for performance)
-          if (!isVideo) {
-            outputOptions.push('-r 25');
-          }
-
           // Add resolution/aspect for specific formats
           if (videoFormat === 'youtube') {
             outputOptions.push('-s 1920x1080', '-aspect 16:9');
@@ -317,8 +312,8 @@ export async function POST(req: NextRequest) {
             // For videos, enable looping
             command.input(thumbPath).inputOptions(['-stream_loop -1']);
           } else {
-            // For images, use loop with standard framerate for faster encoding
-            command.input(thumbPath).inputOptions(['-loop 1', '-framerate 25']);
+            // For images, use loop with framerate (1fps is efficient for static images)
+            command.input(thumbPath).inputOptions(['-loop 1', '-framerate 1']);
           }
         });
 
@@ -441,11 +436,6 @@ export async function POST(req: NextRequest) {
           '-preset ultrafast',
           '-pix_fmt yuv420p',
         ];
-
-        // Add output framerate for static images to match input framerate (critical for performance)
-        if (hasStaticImages) {
-          outputOptions.push('-r 25');
-        }
 
         // Only add resolution/aspect if user selected a specific format
         if (videoFormat === 'youtube') {
