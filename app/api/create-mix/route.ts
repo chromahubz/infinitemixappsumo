@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { writeFile, unlink, readFile } from 'fs/promises';
+import { existsSync } from 'fs';
 import path from 'path';
 import ffmpeg from 'fluent-ffmpeg';
 import ffmpegStatic from 'ffmpeg-static';
@@ -8,15 +9,18 @@ import axios from 'axios';
 // Increase timeout for processing (5 minutes)
 export const maxDuration = 300;
 
-// Set FFmpeg path - construct direct path to binary if ffmpeg-static path is invalid
-if (ffmpegStatic && !ffmpegStatic.includes('/ROOT/') && !ffmpegStatic.includes('\\ROOT\\')) {
+// Set FFmpeg path - prioritize system FFmpeg for Railway/Docker
+const systemFFmpegPath = '/usr/bin/ffmpeg';
+if (existsSync(systemFFmpegPath)) {
+  console.log('Using system FFmpeg:', systemFFmpegPath);
+  ffmpeg.setFfmpegPath(systemFFmpegPath);
+} else if (ffmpegStatic && !ffmpegStatic.includes('/ROOT/') && !ffmpegStatic.includes('\\ROOT\\')) {
   console.log('Using ffmpeg-static path:', ffmpegStatic);
   ffmpeg.setFfmpegPath(ffmpegStatic);
 } else {
-  // Construct path to ffmpeg binary in node_modules
-  const ffmpegPath = path.join(process.cwd(), 'node_modules', 'ffmpeg-static', 'ffmpeg');
-  console.log('Using direct path to ffmpeg-static binary:', ffmpegPath);
-  ffmpeg.setFfmpegPath(ffmpegPath);
+  // Fallback: try to use ffmpeg from PATH
+  console.log('Using ffmpeg from PATH');
+  ffmpeg.setFfmpegPath('ffmpeg');
 }
 
 interface Song {
