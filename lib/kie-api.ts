@@ -69,10 +69,12 @@ export async function generateMusic(params: GenerateMusicParams): Promise<Genera
     payload.title = params.title;
     if (params.prompt) payload.prompt = params.prompt;
   } else {
+    // Non-custom mode: prompt is always required
     if (!params.prompt) {
       throw new Error('Prompt is required when customMode is false');
     }
     payload.prompt = params.prompt;
+    // style and title are ignored in non-custom mode (Kie.ai generates them)
   }
 
   // Add optional parameters
@@ -149,45 +151,63 @@ export async function getMusicTaskStatus(taskId: string): Promise<TaskStatusResp
 }
 
 /**
- * Generate music style/title based on genre
+ * Generate music prompt based on genre for non-custom mode
  */
-export function generateMusicMetadata(genre: string, index: number): { style: string; title: string } {
-  const genreMap: Record<string, { styles: string[]; titlePrefix: string }> = {
-    'Lofi': {
-      styles: ['Lofi Hip-Hop, Chill Beats, Relaxed', 'Jazzy Lofi, Mellow, Downtempo', 'Ambient Lofi, Dreamy, Atmospheric'],
-      titlePrefix: 'Lofi Vibes'
-    },
-    'Trap': {
-      styles: ['Heavy Bass Trap, 808s, Dark', 'Melodic Trap, Atmospheric, Hard-Hitting', 'Aggressive Trap, Distorted, Energetic'],
-      titlePrefix: 'Trap Anthem'
-    },
-    'Ambient': {
-      styles: ['Ethereal Ambient, Soundscape, Peaceful', 'Dark Ambient, Mysterious, Cinematic', 'Space Ambient, Cosmic, Floating'],
-      titlePrefix: 'Ambient Journey'
-    },
-    'EDM': {
-      styles: ['Progressive House, Uplifting, Energetic', 'Future Bass, Melodic, Euphoric', 'Big Room, Festival, Powerful'],
-      titlePrefix: 'EDM Banger'
-    },
-    'Hip-Hop': {
-      styles: ['Boom Bap, Classic, Jazzy', 'Modern Hip-Hop, Melodic, Catchy', 'Underground Hip-Hop, Raw, Gritty'],
-      titlePrefix: 'Hip-Hop Beat'
-    },
-    'Jazz': {
-      styles: ['Smooth Jazz, Saxophone, Relaxing', 'Bebop Jazz, Fast, Complex', 'Cool Jazz, Mellow, Sophisticated'],
-      titlePrefix: 'Jazz Nights'
-    },
-    'Classical': {
-      styles: ['Orchestral, Epic, Cinematic', 'Piano Classical, Elegant, Refined', 'String Quartet, Harmonious, Beautiful'],
-      titlePrefix: 'Classical Piece'
-    },
+export function generateMusicPrompt(genre: string, index: number): string {
+  const genrePrompts: Record<string, string[]> = {
+    'Lofi': [
+      'A relaxing lofi hip-hop beat with jazzy piano and vinyl crackle',
+      'Chill lofi track with mellow guitar and ambient sounds',
+      'Dreamy lofi instrumental with soft keys and smooth bass',
+      'Atmospheric lofi beat with subtle drums and warm melodies',
+      'Peaceful lofi music with gentle piano and lo-fi textures'
+    ],
+    'Trap': [
+      'Hard-hitting trap beat with heavy 808s and dark synths',
+      'Melodic trap instrumental with atmospheric pads and rolling hi-hats',
+      'Aggressive trap track with distorted bass and energetic drums',
+      'Club trap banger with powerful kicks and hypnotic melodies',
+      'Street trap beat with raw energy and booming low end'
+    ],
+    'Ambient': [
+      'Ethereal ambient soundscape with floating pads and peaceful atmosphere',
+      'Dark ambient music with mysterious textures and cinematic depth',
+      'Cosmic ambient journey through space with evolving drones',
+      'Zen ambient meditation music with calming tones',
+      'Atmospheric ambient track with layered synths and reverb'
+    ],
+    'EDM': [
+      'Uplifting progressive house with energetic builds and euphoric drops',
+      'Festival-ready big room EDM with powerful kicks and massive synths',
+      'Melodic future bass with emotional chords and dynamic drops',
+      'Peak time EDM banger with driving beats and catchy melodies',
+      'High-energy electronic dance music with intense buildups'
+    ],
+    'Hip-Hop': [
+      'Classic boom bap hip-hop beat with jazzy samples and head-nodding drums',
+      'Modern hip-hop instrumental with melodic keys and punchy 808s',
+      'Underground hip-hop beat with raw drums and gritty textures',
+      'Smooth hip-hop track with soulful samples and laid-back groove',
+      'Hard-hitting hip-hop instrumental with aggressive drums'
+    ],
+    'Jazz': [
+      'Smooth jazz with relaxing saxophone and gentle piano',
+      'Bebop jazz with fast-paced improvisation and complex harmonies',
+      'Cool jazz with sophisticated melodies and mellow mood',
+      'Late night jazz with sultry tones and intimate atmosphere',
+      'Modern jazz fusion with dynamic rhythms and rich textures'
+    ],
+    'Classical': [
+      'Epic orchestral piece with powerful strings and dramatic crescendos',
+      'Elegant piano classical with refined melodies and expressive dynamics',
+      'Beautiful string quartet with harmonious interplay',
+      'Cinematic orchestral music with emotional depth',
+      'Peaceful classical piano meditation with gentle touch'
+    ],
   };
 
-  const genreData = genreMap[genre] || genreMap['Lofi'];
-  const styleIndex = index % genreData.styles.length;
+  const prompts = genrePrompts[genre] || genrePrompts['Lofi'];
+  const promptIndex = index % prompts.length;
 
-  return {
-    style: genreData.styles[styleIndex],
-    title: `${genreData.titlePrefix} ${index + 1}`,
-  };
+  return prompts[promptIndex];
 }

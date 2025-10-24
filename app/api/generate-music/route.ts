@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generateMusic, generateMusicMetadata } from '@/lib/kie-api';
+import { generateMusic, generateMusicPrompt } from '@/lib/kie-api';
 import { taskStatusStore } from '@/lib/task-store';
 
 export async function POST(req: NextRequest) {
@@ -11,24 +11,22 @@ export async function POST(req: NextRequest) {
     // Generate multiple songs
     const songs = [];
     for (let i = 0; i < count; i++) {
-      const { style, title } = generateMusicMetadata(genre, i);
+      const prompt = generateMusicPrompt(genre, i);
 
       const response = await generateMusic({
-        customMode: true,
+        customMode: false, // Let Kie.ai generate unique titles
         instrumental: true,
         model: 'V5', // Use V5 for best quality
-        style,
-        title,
+        prompt,
       });
 
       if (response.code === 200 && response.data?.taskId) {
         const taskId = response.data.taskId;
 
-        // Store initial task status
+        // Store initial task status (title will come from Kie.ai callback)
         taskStatusStore.set(taskId, {
           taskId,
           status: 'pending',
-          title,
           genre,
           index: i,
         });
@@ -36,7 +34,7 @@ export async function POST(req: NextRequest) {
         songs.push({
           taskId,
           index: i,
-          title,
+          title: `Generating ${genre} track ${i + 1}...`, // Temporary title
         });
 
         console.log(`[Generate Music] Track ${i + 1}/${count} queued. Task ID: ${taskId}`);
