@@ -31,12 +31,12 @@ RUN rm -rf .next
 # Build the application
 RUN npm run build
 
-# Set PORT environment variable (Railway uses PORT env var)
-ENV PORT=3000
+# Set environment variables for Next.js
+# Railway will override PORT dynamically
 ENV HOSTNAME=0.0.0.0
 
-# Expose port
+# Expose port (Railway will map to its own port)
 EXPOSE 3000
 
-# Start the application (standalone mode for production)
-CMD ["node", ".next/standalone/server.js"]
+# Start with npm start (handles port better than standalone)
+CMD ["npm", "start"]
