@@ -31,11 +31,12 @@ RUN rm -rf .next
 # Build the application
 RUN npm run build
 
+# Set PORT environment variable (Railway uses PORT env var)
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
+
 # Expose port
 EXPOSE 3000
-
-# Copy standalone server files for optimized startup
-RUN cp -r .next/standalone/. ./standalone/ || echo "Standalone not needed for dev"
 
 # Start the application (standalone mode for production)
 CMD ["node", ".next/standalone/server.js"]
