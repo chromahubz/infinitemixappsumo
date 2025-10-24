@@ -6,7 +6,7 @@
     "dev": "next dev",
     "prebuild": "rm -rf .next || rmdir /s /q .next || echo 'No cache to clear'",
     "build": "next build",
-    "start": "next start --hostname 0.0.0.0 --port ${PORT:-3000}",
+    "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {

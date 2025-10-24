@@ -31,9 +31,12 @@ RUN rm -rf .next
 # Build the application
 RUN npm run build
 
+# Copy startup script
+COPY start.sh ./
+RUN chmod +x start.sh
+
 # Expose port (Railway will map to its own port)
 EXPOSE 3000
 
-# Start Next.js with proper port binding
-# Next.js will read PORT env var from Railway
-CMD ["npm", "start"]
+# Start Next.js using shell script for reliable PORT handling
+CMD ["./start.sh"]
