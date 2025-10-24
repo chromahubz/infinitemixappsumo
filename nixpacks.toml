@@ -5,7 +5,11 @@ nixPkgs = ["nodejs_20", "ffmpeg-full"]
 cmds = ["npm install"]
 
 [phases.build]
-cmds = ["npm run build"]
+cmds = [
+  "echo 'Verifying lib/task-store.ts exists...'",
+  "ls -la lib/task-store.ts",
+  "npm run build"
+]
 
 [start]
 cmd = "npm start"
