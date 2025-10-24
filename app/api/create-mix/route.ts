@@ -264,20 +264,28 @@ export async function POST(req: NextRequest) {
         const formatFilter = generateVideoFormatFilter(videoFormat, '0:v', 'vout');
         const videoFilter = filterComplex ? filterComplex + ';' + formatFilter : formatFilter + ';' + filterComplex;
 
+        // Build output options based on format
+        const outputOptions = [
+          '-map [vout]',
+          '-map [aout]',
+          '-c:v libx264',
+          '-preset ultrafast',
+          '-pix_fmt yuv420p',
+        ];
+
+        // Only add resolution/aspect if user selected a specific format
+        if (videoFormat === 'youtube') {
+          outputOptions.push('-s 1920x1080', '-aspect 16:9');
+        } else if (videoFormat === 'tiktok') {
+          outputOptions.push('-s 1080x1920', '-aspect 9:16');
+        }
+        // For 'original', don't force any resolution or aspect ratio
+
+        outputOptions.push('-c:a aac', '-b:a 192k', '-shortest');
+
         command
           .complexFilter(videoFilter)
-          .outputOptions([
-            '-map [vout]',
-            '-map [aout]',
-            '-c:v libx264',
-            '-preset ultrafast',
-            '-pix_fmt yuv420p',
-            '-s 1920x1080',
-            '-aspect 16:9',
-            '-c:a aac',
-            '-b:a 192k',
-            '-shortest'
-          ])
+          .outputOptions(outputOptions)
           .output(outputPath);
       } else {
         // Multiple thumbnails mode with video transitions
@@ -381,19 +389,28 @@ export async function POST(req: NextRequest) {
 
         const finalVideoLabel = numThumbs > 1 && crossfadeDuration > 0 ? `[vt${numThumbs - 1}]` : '[vout]';
 
+        // Build output options based on format
+        const outputOptions = [
+          `-map ${finalVideoLabel}`,
+          '-map [aout]',
+          '-c:v libx264',
+          '-preset ultrafast',
+          '-pix_fmt yuv420p',
+        ];
+
+        // Only add resolution/aspect if user selected a specific format
+        if (videoFormat === 'youtube') {
+          outputOptions.push('-s 1920x1080', '-aspect 16:9');
+        } else if (videoFormat === 'tiktok') {
+          outputOptions.push('-s 1080x1920', '-aspect 9:16');
+        }
+        // For 'original', don't force any resolution or aspect ratio
+
+        outputOptions.push('-c:a aac', '-b:a 192k');
+
         command
           .complexFilter(filterComplex)
-          .outputOptions([
-            `-map ${finalVideoLabel}`,
-            '-map [aout]',
-            '-c:v libx264',
-            '-preset ultrafast',
-            '-pix_fmt yuv420p',
-            '-s 1920x1080',
-            '-aspect 16:9',
-            '-c:a aac',
-            '-b:a 192k'
-          ])
+          .outputOptions(outputOptions)
           .output(outputPath);
       }
 
