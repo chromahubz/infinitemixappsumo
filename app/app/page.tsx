@@ -123,6 +123,24 @@ export default function Home() {
     setAnalysisProgress({ current, total, message });
   };
 
+  // Generate unique descriptive names for song variations
+  const generateVariationName = (baseTitle: string, genre: string, variationIndex: number): string => {
+    const genreVariations: Record<string, string[]> = {
+      'Lofi': ['Mellow Remix', 'Chill Remix', 'Dreamy Mix', 'Jazzy Mix', 'Smooth Mix'],
+      'Trap': ['Dark Remix', 'Heavy Bass Mix', 'Club Mix', 'Street Mix', 'Hard Mix'],
+      'Ambient': ['Ethereal Mix', 'Cosmic Remix', 'Deep Space Mix', 'Floating Mix', 'Zen Mix'],
+      'EDM': ['Festival Mix', 'Club Remix', 'Peak Time Mix', 'Main Stage Mix', 'Rave Mix'],
+      'Hip-Hop': ['Beat Switch', 'Underground Mix', 'Street Remix', 'Raw Mix', 'Classic Mix'],
+      'Jazz': ['Smooth Jazz Mix', 'Late Night Remix', 'Bebop Mix', 'Cool Jazz Mix', 'Swing Mix'],
+      'Classical': ['Orchestral Mix', 'Chamber Remix', 'Symphonic Mix', 'Piano Mix', 'Strings Mix'],
+    };
+
+    const variations = genreVariations[genre] || ['Alternative Mix', 'Remix', 'Extended Mix', 'Alternate Take', 'Second Mix'];
+    const suffix = variations[variationIndex % variations.length];
+
+    return `${baseTitle} (${suffix})`;
+  };
+
   const handleGenerateMusic = async () => {
     setStage('generating');
 
@@ -148,26 +166,29 @@ export default function Home() {
 
           // Kie.ai sends: 'text', 'first', 'complete' (complete has audio URL)
           if (statusResponse.data.status === 'complete' && statusResponse.data.audioUrl) {
+            const baseTitle = statusResponse.data.title || `Track ${i + 1}`;
+
             // Add first song variation
             generatedSongs.push({
               id: `${Date.now()}-${i}-v1`,
-              title: statusResponse.data.title || `Track ${i + 1}`,
+              title: baseTitle,
               duration: statusResponse.data.duration || 180,
               url: statusResponse.data.audioUrl,
-              filename: statusResponse.data.title || `Track ${i + 1}`,
+              filename: baseTitle,
               bpm: 120,
               key: 'C',
               energy: 0.5,
             });
 
-            // Add second song variation if it exists (Kie.ai generates 2 variations)
+            // Add second song variation with unique descriptive name
             if (statusResponse.data.audioUrl2) {
+              const variationTitle = generateVariationName(baseTitle, genre, i);
               generatedSongs.push({
                 id: `${Date.now()}-${i}-v2`,
-                title: `${statusResponse.data.title || `Track ${i + 1}`} (Variation)`,
+                title: variationTitle,
                 duration: statusResponse.data.duration || 180,
                 url: statusResponse.data.audioUrl2,
-                filename: `${statusResponse.data.title || `Track ${i + 1}`} (Variation)`,
+                filename: variationTitle,
                 bpm: 120,
                 key: 'C',
                 energy: 0.5,
