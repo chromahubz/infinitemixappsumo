@@ -230,14 +230,14 @@ export async function POST(req: NextRequest) {
           const finalLabel = effectFilter ? '[apre]' : '[aout]';
 
           if (songPaths.length === 2) {
-            filterComplex = filterComplex.replace('[a1];', `${finalLabel};`);
+            filterComplex = filterComplex.replace('[a1];', finalLabel);
           } else {
-            filterComplex = filterComplex.replace(`[a${lastIndex}];`, `${finalLabel};`);
+            filterComplex = filterComplex.replace(`[a${lastIndex}];`, finalLabel);
           }
 
           // Add audio effect filter if present
           if (effectFilter) {
-            filterComplex += `[apre]anull${effectFilter}[aout];`;
+            filterComplex += `;[apre]anull${effectFilter}[aout]`;
           }
         }
 
