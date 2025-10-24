@@ -17,62 +17,78 @@ export async function POST(req: NextRequest) {
     console.log(JSON.stringify(payload, null, 2));
     console.log('[Music Callback] ===================================');
 
-    // Kie.ai might send different structures, handle all cases
-    const taskId = payload.taskId || payload.task_id || payload.id;
-    const stage = payload.stage || payload.status;
-    const data = payload.data || payload;
+    // Kie.ai sends: { code, data: { callbackType, data: [...], task_id }, msg }
+    const taskId = payload.data?.task_id || payload.taskId || payload.task_id || payload.id;
+    const callbackType = payload.data?.callbackType;
+    const songsData = payload.data?.data || []; // Array of song objects
 
     if (!taskId) {
       console.error('[Music Callback] Missing taskId in callback. Full payload:', payload);
       return NextResponse.json({ error: 'Missing taskId' }, { status: 400 });
     }
 
+    console.log(`[Music Callback] Task ID: ${taskId}, Callback Type: ${callbackType}`);
+    console.log(`[Music Callback] Songs in callback: ${songsData.length}`);
+
     // Get existing task status
     const existingStatus = taskStatusStore.get(taskId);
 
+    // Extract audio URLs from the songs array (Kie.ai sends 2 variations)
+    let audioUrl = null;
+    let audioUrl2 = null;
+    let duration = null;
+    let title = null;
+
+    // Find songs with audio_url (completed songs)
+    const completedSongs = songsData.filter((song: any) => song.audio_url);
+
+    if (completedSongs.length > 0) {
+      audioUrl = completedSongs[0].audio_url;
+      duration = completedSongs[0].duration;
+      title = completedSongs[0].title;
+      console.log(`[Music Callback] ✅ Found Audio URL 1: ${audioUrl}`);
+    }
+
+    if (completedSongs.length > 1) {
+      audioUrl2 = completedSongs[1].audio_url;
+      console.log(`[Music Callback] ✅ Found Audio URL 2: ${audioUrl2}`);
+    }
+
+    // Determine status based on callbackType
+    let status = 'pending';
+    if (callbackType === 'complete') {
+      status = 'complete';
+    } else if (callbackType === 'first') {
+      status = 'first';
+    } else if (callbackType === 'text') {
+      status = 'text';
+    }
+
     if (!existingStatus) {
       console.warn(`[Music Callback] Task ${taskId} not found in store, creating new entry`);
-      // Still update the store with the callback data
       taskStatusStore.set(taskId, {
         taskId,
-        status: stage || 'complete',
-        ...data,
-        // Try multiple possible field names for audio URLs
-        audioUrl: data.audioUrl || data.audio_url || data.url || payload.audioUrl,
-        audioUrl2: data.audioUrl2 || data.audio_url_2 || payload.audioUrl2,
-        duration: data.duration || payload.duration,
-        title: data.title || payload.title,
+        status,
+        audioUrl,
+        audioUrl2,
+        duration,
+        title,
       });
     } else {
-      // Update task status based on callback
+      // Update task status
       const updatedStatus = {
         ...existingStatus,
-        status: stage || 'complete',
-        ...data,
+        status,
       };
 
-      // Extract audio URLs from callback data - try multiple field names
-      const audioUrl = data?.audioUrl || data?.audio_url || data?.url || payload.audioUrl;
-      const audioUrl2 = data?.audioUrl2 || data?.audio_url_2 || payload.audioUrl2;
-
-      if (audioUrl) {
-        updatedStatus.audioUrl = audioUrl;
-        console.log(`[Music Callback] ✅ Found Audio URL 1: ${audioUrl}`);
-      }
-      if (audioUrl2) {
-        updatedStatus.audioUrl2 = audioUrl2;
-        console.log(`[Music Callback] ✅ Found Audio URL 2: ${audioUrl2}`);
-      }
-      if (data?.duration || payload.duration) {
-        updatedStatus.duration = data.duration || payload.duration;
-      }
-      if (data?.title || payload.title) {
-        updatedStatus.title = data.title || payload.title;
-      }
+      if (audioUrl) updatedStatus.audioUrl = audioUrl;
+      if (audioUrl2) updatedStatus.audioUrl2 = audioUrl2;
+      if (duration) updatedStatus.duration = duration;
+      if (title) updatedStatus.title = title;
 
       taskStatusStore.set(taskId, updatedStatus);
 
-      console.log(`[Music Callback] Task ${taskId} updated to status: ${stage}`);
+      console.log(`[Music Callback] Task ${taskId} updated to status: ${status}`);
       console.log(`[Music Callback] Updated task data:`, JSON.stringify(updatedStatus, null, 2));
     }
 
@@ -80,7 +96,8 @@ export async function POST(req: NextRequest) {
       success: true,
       message: 'Callback received',
       taskId,
-      stage,
+      callbackType,
+      status,
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
