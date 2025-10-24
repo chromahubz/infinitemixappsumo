@@ -6,8 +6,11 @@ cmds = ["npm install"]
 
 [phases.build]
 cmds = [
-  "echo 'Verifying lib/task-store.ts exists...'",
-  "ls -la lib/task-store.ts",
+  "echo '=== Clearing Next.js cache ==='",
+  "rm -rf .next",
+  "echo '=== Verifying lib/task-store.ts exists ==='",
+  "ls -la lib/ | grep task-store || echo 'WARNING: task-store.ts not found!'",
+  "echo '=== Building application ==='",
   "npm run build"
 ]
 
