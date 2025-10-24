@@ -64,9 +64,28 @@ function generateAudioEffectFilter(preset: AudioEffectSettings['preset']): strin
   }
 }
 
+// Helper function to generate video format filter (letterboxing/pillarboxing only - NO SCALING)
+function generateVideoFormatFilter(format: 'original' | 'youtube' | 'tiktok', inputLabel: string = '0:v', outputLabel: string = 'vout'): string {
+  if (format === 'original') {
+    return `[${inputLabel}]copy[${outputLabel}]`;
+  }
+
+  if (format === 'youtube') {
+    // 16:9 letterboxing (1920x1080) - just add black bars, no scaling
+    return `[${inputLabel}]pad=1920:1080:(ow-iw)/2:(oh-ih)/2:black[${outputLabel}]`;
+  }
+
+  if (format === 'tiktok') {
+    // 9:16 pillarboxing (1080x1920) - just add black bars, no scaling
+    return `[${inputLabel}]pad=1080:1920:(ow-iw)/2:(oh-ih)/2:black[${outputLabel}]`;
+  }
+
+  return `[${inputLabel}]copy[${outputLabel}]`;
+}
+
 export async function POST(req: NextRequest) {
   try {
-    const { songs, thumbnail, thumbnails, playlistOrder, crossfadeDuration = 5, audioEffects } = await req.json();
+    const { songs, thumbnail, thumbnails, playlistOrder, crossfadeDuration = 5, audioEffects, videoFormat = 'original' } = await req.json();
 
     if (!songs || songs.length === 0) {
       return NextResponse.json({ error: 'No songs provided' }, { status: 400 });
@@ -241,8 +260,9 @@ export async function POST(req: NextRequest) {
           }
         }
 
-        // Add video filter for 16:9 YouTube format with black letterboxing
-        const videoFilter = filterComplex ? filterComplex + ';[0:v]scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:black[vout]' : '[0:v]scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:black[vout];' + filterComplex;
+        // Add video format filter (original/youtube/tiktok)
+        const formatFilter = generateVideoFormatFilter(videoFormat, '0:v', 'vout');
+        const videoFilter = filterComplex ? filterComplex + ';' + formatFilter : formatFilter + ';' + filterComplex;
 
         command
           .complexFilter(videoFilter)
@@ -320,14 +340,22 @@ export async function POST(req: NextRequest) {
           }
         }
 
-        // Video fading - create segments with crossfade transitions and 16:9 format
+        // Video fading - create segments with crossfade transitions
         let videoFilter = '';
         for (let i = 0; i < numThumbs; i++) {
           const songDuration = orderedSongs[i]?.duration || 180;
           const segmentDuration = i === 0 ? songDuration : songDuration - crossfadeDuration;
 
-          // Scale to 16:9 (1920x1080) with black letterboxing, then trim
-          videoFilter += `[${i}:v]scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:black,trim=duration=${segmentDuration},setpts=PTS-STARTPTS[v${i}];`;
+          // Apply format filter (original/youtube/tiktok), then trim
+          let formatPart = '';
+          if (videoFormat === 'youtube') {
+            formatPart = 'pad=1920:1080:(ow-iw)/2:(oh-ih)/2:black,';
+          } else if (videoFormat === 'tiktok') {
+            formatPart = 'pad=1080:1920:(ow-iw)/2:(oh-ih)/2:black,';
+          }
+          // For 'original', formatPart stays empty (no padding)
+
+          videoFilter += `[${i}:v]${formatPart}trim=duration=${segmentDuration},setpts=PTS-STARTPTS[v${i}];`;
         }
 
         // Apply xfade transitions between segments

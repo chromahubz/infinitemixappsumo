@@ -26,6 +26,7 @@ export default function Home() {
   const [duration, setDuration] = useState(30);
   const [crossfadeDuration, setCrossfadeDuration] = useState(5);
   const [skipAnalysis, setSkipAnalysis] = useState(false);
+  const [videoFormat, setVideoFormat] = useState<'original' | 'youtube' | 'tiktok'>('original');
   const [songs, setSongs] = useState<Song[]>([]);
   const [thumbnail, setThumbnail] = useState('');
   const [thumbnailBase64, setThumbnailBase64] = useState('');
@@ -220,6 +221,7 @@ export default function Home() {
         playlistOrder: mixPlaylist, // Use the order from songkeybpmanalyzer
         crossfadeDuration,
         audioEffects: audioEffects,
+        videoFormat: videoFormat, // Pass selected format
       }, {
         responseType: 'blob' // Receive binary video data
       });
@@ -375,6 +377,27 @@ export default function Home() {
                     </p>
                   </div>
                 </div>
+              </div>
+
+              <div className="bg-gray-50 rounded-lg p-4 border-2 border-gray-200">
+                <label htmlFor="videoFormat" className="block text-sm font-medium text-gray-900 mb-2">
+                  Video Format
+                </label>
+                <select
+                  id="videoFormat"
+                  value={videoFormat}
+                  onChange={(e) => setVideoFormat(e.target.value as 'original' | 'youtube' | 'tiktok')}
+                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-gray-900 bg-white"
+                >
+                  <option value="original">Original (No Modification)</option>
+                  <option value="youtube">YouTube (16:9 Horizontal)</option>
+                  <option value="tiktok">TikTok (9:16 Vertical)</option>
+                </select>
+                <p className="text-xs text-gray-600 mt-2">
+                  {videoFormat === 'original' && 'Video will maintain its original aspect ratio'}
+                  {videoFormat === 'youtube' && 'Video will be letterboxed to 1920x1080 (16:9) for YouTube'}
+                  {videoFormat === 'tiktok' && 'Video will be pillarboxed to 1080x1920 (9:16) for TikTok/Instagram Reels'}
+                </p>
               </div>
 
               {mode === 'manual' ? (
