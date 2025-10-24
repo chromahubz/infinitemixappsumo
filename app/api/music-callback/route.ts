@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { taskStatusStore } from '../generate-music/route';
+import { taskStatusStore } from '@/lib/task-store';
 
 /**
  * Callback endpoint for Kie.ai music generation

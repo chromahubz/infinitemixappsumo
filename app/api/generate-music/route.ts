@@ -1,20 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateMusic, generateMusicMetadata } from '@/lib/kie-api';
-
-interface TaskStatus {
-  taskId: string;
-  status: string;
-  title?: string;
-  genre?: string;
-  index?: number;
-  audioUrl?: string;
-  audioUrl2?: string;
-  duration?: number;
-  error?: string;
-}
-
-// Store task status in memory (in production, use Redis or database)
-const taskStatusStore = new Map<string, TaskStatus>();
+import { taskStatusStore } from '@/lib/task-store';
 
 export async function POST(req: NextRequest) {
   try {
@@ -111,6 +97,3 @@ export async function GET(req: NextRequest) {
     );
   }
 }
-
-// Export task store for use in callback
-export { taskStatusStore };
