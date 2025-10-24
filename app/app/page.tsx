@@ -146,7 +146,8 @@ export default function Home() {
 
           const statusResponse = await axios.get(`/api/generate-music?taskId=${taskIds[i]}`);
 
-          if (statusResponse.data.status === 'completed') {
+          // Kie.ai sends: 'text', 'first', 'complete' (complete has audio URL)
+          if (statusResponse.data.status === 'complete' && statusResponse.data.audioUrl) {
             generatedSongs.push({
               id: `${Date.now()}-${i}`,
               title: statusResponse.data.title || `Track ${i + 1}`,
@@ -161,6 +162,7 @@ export default function Home() {
           } else if (statusResponse.data.status === 'failed') {
             throw new Error('Music generation failed');
           }
+          // Still polling if status is 'text', 'first', or 'pending'
         }
       }
 
