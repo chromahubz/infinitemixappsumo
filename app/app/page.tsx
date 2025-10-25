@@ -182,6 +182,26 @@ export default function Home() {
     setAnalysisProgress({ current, total, message });
   };
 
+  // Helper to get real audio duration from blob
+  const getAudioDuration = async (blob: Blob): Promise<number> => {
+    return new Promise((resolve) => {
+      const audio = new Audio();
+      const url = URL.createObjectURL(blob);
+
+      audio.onloadedmetadata = () => {
+        URL.revokeObjectURL(url);
+        resolve(Math.floor(audio.duration));
+      };
+
+      audio.onerror = () => {
+        URL.revokeObjectURL(url);
+        resolve(180); // Fallback to 3 minutes on error
+      };
+
+      audio.src = url;
+    });
+  };
+
   // Generate variation name using genre-specific word banks
   const generateVariationName = (baseTitle: string, genre: string): string => {
     const genreWordBanks: Record<string, string[]> = {
@@ -267,11 +287,15 @@ export default function Home() {
             const file1 = new File([blob1], `${baseTitle}.mp3`, { type: 'audio/mpeg' });
             downloadedFiles.push(file1);
 
-            // Add first song variation
+            // Get REAL audio duration from the actual file
+            const realDuration1 = await getAudioDuration(blob1);
+            console.log(`[DEBUG] ${baseTitle} - Kie.ai duration: ${statusResponse.data.duration}, Real duration: ${realDuration1}`);
+
+            // Add first song variation with REAL duration
             generatedSongs.push({
               id: `${Date.now()}-${i}-v1`,
               title: baseTitle,
-              duration: statusResponse.data.duration || 180,
+              duration: realDuration1,
               url: statusResponse.data.audioUrl,
               filename: baseTitle,
               bpm: 120,
@@ -289,10 +313,14 @@ export default function Home() {
               const file2 = new File([blob2], `${variationTitle}.mp3`, { type: 'audio/mpeg' });
               downloadedFiles.push(file2);
 
+              // Get REAL audio duration for second variation
+              const realDuration2 = await getAudioDuration(blob2);
+              console.log(`[DEBUG] ${variationTitle} - Kie.ai duration: ${statusResponse.data.duration}, Real duration: ${realDuration2}`);
+
               generatedSongs.push({
                 id: `${Date.now()}-${i}-v2`,
                 title: variationTitle,
-                duration: statusResponse.data.duration || 180,
+                duration: realDuration2,
                 url: statusResponse.data.audioUrl2,
                 filename: variationTitle,
                 bpm: 120,
