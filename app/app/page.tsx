@@ -119,15 +119,17 @@ export default function Home() {
         });
 
         if (analyzed) {
-          console.log(`[DEBUG] ✅ Merged analysis for: ${aiSong.filename}`, { bpm: analyzed.bpm, key: analyzed.key });
+          console.log(`[DEBUG] ✅ Merged analysis for: ${aiSong.filename}`, { bpm: analyzed.bpm, key: analyzed.key, realDuration: aiSong.duration, essentiaDuration: analyzed.duration });
           // Merge analysis data with URL
+          // IMPORTANT: Keep aiSong.duration (from getAudioDuration) instead of analyzed.duration (from Essentia)
+          // because FFmpeg uses the actual file duration, not Essentia's estimate
           return {
             ...aiSong,
             bpm: analyzed.bpm,
             key: analyzed.key,
             camelotKey: analyzed.camelotKey,
             energy: analyzed.energy,
-            duration: analyzed.duration,
+            // duration: keep aiSong.duration (don't overwrite with analyzed.duration)
           };
         }
         console.log(`[DEBUG] ⚠️ No match found for: ${aiSong.filename}`);
@@ -209,6 +211,19 @@ export default function Home() {
 
       audio.src = url;
     });
+  };
+
+  // Helper to auto-download description as txt file
+  const downloadDescription = (description: string) => {
+    const blob = new Blob([description], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `mix_description_${Date.now()}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   // Generate variation name using genre-specific word banks
@@ -456,7 +471,10 @@ export default function Home() {
           totalDuration: songs.reduce((sum, s) => sum + s.duration, 0),
           crossfadeDuration,
         });
-        setDescription(descResponse.data.description);
+        const desc = descResponse.data.description;
+        setDescription(desc);
+        // Auto-download description as txt file
+        downloadDescription(desc);
       } catch (descError) {
         console.error('Description generation failed, using default:', descError);
         // Use default description with crossfade adjustments
@@ -467,7 +485,10 @@ export default function Home() {
           const secs = Math.floor(time % 60);
           return `${mins}:${secs.toString().padStart(2, '0')} - ${song.title}`;
         }).join('\n');
-        setDescription(`${genre} Mix\n\nTracklist:\n${timestamps}`);
+        const desc = `${genre} Mix\n\nTracklist:\n${timestamps}`;
+        setDescription(desc);
+        // Auto-download description as txt file
+        downloadDescription(desc);
       }
 
       setStage('complete');
