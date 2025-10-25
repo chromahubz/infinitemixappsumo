@@ -87,20 +87,30 @@ export default function Home() {
   };
 
   const handleAnalysisComplete = (analyzedSongs: any[], mixOrder: string[]) => {
+    console.log('[DEBUG] handleAnalysisComplete called');
+    console.log('[DEBUG] AI songs with URLs:', aiGeneratedSongsWithUrls.map(s => ({ filename: s.filename, hasUrl: !!s.url })));
+    console.log('[DEBUG] Analyzed songs:', analyzedSongs.map(a => ({ name: a.name, fileName: a.file?.name, bpm: a.bpm })));
+    console.log('[DEBUG] Mix order (from analyzer):', mixOrder);
+
     let songs: Song[];
     const isAiGenerated = aiGeneratedSongsWithUrls.length > 0;
 
     // Check if we have AI-generated songs with URLs to merge analysis data into
     if (isAiGenerated) {
+      console.log('[DEBUG] Processing AI-generated songs...');
+
       // Merge analysis data back into AI-generated songs with URLs
       songs = aiGeneratedSongsWithUrls.map((aiSong) => {
         // Find matching analyzed song by filename (strip .mp3 extension for comparison)
         const analyzed = analyzedSongs.find(a => {
-          const analyzedName = a.file?.name?.replace(/\.mp3$/, '') || a.name;
-          return analyzedName === aiSong.filename;
+          const analyzedName = a.file?.name?.replace(/\.mp3$/, '') || a.name?.replace(/\.mp3$/, '');
+          const match = analyzedName === aiSong.filename;
+          console.log('[DEBUG] Matching:', { aiFilename: aiSong.filename, analyzedName, match });
+          return match;
         });
 
         if (analyzed) {
+          console.log(`[DEBUG] ✅ Merged analysis for: ${aiSong.filename}`, { bpm: analyzed.bpm, key: analyzed.key });
           // Merge analysis data with URL
           return {
             ...aiSong,
@@ -111,12 +121,21 @@ export default function Home() {
             duration: analyzed.duration,
           };
         }
+        console.log(`[DEBUG] ⚠️ No match found for: ${aiSong.filename}`);
         return aiSong; // Keep original if no match found
       });
+
+      console.log('[DEBUG] Final AI songs with analysis:', songs.map(s => ({
+        filename: s.filename,
+        hasUrl: !!s.url,
+        bpm: s.bpm,
+        key: s.key
+      })));
 
       // Clear the temporary storage
       setAiGeneratedSongsWithUrls([]);
     } else {
+      console.log('[DEBUG] Processing manual uploads...');
       // Regular manual uploads - convert analyzed songs to Song format
       songs = analyzedSongs.map((s, index) => ({
         id: `${Date.now()}-${index}`,
@@ -135,6 +154,10 @@ export default function Home() {
     const cleanMixOrder = isAiGenerated
       ? mixOrder.map(name => name.replace(/\.mp3$/, ''))
       : mixOrder;
+
+    console.log('[DEBUG] Clean mix order:', cleanMixOrder);
+    console.log('[DEBUG] Songs filenames:', songs.map(s => s.filename));
+
     setMixPlaylist(cleanMixOrder);
     setStage('idle');
     setCurrentStep(3);
@@ -250,6 +273,19 @@ export default function Home() {
         }
       }
 
+      console.log('[DEBUG] Generated songs:', generatedSongs.map(s => ({
+        filename: s.filename,
+        title: s.title,
+        hasUrl: !!s.url,
+        url: s.url?.substring(0, 50) + '...'
+      })));
+
+      console.log('[DEBUG] Downloaded files:', downloadedFiles.map(f => ({
+        name: f.name,
+        size: f.size,
+        type: f.type
+      })));
+
       // If skip analysis, use as-is and sort, otherwise analyze them first
       if (skipAnalysis) {
         const finalSongs = sortSongsForMix(generatedSongs);
@@ -258,9 +294,11 @@ export default function Home() {
         setStage('idle');
         setCurrentStep(3);
       } else {
+        console.log('[DEBUG] Storing AI songs before analysis...');
         // Store AI-generated songs with URLs before analysis
         setAiGeneratedSongsWithUrls(generatedSongs);
 
+        console.log('[DEBUG] Starting analysis with Essentia.js...');
         // Analyze downloaded files with Essentia (same as manual uploads)
         setUploadedFiles(downloadedFiles);
         setStage('analyzing');
