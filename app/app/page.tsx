@@ -119,17 +119,17 @@ export default function Home() {
         });
 
         if (analyzed) {
-          console.log(`[DEBUG] ✅ Merged analysis for: ${aiSong.filename}`, { bpm: analyzed.bpm, key: analyzed.key, realDuration: aiSong.duration, essentiaDuration: analyzed.duration });
+          console.log(`[DEBUG] ✅ Merged analysis for: ${aiSong.filename}`, { bpm: analyzed.bpm, key: analyzed.key, getAudioDuration: aiSong.duration, essentiaDuration: analyzed.duration });
           // Merge analysis data with URL
-          // IMPORTANT: Keep aiSong.duration (from getAudioDuration) instead of analyzed.duration (from Essentia)
-          // because FFmpeg uses the actual file duration, not Essentia's estimate
+          // Use Essentia's duration because it analyzes the full audio file
+          // getAudioDuration() can fail with variable bitrate MP3s or when metadata isn't fully loaded
           return {
             ...aiSong,
             bpm: analyzed.bpm,
             key: analyzed.key,
             camelotKey: analyzed.camelotKey,
             energy: analyzed.energy,
-            // duration: keep aiSong.duration (don't overwrite with analyzed.duration)
+            duration: analyzed.duration, // Use Essentia's duration (more accurate than HTML5 Audio)
           };
         }
         console.log(`[DEBUG] ⚠️ No match found for: ${aiSong.filename}`);
@@ -464,11 +464,16 @@ export default function Home() {
       document.body.removeChild(link);
 
       // Generate description (optional - don't fail if it errors)
+      // IMPORTANT: Reorder songs according to mixPlaylist order for accurate timestamps
+      const orderedSongs = mixPlaylist.map(filename =>
+        songs.find(s => (s.filename || s.title) === filename)
+      ).filter(Boolean) as Song[];
+
       try {
         const descResponse = await axios.post('/api/generate-description', {
-          songs,
+          songs: orderedSongs, // Send songs in playlist order!
           genre,
-          totalDuration: songs.reduce((sum, s) => sum + s.duration, 0),
+          totalDuration: orderedSongs.reduce((sum, s) => sum + s.duration, 0),
           crossfadeDuration,
         });
         const desc = descResponse.data.description;
@@ -478,9 +483,9 @@ export default function Home() {
       } catch (descError) {
         console.error('Description generation failed, using default:', descError);
         // Use default description with crossfade adjustments
-        const timestamps = songs.map((song, i) => {
+        const timestamps = orderedSongs.map((song, i) => {
           // Each song after the first starts earlier due to crossfade overlap
-          const time = songs.slice(0, i).reduce((sum, s) => sum + s.duration, 0) - (i * crossfadeDuration);
+          const time = orderedSongs.slice(0, i).reduce((sum, s) => sum + s.duration, 0) - (i * crossfadeDuration);
           const mins = Math.floor(time / 60);
           const secs = Math.floor(time % 60);
           return `${mins}:${secs.toString().padStart(2, '0')} - ${song.title}`;
