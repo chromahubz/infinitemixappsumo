@@ -1,7 +1,7 @@
 'use client';
 
 import { Song } from '@/lib/types';
-import { GripVertical, X, Play, Pause, Edit2, Check } from 'lucide-react';
+import { GripVertical, X, Play, Pause, Edit2, Check, Download } from 'lucide-react';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -55,6 +55,25 @@ function SortableItem({ song, onRemove, onRename }: { song: Song; onRemove: (id:
     } else {
       audioRef.current.play();
       setIsPlaying(true);
+    }
+  };
+
+  const handleDownload = async () => {
+    if (!song.url) return;
+
+    try {
+      const response = await fetch(song.url);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${song.title}.mp3`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Download failed:', error);
     }
   };
 
@@ -134,6 +153,17 @@ function SortableItem({ song, onRemove, onRename }: { song: Song; onRemove: (id:
             onPause={() => setIsPlaying(false)}
           />
         </>
+      )}
+
+      {/* Download Button */}
+      {song.url && (
+        <button
+          onClick={handleDownload}
+          className="p-2 hover:bg-green-50 rounded-lg transition-colors"
+          title="Download song"
+        >
+          <Download className="w-5 h-5 text-green-600" />
+        </button>
       )}
 
       <button
