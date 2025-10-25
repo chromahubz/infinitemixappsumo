@@ -93,8 +93,11 @@ export default function Home() {
     if (aiGeneratedSongsWithUrls.length > 0) {
       // Merge analysis data back into AI-generated songs with URLs
       songs = aiGeneratedSongsWithUrls.map((aiSong) => {
-        // Find matching analyzed song by filename
-        const analyzed = analyzedSongs.find(a => a.file?.name === aiSong.filename);
+        // Find matching analyzed song by filename (strip .mp3 extension for comparison)
+        const analyzed = analyzedSongs.find(a => {
+          const analyzedName = a.file?.name?.replace(/\.mp3$/, '') || a.name;
+          return analyzedName === aiSong.filename;
+        });
 
         if (analyzed) {
           // Merge analysis data with URL
