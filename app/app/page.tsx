@@ -35,11 +35,20 @@ export default function Home() {
   const [description, setDescription] = useState('');
   const [stage, setStage] = useState<'idle' | 'analyzing' | 'generating' | 'mixing' | 'complete'>('idle');
   const [currentStep, setCurrentStep] = useState(1);
+  const [maxStepReached, setMaxStepReached] = useState(1); // Track highest step unlocked for navigation
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [mixPlaylist, setMixPlaylist] = useState<string[]>([]);
   const [analysisProgress, setAnalysisProgress] = useState({ current: 0, total: 0, message: '' });
   const [aiGeneratedSongsWithUrls, setAiGeneratedSongsWithUrls] = useState<Song[]>([]); // Store AI songs with URLs before analysis
   const [showCrossfade, setShowCrossfade] = useState(false);
+
+  // Helper to navigate to a step and update max reached
+  const goToStep = (step: number) => {
+    setCurrentStep(step);
+    if (step > maxStepReached) {
+      setMaxStepReached(step);
+    }
+  };
 
   const handleFilesSelected = async (files: File[]) => {
     setUploadedFiles(files);
@@ -80,7 +89,7 @@ export default function Home() {
       setSongs(simpleSongs);
       setMixPlaylist(files.map(f => f.name));
       setStage('idle');
-      setCurrentStep(3);
+      goToStep(3);
     } else {
       setStage('analyzing');
     }
@@ -160,7 +169,7 @@ export default function Home() {
 
     setMixPlaylist(cleanMixOrder);
     setStage('idle');
-    setCurrentStep(3);
+    goToStep(3);
 
     // Auto-export JSON (like in songkeybpmanalyzer)
     const playlistData = {
@@ -356,7 +365,7 @@ export default function Home() {
         setSongs(finalSongs);
         setMixPlaylist(finalSongs.map(s => s.filename || s.title));
         setStage('idle');
-        setCurrentStep(3);
+        goToStep(3);
       } else {
         console.log('[DEBUG] Storing AI songs before analysis...');
         // Store AI-generated songs with URLs before analysis
@@ -462,7 +471,7 @@ export default function Home() {
       }
 
       setStage('complete');
-      setCurrentStep(5);
+      goToStep(5);
     } catch (error) {
       console.error('Error creating mix:', error);
       setStage('idle');
@@ -487,10 +496,10 @@ export default function Home() {
             {['Setup', 'Content', 'Playlist', 'Thumbnail', 'Export'].map((step, index) => (
               <div key={step} className="flex items-center">
                 <button
-                  onClick={() => index + 1 <= currentStep && setCurrentStep(index + 1)}
-                  disabled={index + 1 > currentStep}
+                  onClick={() => index + 1 <= maxStepReached && setCurrentStep(index + 1)}
+                  disabled={index + 1 > maxStepReached}
                   className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
-                    index + 1 <= currentStep
+                    index + 1 <= maxStepReached
                       ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer'
                       : 'bg-gray-200 text-gray-500 cursor-not-allowed'
                   }`}
@@ -510,7 +519,7 @@ export default function Home() {
               <h2 className="text-2xl font-semibold text-gray-900 mb-6">Choose Your Mode</h2>
               <ModeSelector mode={mode} onModeChange={setMode} />
               <button
-                onClick={() => setCurrentStep(2)}
+                onClick={() => goToStep(2)}
                 className="mt-6 w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-medium transition-colors"
               >
                 Continue
@@ -663,7 +672,7 @@ export default function Home() {
                   Back
                 </button>
                 <button
-                  onClick={() => setCurrentStep(4)}
+                  onClick={() => goToStep(4)}
                   className="flex-1 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-medium transition-colors"
                 >
                   Continue
@@ -732,6 +741,7 @@ export default function Home() {
               <button
                 onClick={() => {
                   setCurrentStep(1);
+                  setMaxStepReached(1);
                   setSongs([]);
                   setThumbnail('');
                   setMixUrl('');
