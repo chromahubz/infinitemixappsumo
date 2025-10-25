@@ -88,9 +88,10 @@ export default function Home() {
 
   const handleAnalysisComplete = (analyzedSongs: any[], mixOrder: string[]) => {
     let songs: Song[];
+    const isAiGenerated = aiGeneratedSongsWithUrls.length > 0;
 
     // Check if we have AI-generated songs with URLs to merge analysis data into
-    if (aiGeneratedSongsWithUrls.length > 0) {
+    if (isAiGenerated) {
       // Merge analysis data back into AI-generated songs with URLs
       songs = aiGeneratedSongsWithUrls.map((aiSong) => {
         // Find matching analyzed song by filename (strip .mp3 extension for comparison)
@@ -130,7 +131,11 @@ export default function Home() {
     }
 
     setSongs(songs);
-    setMixPlaylist(mixOrder);
+    // Strip .mp3 extension from mixOrder for AI-generated songs
+    const cleanMixOrder = isAiGenerated
+      ? mixOrder.map(name => name.replace(/\.mp3$/, ''))
+      : mixOrder;
+    setMixPlaylist(cleanMixOrder);
     setStage('idle');
     setCurrentStep(3);
 
