@@ -725,6 +725,7 @@ export default function Home() {
                 currentThumbnail={thumbnail}
                 songCount={songs.length}
                 skipAnalysis={skipAnalysis}
+                songTitles={songs.map(s => s.title)}
               />
               <div className="flex gap-4 mt-6">
                 <button

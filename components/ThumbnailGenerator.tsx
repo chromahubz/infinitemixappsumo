@@ -11,15 +11,17 @@ interface ThumbnailGeneratorProps {
   currentThumbnail?: string;
   songCount?: number;
   skipAnalysis?: boolean;
+  songTitles?: string[]; // Song titles for custom prompts
 }
 
-export default function ThumbnailGenerator({ genre, onThumbnailGenerated, onMultipleThumbnailsGenerated, currentThumbnail, songCount = 1, skipAnalysis = false }: ThumbnailGeneratorProps) {
+export default function ThumbnailGenerator({ genre, onThumbnailGenerated, onMultipleThumbnailsGenerated, currentThumbnail, songCount = 1, skipAnalysis = false, songTitles = [] }: ThumbnailGeneratorProps) {
   const [customPrompt, setCustomPrompt] = useState('');
   const [loading, setLoading] = useState(false);
   const [generatingPrompt, setGeneratingPrompt] = useState(false);
   const [useMultipleThumbnails, setUseMultipleThumbnails] = useState(false);
   const [error, setError] = useState('');
   const [generatedThumbnails, setGeneratedThumbnails] = useState<Array<{ url: string; base64: string }>>([]);
+  const [perSongPrompts, setPerSongPrompts] = useState<Record<number, string>>({});
 
   const generateAIPrompt = async () => {
     // Don't call API if analysis was skipped
@@ -52,10 +54,13 @@ export default function ThumbnailGenerator({ genre, onThumbnailGenerated, onMult
         const baseSeed = Math.floor(Math.random() * 1000000);
 
         for (let i = 0; i < songCount; i++) {
+          // Use per-song prompt if provided, otherwise use custom prompt or default
+          const songPrompt = perSongPrompts[i] || customPrompt || `${genre} music artwork variation ${i + 1}`;
+
           // Use different seed for each image to ensure variation
           const seed = baseSeed + i * 1000;
           const response = await axios.post('/api/generate-thumbnail', {
-            prompt: customPrompt || `${genre} music artwork variation ${i + 1}`,
+            prompt: songPrompt,
             genre,
             seed,
           });
@@ -150,6 +155,31 @@ export default function ThumbnailGenerator({ genre, onThumbnailGenerated, onMult
           <label htmlFor="useMultipleThumbnails" className="text-sm font-medium text-gray-900 cursor-pointer">
             Generate different image for each song ({songCount} images with fade transitions)
           </label>
+        </div>
+      )}
+
+      {/* Per-song prompts */}
+      {useMultipleThumbnails && songTitles.length > 0 && (
+        <div className="space-y-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <h4 className="text-sm font-semibold text-gray-900">Customize Scene Images (Optional)</h4>
+          <p className="text-xs text-gray-600">Leave blank to use the global prompt below</p>
+          <div className="space-y-2 max-h-64 overflow-y-auto">
+            {songTitles.slice(0, songCount).map((title, index) => (
+              <div key={index} className="flex items-center gap-2">
+                <span className="text-xs font-medium text-gray-700 w-8 flex-shrink-0">#{index + 1}</span>
+                <span className="text-xs text-gray-600 w-32 truncate flex-shrink-0" title={title}>
+                  {title}
+                </span>
+                <input
+                  type="text"
+                  value={perSongPrompts[index] || ''}
+                  onChange={(e) => setPerSongPrompts({ ...perSongPrompts, [index]: e.target.value })}
+                  placeholder={`Custom scene for ${title.substring(0, 20)}...`}
+                  className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:border-blue-500 focus:outline-none text-gray-900"
+                />
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
