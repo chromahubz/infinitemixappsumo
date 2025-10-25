@@ -45,19 +45,50 @@ function findBestNextSong(currentSong: Song, candidates: Song[]): SongMatch {
 
     // Use camelotKey if available, otherwise skip key matching
     if (currentSong.camelotKey && candidate.camelotKey) {
+      // Check for good transitions first
+      let hasGoodTransition = false;
+
       // Perfect match gets highest score
       if (compatibilityRules.perfect(currentSong.camelotKey, candidate.camelotKey)) {
         score += 10;
+        hasGoodTransition = true;
       }
 
       // Energy boost gets good score
       if (compatibilityRules.energyBoost(currentSong.camelotKey, candidate.camelotKey)) {
         score += 8;
+        hasGoodTransition = true;
       }
 
       // Mood change gets medium score
       if (compatibilityRules.moodChange(currentSong.camelotKey, candidate.camelotKey)) {
         score += 6;
+        hasGoodTransition = true;
+      }
+
+      // If no good transition found, penalize based on distance
+      if (!hasGoodTransition) {
+        const fromNum = parseInt(currentSong.camelotKey);
+        const toNum = parseInt(candidate.camelotKey);
+
+        // Calculate shortest distance around the Camelot wheel (12 positions)
+        const numDistance = Math.min(
+          Math.abs(fromNum - toNum),
+          12 - Math.abs(fromNum - toNum)
+        );
+
+        const letterMatch = currentSong.camelotKey.slice(-1) === candidate.camelotKey.slice(-1);
+
+        // Penalize bad key distances (tritone and far keys)
+        if (numDistance >= 5 && !letterMatch) {
+          score -= 15;  // Tritone or worse (e.g., 12B → 6B)
+        } else if (numDistance >= 4 && !letterMatch) {
+          score -= 10;  // Very far (e.g., 3A → 10B)
+        } else if (numDistance === 3 && !letterMatch) {
+          score -= 5;   // Far (e.g., 8B → 11A)
+        } else if (numDistance === 2 && !letterMatch) {
+          score -= 3;   // Moderately far
+        }
       }
     }
 

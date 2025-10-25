@@ -182,31 +182,67 @@ export default function Home() {
     setAnalysisProgress({ current, total, message });
   };
 
-  // Generate variation by reordering words in the title
-  const generateVariationName = (baseTitle: string): string => {
-    // Split title into words
-    const words = baseTitle.trim().split(/\s+/);
+  // Generate variation name using genre-specific word banks
+  const generateVariationName = (baseTitle: string, genre: string): string => {
+    const genreWordBanks: Record<string, string[]> = {
+      'Lofi': [
+        'Coffee', 'Rain', 'Night', 'Cafe', 'Study', 'Chill', 'Moon', 'Dreams',
+        'Clouds', 'Sunset', 'Morning', 'Tokyo', 'Vibes', 'Lazy', 'Cozy',
+        'Jazzy', 'Smooth', 'Mellow', 'Warm', 'Soft', 'Vinyl', 'Nostalgia'
+      ],
+      'Trap': [
+        'Dark', 'Beast', 'Fire', 'Ice', 'Savage', 'Flex', 'Wave', 'Gang',
+        'Street', 'Hustle', 'Drip', 'Heat', 'Storm', 'Thunder', 'Phantom',
+        'Shadow', 'Midnight', 'Zone', 'Mode', 'Energy', 'Fury', 'Rage'
+      ],
+      'Ambient': [
+        'Space', 'Cosmos', 'Dream', 'Float', 'Drift', 'Horizon', 'Echo',
+        'Aura', 'Mystic', 'Ethereal', 'Celestial', 'Void', 'Nebula', 'Galaxy',
+        'Aurora', 'Zen', 'Peace', 'Serenity', 'Calm', 'Tranquil', 'Meditation'
+      ],
+      'EDM': [
+        'Pulse', 'Drop', 'Rave', 'Electric', 'Neon', 'Laser', 'Synth', 'Bass',
+        'Beat', 'Rush', 'Euphoria', 'Festival', 'Anthem', 'Peak', 'Surge',
+        'Power', 'Energy', 'Hype', 'Vibe', 'Dance', 'Club', 'Party'
+      ],
+      'Hip-Hop': [
+        'Flow', 'Bars', 'Beat', 'Groove', 'Boom', 'Bap', 'Jazz', 'Soul',
+        'Classic', 'Golden', 'Underground', 'Raw', 'Real', 'Street', 'Urban',
+        'City', 'Block', 'Hood', 'Smooth', 'Dope', 'Fresh', 'Legacy'
+      ],
+      'Jazz': [
+        'Blue', 'Smooth', 'Sax', 'Piano', 'Soul', 'Bebop', 'Swing', 'Cool',
+        'Night', 'Lounge', 'Velvet', 'Silk', 'Mood', 'Groove', 'Rhythm',
+        'Melody', 'Harmony', 'Soulful', 'Sultry', 'Mellow', 'Late', 'Hour'
+      ],
+      'Classical': [
+        'Symphony', 'Opus', 'Sonata', 'Prelude', 'Nocturne', 'Waltz', 'Suite',
+        'Concerto', 'Movement', 'Aria', 'Overture', 'Serenade', 'Elegance',
+        'Grace', 'Majesty', 'Royal', 'Grand', 'Noble', 'Divine', 'Eternal'
+      ],
+    };
 
-    // If only one word, just return as is
-    if (words.length <= 1) {
-      return baseTitle;
-    }
+    const wordBank = genreWordBanks[genre] || genreWordBanks['Lofi'];
 
-    // Reverse the word order for variation
-    // "Midnight Dreams" -> "Dreams Midnight"
-    return words.reverse().join(' ');
+    // Pick two random words from the word bank
+    const shuffled = [...wordBank].sort(() => Math.random() - 0.5);
+    const word1 = shuffled[0];
+    const word2 = shuffled[1];
+
+    return `${word1} ${word2}`;
   };
 
   const handleGenerateMusic = async () => {
     setStage('generating');
 
     try {
-      // Calculate number of songs needed (assuming avg 3 min per song)
-      const songsNeeded = Math.ceil(duration / 3);
+      // Calculate number of Kie.ai generations needed
+      // Each generation gives 2 songs (~3 min each = 6 min total per generation)
+      const generationsNeeded = Math.ceil(duration / 6);
 
       const response = await axios.post('/api/generate-music', {
         genre,
-        count: songsNeeded,
+        count: generationsNeeded,
       });
 
       // Poll for completion
@@ -243,9 +279,9 @@ export default function Home() {
               energy: 0.5,
             });
 
-            // Add second song variation with reordered title
+            // Add second song variation with random genre-specific title
             if (statusResponse.data.audioUrl2) {
-              const variationTitle = generateVariationName(baseTitle);
+              const variationTitle = generateVariationName(baseTitle, genre);
 
               // Download second song as File for analysis
               const response2 = await fetch(statusResponse.data.audioUrl2);
@@ -584,6 +620,11 @@ export default function Home() {
                   const filtered = songs.filter(s => s.id !== id);
                   setSongs(filtered);
                   setMixPlaylist(filtered.map(s => s.filename || s.title));
+                }}
+                onRename={(id, newTitle) => {
+                  const updated = songs.map(s => s.id === id ? { ...s, title: newTitle } : s);
+                  setSongs(updated);
+                  // No need to update mixPlaylist - it uses filename, not title
                 }}
               />
               <div className="flex gap-4 mt-6">
