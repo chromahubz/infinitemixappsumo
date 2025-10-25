@@ -38,6 +38,7 @@ export default function Home() {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [mixPlaylist, setMixPlaylist] = useState<string[]>([]);
   const [analysisProgress, setAnalysisProgress] = useState({ current: 0, total: 0, message: '' });
+  const [aiGeneratedSongsWithUrls, setAiGeneratedSongsWithUrls] = useState<Song[]>([]); // Store AI songs with URLs before analysis
   const [showCrossfade, setShowCrossfade] = useState(false);
 
   const handleFilesSelected = async (files: File[]) => {
@@ -86,17 +87,44 @@ export default function Home() {
   };
 
   const handleAnalysisComplete = (analyzedSongs: any[], mixOrder: string[]) => {
-    // Convert analyzed songs to Song format
-    const songs: Song[] = analyzedSongs.map((s, index) => ({
-      id: `${Date.now()}-${index}`,
-      title: s.name,
-      duration: s.duration,
-      bpm: s.bpm,
-      key: s.key,
-      camelotKey: s.camelotKey,
-      energy: s.energy,
-      filename: s.file?.name,
-    }));
+    let songs: Song[];
+
+    // Check if we have AI-generated songs with URLs to merge analysis data into
+    if (aiGeneratedSongsWithUrls.length > 0) {
+      // Merge analysis data back into AI-generated songs with URLs
+      songs = aiGeneratedSongsWithUrls.map((aiSong) => {
+        // Find matching analyzed song by filename
+        const analyzed = analyzedSongs.find(a => a.file?.name === aiSong.filename);
+
+        if (analyzed) {
+          // Merge analysis data with URL
+          return {
+            ...aiSong,
+            bpm: analyzed.bpm,
+            key: analyzed.key,
+            camelotKey: analyzed.camelotKey,
+            energy: analyzed.energy,
+            duration: analyzed.duration,
+          };
+        }
+        return aiSong; // Keep original if no match found
+      });
+
+      // Clear the temporary storage
+      setAiGeneratedSongsWithUrls([]);
+    } else {
+      // Regular manual uploads - convert analyzed songs to Song format
+      songs = analyzedSongs.map((s, index) => ({
+        id: `${Date.now()}-${index}`,
+        title: s.name,
+        duration: s.duration,
+        bpm: s.bpm,
+        key: s.key,
+        camelotKey: s.camelotKey,
+        energy: s.energy,
+        filename: s.file?.name,
+      }));
+    }
 
     setSongs(songs);
     setMixPlaylist(mixOrder);
@@ -214,9 +242,6 @@ export default function Home() {
         }
       }
 
-      // Store songs temporarily
-      setSongs(generatedSongs);
-
       // If skip analysis, use as-is and sort, otherwise analyze them first
       if (skipAnalysis) {
         const finalSongs = sortSongsForMix(generatedSongs);
@@ -225,11 +250,15 @@ export default function Home() {
         setStage('idle');
         setCurrentStep(3);
       } else {
+        // Store AI-generated songs with URLs before analysis
+        setAiGeneratedSongsWithUrls(generatedSongs);
+
         // Analyze downloaded files with Essentia (same as manual uploads)
         setUploadedFiles(downloadedFiles);
         setStage('analyzing');
         setCurrentStep(2);
         // AudioAnalyzer will be triggered and call handleAnalysisComplete
+        // which will merge analysis data back into generatedSongs
       }
     } catch (error) {
       console.error('Error generating music:', error);
