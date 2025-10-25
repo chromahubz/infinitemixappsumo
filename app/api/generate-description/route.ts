@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Generate timestamps accounting for crossfades
+    // Each song starts where the previous ended minus the crossfade duration
     const timestamps: string[] = [];
     let currentTime = 0;
 
@@ -31,14 +32,21 @@ export async function POST(req: NextRequest) {
 
       timestamps.push(`${timeStr} - ${song.title}`);
 
-      // Add duration minus crossfade (except for first song which has no previous crossfade)
-      currentTime += song.duration - (index > 0 ? crossfadeDuration : 0);
+      // For first song, add full duration
+      // For subsequent songs, subtract crossfade because songs overlap
+      if (index === 0) {
+        currentTime += song.duration;
+      } else {
+        currentTime += song.duration - crossfadeDuration;
+      }
     });
 
     // Generate description using Google Gemini
     const prompt = `Create a catchy YouTube video description for a ${genre} music mix.
 The mix is ${Math.floor(totalDuration / 60)} minutes long and perfect for studying, working, or relaxing.
-Write 2-3 engaging sentences that would attract viewers. Don't use hashtags.`;
+Write 2-3 engaging sentences that would attract viewers. Don't use hashtags.
+
+IMPORTANT: Provide a single, ready-to-use description only. Do NOT include options like "Option 1" or "Option 2". Do NOT include any formatting labels or choices. Just write the description directly.`;
 
     const response = await axios.post(
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent',

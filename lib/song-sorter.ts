@@ -48,21 +48,21 @@ function findBestNextSong(currentSong: Song, candidates: Song[]): SongMatch {
       // Check for good transitions first
       let hasGoodTransition = false;
 
-      // Perfect match gets highest score
+      // Perfect match gets highest score (distance 0 or 1 on wheel)
       if (compatibilityRules.perfect(currentSong.camelotKey, candidate.camelotKey)) {
-        score += 10;
+        score += 15;  // Increased from 10 to strongly prefer distance-1
         hasGoodTransition = true;
       }
 
       // Energy boost gets good score
       if (compatibilityRules.energyBoost(currentSong.camelotKey, candidate.camelotKey)) {
-        score += 8;
+        score += 12;  // Increased from 8
         hasGoodTransition = true;
       }
 
       // Mood change gets medium score
       if (compatibilityRules.moodChange(currentSong.camelotKey, candidate.camelotKey)) {
-        score += 6;
+        score += 10;  // Increased from 6
         hasGoodTransition = true;
       }
 
@@ -79,15 +79,21 @@ function findBestNextSong(currentSong: Song, candidates: Song[]): SongMatch {
 
         const letterMatch = currentSong.camelotKey.slice(-1) === candidate.camelotKey.slice(-1);
 
-        // Penalize bad key distances (tritone and far keys)
-        if (numDistance >= 5 && !letterMatch) {
-          score -= 15;  // Tritone or worse (e.g., 12B → 6B)
-        } else if (numDistance >= 4 && !letterMatch) {
-          score -= 10;  // Very far (e.g., 3A → 10B)
+        // Penalize bad key distances
+        // Tritone (distance 5-6) is ALWAYS bad, regardless of letter
+        if (numDistance >= 5) {
+          score -= 15;  // Tritone or worse (e.g., 12B → 6B, 10B → 3B)
+        } else if (numDistance === 4 && !letterMatch) {
+          score -= 10;  // Very far with different mode (e.g., 3A → 10B)
         } else if (numDistance === 3 && !letterMatch) {
-          score -= 5;   // Far (e.g., 8B → 11A)
-        } else if (numDistance === 2 && !letterMatch) {
-          score -= 3;   // Moderately far
+          score -= 5;   // Far with different mode (e.g., 8B → 11A)
+        } else if (numDistance === 2) {
+          // Distance 2 with same or different letter - moderately bad
+          if (letterMatch) {
+            score -= 2;  // Same letter but 2 away (e.g., 8B → 10B)
+          } else {
+            score -= 3;  // Different letter and 2 away
+          }
         }
       }
     }
