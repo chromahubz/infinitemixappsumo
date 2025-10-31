@@ -1,0 +1,44 @@
+========================================
+RAILWAY ENVIRONMENT VARIABLES
+Copy these to Railway Dashboard → Variables
+========================================
+
+NEXT_PUBLIC_SUPABASE_URL=https://yjsdhrccdymzzaqwertzb.supabase.co
+
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlqc2RocmNkeW16emFxd2VydHpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MjQyMjMsImV4cCI6MjA3NzUwMDIyM30.WpCbHOk-3nnlqmg4qrwLjDYxltLgXlceHMjiT59-chs
+
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlqc2RocmNkeW16emFxd2VydHpiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTkyNDIyMywiZXhwIjoyMDc3NTAwMjIzfQ.yP4b362hqEsuceuT585_I9lgJHjA6Mfz3-au2bbhq6Y
+
+NEXT_PUBLIC_APP_URL=https://infinitemix.app
+
+CALLBACK_BASE_URL=https://infinitemix.app
+
+KIE_API_KEY=ba7a0e07bde6409f448866db4a291daa
+
+KIE_API_BASE_URL=https://api.kie.ai
+
+NEXT_PUBLIC_FIREWORKS_API_KEY=fw_3ZMLwprQ7PjXK1j9a8MmrsgU
+
+NODE_ENV=production
+
+========================================
+INSTRUCTIONS:
+========================================
+
+1. Go to: https://railway.app/dashboard
+2. Select your project: infinitemixappsumo
+3. Click: Variables (or Settings → Variables)
+4. Click: + New Variable
+5. Add each variable above (name=value)
+6. Railway will auto-redeploy when you save
+
+========================================
+OPTIONAL (if you have them):
+========================================
+
+NEXT_PUBLIC_GOOGLE_API_KEY=your-google-api-key-here
+REPLICATE_API_TOKEN=your-replicate-token-here
+SENDGRID_API_KEY=your-sendgrid-key-here
+FROM_EMAIL=noreply@infinitemix.com
+
+========================================
