@@ -4,16 +4,21 @@ import { createClient } from '@supabase/supabase-js';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
+// Get Supabase URL and keys with fallbacks for build time
+const getSupabaseUrl = () => process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+const getSupabaseAnonKey = () => process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key';
+const getSupabaseServiceKey = () => process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-service-key';
+
 // Client-side Supabase client (for browser)
 export const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  getSupabaseUrl(),
+  getSupabaseAnonKey()
 );
 
 // Server-side Supabase client with service role (for API routes)
 export const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  getSupabaseUrl(),
+  getSupabaseServiceKey(),
   {
     auth: {
       autoRefreshToken: false,
@@ -27,8 +32,8 @@ export async function createSupabaseServerClient() {
   const cookieStore = await cookies();
 
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    getSupabaseUrl(),
+    getSupabaseAnonKey(),
     {
       cookies: {
         get(name: string) {
