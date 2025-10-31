@@ -24,7 +24,7 @@ export const supabaseAdmin = createClient(
 
 // Server-side client with cookies (for server components)
 export async function createSupabaseServerClient() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
