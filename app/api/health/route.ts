@@ -6,10 +6,10 @@ export async function GET() {
     status: 'ok',
     timestamp: new Date().toISOString(),
     service: 'infinitemix',
-    version: '1.0.2-route-fix', // Increment this on each deploy to verify updates
+    version: '1.0.3-software-rename', // Increment this on each deploy to verify updates
     routes: {
       root: '/ = AppSumo Landing Page',
-      app: '/app = InfiniteMix Software'
+      software: '/software = InfiniteMix Software (renamed from /app)'
     },
     deployment_time: new Date().toISOString()
   });

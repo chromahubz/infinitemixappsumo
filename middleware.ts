@@ -16,9 +16,9 @@ export function middleware(request: NextRequest) {
 
   // Solution: Be explicit about what goes where
 
-  // If path is exactly /app (the software), allow it
-  if (pathname === '/app' || pathname.startsWith('/app/')) {
-    console.log(`[InfiniteMix Middleware] ✅ Allowing /app route`);
+  // If path is exactly /software (the software), allow it
+  if (pathname === '/software' || pathname.startsWith('/software/')) {
+    console.log(`[InfiniteMix Middleware] ✅ Allowing /software route`);
     return NextResponse.next();
   }
 

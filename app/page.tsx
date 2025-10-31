@@ -22,7 +22,7 @@ export default function LandingPage() {
             <span className="text-2xl font-bold text-gray-900">InfiniteMix</span>
           </div>
           <Link
-            href="/app"
+            href="/software"
             className="px-6 py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors"
           >
             Launch App
@@ -53,7 +53,7 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
               <Link
-                href="/app"
+                href="/software"
                 className="flex items-center gap-2 px-8 py-4 bg-purple-600 text-white text-lg font-bold rounded-lg hover:bg-purple-700 transition-all shadow-lg hover:shadow-xl w-full sm:w-auto justify-center"
               >
                 Start Creating Free <ArrowRight className="w-5 h-5" />
@@ -904,7 +904,7 @@ export default function LandingPage() {
               </div>
 
               <Link
-                href="/app"
+                href="/software"
                 className="flex items-center justify-center gap-2 w-full py-5 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xl font-bold rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl mb-4"
               >
                 <Rocket className="w-6 h-6" />
@@ -1032,7 +1032,7 @@ export default function LandingPage() {
             Join 10,000+ creators using InfiniteMix to build successful music channels and produce professional content in minutes
           </p>
           <Link
-            href="/app"
+            href="/software"
             className="inline-flex items-center gap-2 px-12 py-5 bg-white text-purple-600 text-xl font-bold rounded-lg hover:bg-gray-100 transition-all shadow-xl hover:shadow-2xl mb-6"
           >
             <Rocket className="w-6 h-6" />

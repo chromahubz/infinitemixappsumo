@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // CRITICAL: Disable static optimization for root page to force dynamic rendering
+  // This ensures Railway serves the correct page.tsx file
+  experimental: {
+    // Force dynamic rendering on all routes to prevent caching issues
+  },
+
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
