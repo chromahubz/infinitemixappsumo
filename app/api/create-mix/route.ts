@@ -6,8 +6,8 @@ import ffmpeg from 'fluent-ffmpeg';
 import ffmpegStatic from 'ffmpeg-static';
 import axios from 'axios';
 
-// Increase timeout for processing (5 minutes)
-export const maxDuration = 300;
+// Increase timeout for processing (10000 seconds for longer mixes)
+export const maxDuration = 10000;
 
 // Set FFmpeg path - prioritize system FFmpeg for Railway/Docker
 const systemFFmpegPath = '/usr/bin/ffmpeg';
