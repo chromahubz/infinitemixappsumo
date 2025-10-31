@@ -54,8 +54,8 @@ NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGc...your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=eyJhbGc...your-service-role-key
 
-# App URL (use your Railway domain)
-NEXT_PUBLIC_APP_URL=https://infinitemixappsumo-production.up.railway.app
+# App URL (Railway custom domain)
+NEXT_PUBLIC_APP_URL=https://infinitemix.app
 
 # Kie.ai (AI Music Generation)
 KIE_API_KEY=your-kie-api-key
@@ -65,7 +65,7 @@ KIE_API_BASE_URL=https://api.kie.ai
 REPLICATE_API_TOKEN=your-replicate-token
 
 # Callback URL
-CALLBACK_BASE_URL=https://infinitemixappsumo-production.up.railway.app
+CALLBACK_BASE_URL=https://infinitemix.app
 
 # Node environment
 NODE_ENV=production
@@ -98,9 +98,9 @@ Make sure these are in your `package.json`:
 
 ### Step 5: Verify Deployment
 
-1. Railway gives you a URL: `https://your-app.up.railway.app`
-2. Test activation: `https://your-app.up.railway.app/activate`
-3. Test API: `https://your-app.up.railway.app/api/health`
+1. Railway gives you a URL: `https://infinitemix.app`
+2. Test activation: `https://infinitemix.app/activate`
+3. Test API: `https://infinitemix.app/api/health`
 
 ---
 
