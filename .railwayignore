@@ -1,3 +1,4 @@
 # Explicitly ensure lib folder is NOT ignored
 !lib/
 !lib/task-store.ts
+# Force rebuild Fri, Oct 31, 2025  2:25:55 AM
