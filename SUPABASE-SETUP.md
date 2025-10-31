@@ -31,7 +31,7 @@ CREATE TABLE appsumo_licenses (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   license_key TEXT UNIQUE NOT NULL,
-  plan_tier TEXT NOT NULL CHECK (plan_tier IN ('creator', 'pro', 'studio')),
+  plan_tier TEXT NOT NULL CHECK (plan_tier IN ('creator', 'pro', 'studio', 'agency')),
   ai_credits_total INT NOT NULL,
   ai_credits_remaining INT NOT NULL,
   activated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -132,6 +132,7 @@ BEGIN
     WHEN 'creator' THEN 29
     WHEN 'pro' THEN 69
     WHEN 'studio' THEN 119
+    WHEN 'agency' THEN 199  -- TODO: Confirm Agency+ price
   END;
 
   -- Check eligibility

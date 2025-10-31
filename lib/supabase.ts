@@ -59,7 +59,7 @@ export type Database = {
           id: string;
           user_id: string;
           license_key: string;
-          plan_tier: 'creator' | 'pro' | 'studio';
+          plan_tier: 'creator' | 'pro' | 'studio' | 'agency';
           ai_credits_total: number;
           ai_credits_remaining: number;
           activated_at: string;
@@ -71,7 +71,7 @@ export type Database = {
           id?: string;
           user_id: string;
           license_key: string;
-          plan_tier: 'creator' | 'pro' | 'studio';
+          plan_tier: 'creator' | 'pro' | 'studio' | 'agency';
           ai_credits_total: number;
           ai_credits_remaining: number;
           activated_at?: string;
