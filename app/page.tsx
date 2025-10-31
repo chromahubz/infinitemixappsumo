@@ -840,106 +840,29 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Pricing */}
+      {/* AppSumo Deal */}
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6">
-          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl shadow-2xl p-12">
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full font-semibold mb-6">
-                <Award className="w-5 h-5" />
-                AppSumo Exclusive Lifetime Deal
-              </div>
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                Everything You Need to Create Viral Music Content
-              </h2>
-              <p className="text-xl text-gray-600">
-                One-time payment. Lifetime access. No monthly fees.
-              </p>
+          <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-3xl shadow-2xl p-12 text-center text-white">
+            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full font-bold text-lg mb-8">
+              <Award className="w-6 h-6" />
+              Best Deal on AppSumo
             </div>
-
-            <div className="bg-white rounded-2xl p-8 mb-8">
-              <div className="flex items-baseline justify-center gap-2 mb-6">
-                <span className="text-6xl font-bold text-gray-900">$69</span>
-                <span className="text-3xl text-gray-500 line-through">$299</span>
-                <span className="ml-2 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">77% OFF</span>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4 mb-8">
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
-                    <span className="text-gray-700">Upload your own music files</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
-                    <span className="text-gray-700">Unlimited mix exports</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
-                    <span className="text-gray-700">Professional thumbnail generation</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
-                    <span className="text-gray-700">Advanced harmonic mixing analysis</span>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
-                    <span className="text-gray-700">YouTube-ready video export</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
-                    <span className="text-gray-700">Commercial usage license</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
-                    <span className="text-gray-700">Priority email support</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
-                    <span className="text-gray-700">All future updates included</span>
-                  </div>
-                </div>
-              </div>
-
-              <Link
-                href="/software"
-                className="flex items-center justify-center gap-2 w-full py-5 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xl font-bold rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl mb-4"
-              >
-                <Rocket className="w-6 h-6" />
-                Get Lifetime Access Now
-              </Link>
-
-              <div className="flex items-center justify-center gap-6 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <Shield className="w-5 h-5 text-green-600" />
-                  60-day money-back guarantee
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-green-600" />
-                  Instant access
-                </div>
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-6 text-center">
-              <div className="bg-white rounded-lg p-6">
-                <Target className="w-10 h-10 text-purple-600 mx-auto mb-3" />
-                <h4 className="font-bold text-gray-900 mb-2">No Hidden Fees</h4>
-                <p className="text-sm text-gray-600">One payment, lifetime access. No subscriptions or recurring charges.</p>
-              </div>
-              <div className="bg-white rounded-lg p-6">
-                <Zap className="w-10 h-10 text-blue-600 mx-auto mb-3" />
-                <h4 className="font-bold text-gray-900 mb-2">Instant Activation</h4>
-                <p className="text-sm text-gray-600">Start creating viral mixes immediately after purchase.</p>
-              </div>
-              <div className="bg-white rounded-lg p-6">
-                <Award className="w-10 h-10 text-green-600 mx-auto mb-3" />
-                <h4 className="font-bold text-gray-900 mb-2">Premium Support</h4>
-                <p className="text-sm text-gray-600">Priority email support and comprehensive documentation.</p>
-              </div>
-            </div>
+            <h2 className="text-4xl md:text-6xl font-bold mb-6">
+              Get the Best Deal on AppSumo
+            </h2>
+            <p className="text-xl md:text-2xl mb-10 opacity-90 max-w-2xl mx-auto">
+              Lifetime access to InfiniteMix. One-time payment. No monthly fees. Exclusively available on AppSumo.
+            </p>
+            <a
+              href="https://appsumo.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-3 px-12 py-5 bg-white text-purple-600 text-xl font-bold rounded-lg hover:bg-gray-100 transition-all shadow-xl hover:shadow-2xl"
+            >
+              <Rocket className="w-6 h-6" />
+              View Deal on AppSumo
+            </a>
           </div>
         </div>
       </section>
