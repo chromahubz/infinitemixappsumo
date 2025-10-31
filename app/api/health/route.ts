@@ -6,7 +6,7 @@ export async function GET() {
     status: 'ok',
     timestamp: new Date().toISOString(),
     service: 'infinitemix',
-    version: '1.0.3-software-rename', // Increment this on each deploy to verify updates
+    version: '1.0.4-domain-fix', // Increment this on each deploy to verify updates
     routes: {
       root: '/ = AppSumo Landing Page',
       software: '/software = InfiniteMix Software (renamed from /app)'

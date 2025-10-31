@@ -68,7 +68,7 @@ IMPORTANT: Provide a single, ready-to-use description only. Do NOT include optio
     const description = response.data.candidates[0].content.parts[0].text;
 
     // InfiniteMix branding
-    const branding = `\n✨ This mix was expertly crafted with InfiniteMix - AI-powered music curation at its finest. Experience perfectly blended transitions and harmonically matched tracks for the ultimate listening experience.\n🎵 Create your own professional mixes at InfiniteMix.com`;
+    const branding = `\n✨ This mix was expertly crafted with InfiniteMix - AI-powered music curation at its finest. Experience perfectly blended transitions and harmonically matched tracks for the ultimate listening experience.\n🎵 Create your own professional mixes at https://infinitemix.app`;
 
     // Combine description with branding and timestamps
     const fullDescription = `${description}${branding}\n\nTracklist:\n${timestamps.join('\n')}`;
