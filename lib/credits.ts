@@ -342,6 +342,13 @@ export async function activateLicense(
   email: string
 ): Promise<{ success: boolean; userId?: string; error?: string; license?: AppSumoLicense }> {
   try {
+    // Debug: Log Supabase configuration (masked)
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'NOT_SET';
+    const hasServiceKey = !!(process.env.SUPABASE_SERVICE_ROLE_KEY);
+    console.log('[License] Supabase URL:', supabaseUrl);
+    console.log('[License] Has service role key:', hasServiceKey);
+    console.log('[License] Service key length:', process.env.SUPABASE_SERVICE_ROLE_KEY?.length || 0);
+
     // Check if license key already activated
     const { data: existing, error: checkError } = await supabaseAdmin
       .from('appsumo_licenses')
@@ -377,6 +384,7 @@ export async function activateLicense(
     }
 
     // Create user account with magic link
+    console.log(`[License] Attempting to create user account for ${email}`);
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email,
       email_confirm: true, // Auto-confirm for AppSumo users
@@ -387,9 +395,23 @@ export async function activateLicense(
     });
 
     if (authError) {
+      console.error('[License] Auth error:', authError);
+      console.error('[License] Auth error details:', JSON.stringify(authError, null, 2));
+
       // User might already exist
-      const { data: { users } } = await supabaseAdmin.auth.admin.listUsers();
+      console.log('[License] Checking if user already exists...');
+      const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
+
+      if (listError) {
+        console.error('[License] Failed to list users:', listError);
+        return {
+          success: false,
+          error: 'Failed to verify user: ' + listError.message
+        };
+      }
+
       const existingUser = users?.find(u => u.email === email);
+      console.log('[License] Existing user found:', !!existingUser);
 
       if (existingUser) {
         // User exists, just create license
