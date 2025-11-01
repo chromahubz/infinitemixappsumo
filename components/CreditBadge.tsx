@@ -72,14 +72,47 @@ export function CreditBadge() {
     }
   }
 
-  // Don't show badge if loading, error, or no balance
-  if (loading || error || !balance) {
+  // Show "Activate License" button for non-logged-in users
+  if (!authLoading && !user) {
+    return (
+      <a
+        href="/activate"
+        className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full font-semibold text-sm hover:from-purple-700 hover:to-blue-700 transition-all hover:scale-105 shadow-lg"
+      >
+        <Zap className="w-4 h-4" />
+        <span>Activate License</span>
+      </a>
+    );
+  }
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-400 rounded-full font-semibold text-sm">
+        <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
+        <span>Loading...</span>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return null;
+  }
+
+  // Don't show badge if no balance
+  if (!balance) {
     return null;
   }
 
   // Don't show badge for unlimited users
   if (balance.unlimited || balance.credits === -1) {
-    return null;
+    return (
+      <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-full border-2 border-green-200 font-semibold text-sm">
+        <CheckCircle className="w-4 h-4" />
+        <span>Unlimited Free</span>
+      </div>
+    );
   }
 
   // Determine color based on percentage

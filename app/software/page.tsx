@@ -14,10 +14,11 @@ import ProgressTracker from '@/components/ProgressTracker';
 import DescriptionPanel from '@/components/DescriptionPanel';
 import AudioAnalyzer from '@/components/AudioAnalyzer';
 import { CreditBadge } from '@/components/CreditBadge';
-import { Download, Sparkles } from 'lucide-react';
+import { Download, Sparkles, Home as HomeIcon } from 'lucide-react';
 import axios from 'axios';
 import { sortSongsForMix } from '@/lib/song-sorter';
 import { useAuth } from '@/contexts/AuthContext';
+import Link from 'next/link';
 
 export default function Home() {
   const { session } = useAuth();
@@ -514,8 +515,19 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
       <div className="max-w-6xl mx-auto px-6 py-12">
-        {/* Header with Credit Badge */}
+        {/* Header with Home Button and Credit Badge */}
         <div className="relative text-center mb-12">
+          {/* Home Button - Top Left Corner */}
+          <div className="absolute top-0 left-0">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-lg border-2 border-gray-200 hover:border-blue-500 transition-all shadow-sm hover:shadow-md text-gray-700 hover:text-blue-600 font-medium"
+            >
+              <HomeIcon className="w-4 h-4" />
+              <span>Home</span>
+            </Link>
+          </div>
+
           {/* Credit Badge - Top Right Corner (Absolute Position) */}
           <div className="absolute top-0 right-0">
             <CreditBadge />
