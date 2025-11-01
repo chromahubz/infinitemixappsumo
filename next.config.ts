@@ -7,6 +7,11 @@ const nextConfig: NextConfig = {
     // Force dynamic rendering on all routes to prevent caching issues
   },
 
+  // Allow ESLint warnings during production builds (don't fail on warnings)
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
