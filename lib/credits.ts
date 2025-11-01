@@ -286,7 +286,7 @@ export async function getCreditUsageHistory(userId: string, limit: number = 100)
 export async function checkDeviceLimit(
   userId: string,
   deviceFingerprint: string,
-  deviceInfo?: any
+  deviceInfo?: Record<string, unknown>
 ): Promise<{ allowed: boolean; deviceCount: number; message?: string }> {
   try {
     // Call Supabase function
@@ -388,7 +388,7 @@ export async function activateLicense(
 
     if (authError) {
       // User might already exist
-      const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
+      const { data: { users } } = await supabaseAdmin.auth.admin.listUsers();
       const existingUser = users?.find(u => u.email === email);
 
       if (existingUser) {
