@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Zap, AlertCircle, CheckCircle } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface CreditBalance {
   credits: number;
@@ -12,21 +13,38 @@ interface CreditBalance {
 }
 
 export function CreditBadge() {
+  const { session, user, loading: authLoading } = useAuth();
   const [balance, setBalance] = useState<CreditBalance | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    fetchBalance();
-    // Refresh balance every 30 seconds
-    const interval = setInterval(fetchBalance, 30000);
-    return () => clearInterval(interval);
-  }, []);
+    // Only fetch balance if user is logged in
+    if (!authLoading && user && session) {
+      fetchBalance();
+      // Refresh balance every 30 seconds
+      const interval = setInterval(fetchBalance, 30000);
+      return () => clearInterval(interval);
+    } else if (!authLoading && !user) {
+      // User not logged in
+      setBalance(null);
+      setLoading(false);
+    }
+  }, [user, session, authLoading]);
 
   async function fetchBalance() {
+    if (!session?.access_token) {
+      setBalance(null);
+      setLoading(false);
+      return;
+    }
+
     try {
       const res = await fetch('/api/credits/balance', {
-        credentials: 'include'
+        credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        }
       });
 
       if (res.status === 401) {
@@ -45,6 +63,7 @@ export function CreditBadge() {
       const data = await res.json();
       setBalance(data);
       setError(false);
+      console.log('[CreditBadge] Balance fetched:', data);
     } catch (err) {
       console.error('Failed to fetch credit balance:', err);
       setError(true);

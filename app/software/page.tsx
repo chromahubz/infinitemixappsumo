@@ -13,11 +13,14 @@ import AudioEffects, { AudioEffectSettings } from '@/components/AudioEffects';
 import ProgressTracker from '@/components/ProgressTracker';
 import DescriptionPanel from '@/components/DescriptionPanel';
 import AudioAnalyzer from '@/components/AudioAnalyzer';
+import { CreditBadge } from '@/components/CreditBadge';
 import { Download, Sparkles } from 'lucide-react';
 import axios from 'axios';
 import { sortSongsForMix } from '@/lib/song-sorter';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Home() {
+  const { session } = useAuth();
   const [mode, setMode] = useState<'ai' | 'manual'>('ai');
   const [genre, setGenre] = useState('Lofi');
   const [audioEffects, setAudioEffects] = useState<AudioEffectSettings>({
@@ -446,8 +449,12 @@ export default function Home() {
         crossfadeDuration,
         audioEffects: audioEffects,
         videoFormat: videoFormat, // Pass selected format
+        durationMinutes: mode === 'ai' ? duration : undefined, // Only send duration for AI mode (credits)
       }, {
-        responseType: 'blob' // Receive binary video data
+        responseType: 'blob', // Receive binary video data
+        headers: session?.access_token ? {
+          'Authorization': `Bearer ${session.access_token}`
+        } : {}
       });
 
       // Create blob URL from the response
@@ -507,8 +514,13 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
       <div className="max-w-6xl mx-auto px-6 py-12">
-        {/* Header */}
-        <div className="text-center mb-12">
+        {/* Header with Credit Badge */}
+        <div className="relative text-center mb-12">
+          {/* Credit Badge - Top Right Corner (Absolute Position) */}
+          <div className="absolute top-0 right-0">
+            <CreditBadge />
+          </div>
+
           <h1 className="text-5xl font-bold text-gray-900 mb-3 flex items-center justify-center gap-3">
             <img src="/logo.png" alt="InfiniteMix Logo" className="w-10 h-10" />
             InfiniteMix

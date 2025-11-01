@@ -5,6 +5,7 @@ import path from 'path';
 import ffmpeg from 'fluent-ffmpeg';
 import ffmpegStatic from 'ffmpeg-static';
 import axios from 'axios';
+import { getUserFromRequest, checkAndDeductCredits, calculateCreditsForMix } from '@/lib/credits';
 
 // Increase timeout for processing (10000 seconds for longer mixes)
 export const maxDuration = 10000;
@@ -85,11 +86,43 @@ function generateVideoFormatFilter(format: 'original' | 'youtube' | 'tiktok', in
 
 export async function POST(req: NextRequest) {
   try {
-    const { songs, thumbnail, thumbnails, playlistOrder, crossfadeDuration = 5, audioEffects, videoFormat = 'original' } = await req.json();
+    const { songs, thumbnail, thumbnails, playlistOrder, crossfadeDuration = 5, audioEffects, videoFormat = 'original', durationMinutes } = await req.json();
 
     if (!songs || songs.length === 0) {
       return NextResponse.json({ error: 'No songs provided' }, { status: 400 });
     }
+
+    // ===== CREDIT SYSTEM INTEGRATION =====
+    // Get authenticated user (if any)
+    const userId = await getUserFromRequest(req);
+
+    // If user is authenticated and has a license, check credits
+    if (userId && durationMinutes) {
+      const creditsNeeded = calculateCreditsForMix(durationMinutes);
+      console.log(`[Mix] User ${userId} creating ${durationMinutes}-min mix. Credits needed: ${creditsNeeded}`);
+
+      const creditCheck = await checkAndDeductCredits(userId, 'ai_music', creditsNeeded);
+
+      if (!creditCheck.allowed) {
+        console.log(`[Mix] Insufficient credits for user ${userId}. Have: ${creditCheck.remaining}, Need: ${creditsNeeded}`);
+        return NextResponse.json(
+          {
+            error: `Insufficient AI credits. You need ${creditsNeeded} credits but only have ${creditCheck.remaining}.`,
+            needed: creditsNeeded,
+            remaining: creditCheck.remaining,
+            upgradeMessage: 'Manual mixing is still unlimited! Or contact support for more AI credits.',
+          },
+          { status: 402 } // 402 Payment Required
+        );
+      }
+
+      console.log(`[Mix] Credits deducted successfully. Remaining: ${creditCheck.remaining}`);
+    } else if (!durationMinutes) {
+      console.log(`[Mix] No duration provided - manual mix (free, no credits)`);
+    } else {
+      console.log(`[Mix] No user authenticated - allowing generation (backwards compat)`);
+    }
+    // ===== END CREDIT SYSTEM =====
 
     console.log('Creating mix with playlist order:', playlistOrder);
     console.log('Received songs:', songs.map((s: Song) => ({ filename: s.title, title: s.title, path: s.path })));
