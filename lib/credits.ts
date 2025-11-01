@@ -413,6 +413,15 @@ export async function activateLicense(
           };
         }
 
+        // Send magic link for login
+        console.log(`[License] Sending magic link to existing user ${email}`);
+        const magicLinkResult = await sendMagicLink(email);
+
+        if (!magicLinkResult.success) {
+          console.error('[License] Failed to send magic link:', magicLinkResult.error);
+          // Don't fail the whole activation
+        }
+
         return {
           success: true,
           userId: existingUser.id,
@@ -445,6 +454,15 @@ export async function activateLicense(
         success: false,
         error: 'Failed to create license: ' + licenseError.message
       };
+    }
+
+    // Send magic link for login
+    console.log(`[License] Sending magic link to ${email}`);
+    const magicLinkResult = await sendMagicLink(email);
+
+    if (!magicLinkResult.success) {
+      console.error('[License] Failed to send magic link:', magicLinkResult.error);
+      // Don't fail the whole activation, user can request another magic link
     }
 
     return {

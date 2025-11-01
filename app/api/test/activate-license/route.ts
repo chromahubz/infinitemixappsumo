@@ -15,19 +15,24 @@ export async function POST(req: Request) {
       );
     }
 
-    // Generate test license key
+    // Generate test license key with timestamp to ensure uniqueness
     const tier = planTier || 'pro';
-    const randomId = Math.random().toString(36).substring(7).toUpperCase();
-    const testLicenseKey = `APPSUMO-${tier.toUpperCase()}-TEST-${randomId}`;
+    const timestamp = Date.now().toString(36).toUpperCase();
+    const randomId = Math.random().toString(36).substring(2, 8).toUpperCase();
+    const testLicenseKey = `APPSUMO-${tier.toUpperCase()}-TEST-${timestamp}${randomId}`;
 
     console.log(`[TEST] Creating test license: ${testLicenseKey} for ${email}`);
+    console.log(`[TEST] Plan tier: ${tier}, Credits: ${require('@/lib/credit-calculator').PLAN_CREDITS[tier as any]}`);
 
     // Use the real activation function
     const result = await activateLicense(testLicenseKey, email);
 
+    console.log(`[TEST] Activation result:`, result);
+
     if (!result.success) {
+      console.error(`[TEST] Activation failed:`, result.error);
       return NextResponse.json(
-        { error: result.error },
+        { error: result.error || 'Failed to activate license' },
         { status: 400 }
       );
     }
