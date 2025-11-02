@@ -10,9 +10,12 @@ cmds = [
   "rm -rf .next",
   "echo '=== Verifying lib/task-store.ts exists ==='",
   "ls -la lib/ | grep task-store || echo 'WARNING: task-store.ts not found!'",
+  "echo '=== Preparing environment variables ==='",
+  "chmod +x scripts/prepare-env.sh",
+  "./scripts/prepare-env.sh",
   "echo '=== Building application ==='",
   "npm run build"
 ]
 
 [start]
-cmd = "npm start"
+cmd = "./start.sh"
