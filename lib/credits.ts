@@ -396,24 +396,30 @@ export async function activateLicense(
 
     if (authError) {
       console.error('[License] Auth error:', authError);
-      console.error('[License] Auth error details:', JSON.stringify(authError, null, 2));
+      console.error('[License] Auth error message:', authError.message);
+      console.error('[License] Auth error status:', authError.status);
 
-      // User might already exist
-      console.log('[License] Checking if user already exists...');
-      const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
+      // Check if user already exists (error code 422 or message contains "already")
+      const userExists = authError.message?.toLowerCase().includes('already') ||
+                         authError.message?.toLowerCase().includes('exist') ||
+                         authError.status === 422;
 
-      if (listError) {
-        console.error('[License] Failed to list users:', listError);
-        return {
-          success: false,
-          error: 'Failed to verify user: ' + listError.message
-        };
-      }
+      if (userExists) {
+        console.log('[License] User already exists, looking up by email...');
 
-      const existingUser = users?.find(u => u.email === email);
-      console.log('[License] Existing user found:', !!existingUser);
+        // Use getUserByEmail instead of listUsers (more efficient)
+        const { data: { user: existingUser }, error: getUserError } = await supabaseAdmin.auth.admin.getUserByEmail(email);
 
-      if (existingUser) {
+        if (getUserError || !existingUser) {
+          console.error('[License] Failed to get user by email:', getUserError);
+          return {
+            success: false,
+            error: 'User exists but failed to retrieve: ' + (getUserError?.message || 'Unknown error')
+          };
+        }
+
+        console.log('[License] Found existing user:', existingUser.id);
+
         // User exists, just create license
         const { data: license, error: licenseError } = await supabaseAdmin
           .from('appsumo_licenses')
@@ -429,6 +435,7 @@ export async function activateLicense(
           .single();
 
         if (licenseError) {
+          console.error('[License] Failed to create license:', licenseError);
           return {
             success: false,
             error: 'Failed to activate license: ' + licenseError.message
@@ -451,6 +458,8 @@ export async function activateLicense(
         };
       }
 
+      // Not a "user exists" error - this is a real error
+      console.error('[License] Real auth error (not user exists)');
       return {
         success: false,
         error: 'Failed to create account: ' + authError.message
