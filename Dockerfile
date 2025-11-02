@@ -28,28 +28,14 @@ RUN echo "=== Verifying lib/task-store.ts exists ===" && \
 # Remove any cached builds
 RUN rm -rf .next
 
-# Accept build arguments for NEXT_PUBLIC_ variables (available at build time)
-ARG NEXT_PUBLIC_SUPABASE_URL
-ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
-ARG NEXT_PUBLIC_FIREWORKS_API_KEY
-ARG NEXT_PUBLIC_GOOGLE_API_KEY
-ARG NEXT_PUBLIC_APP_URL
+# Make prepare-env script executable
+RUN chmod +x scripts/prepare-env.sh
 
-# Set as environment variables for the build
-ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
-ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
-ENV NEXT_PUBLIC_FIREWORKS_API_KEY=$NEXT_PUBLIC_FIREWORKS_API_KEY
-ENV NEXT_PUBLIC_GOOGLE_API_KEY=$NEXT_PUBLIC_GOOGLE_API_KEY
-ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
+# Run prepare-env script to create .env.production with actual values
+# Railway's env vars are available as environment variables during build
+RUN ./scripts/prepare-env.sh
 
-# Debug: Show what env vars we have (masked)
-RUN echo "=== Build Environment Check ===" && \
-    echo "NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL:-NOT_SET}" && \
-    echo "NEXT_PUBLIC_SUPABASE_ANON_KEY length: ${#NEXT_PUBLIC_SUPABASE_ANON_KEY}" && \
-    echo "NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-NOT_SET}" && \
-    echo "==============================="
-
-# Build the application (with env vars available)
+# Build the application (Next.js will read .env.production)
 RUN npm run build
 
 # Copy startup script
