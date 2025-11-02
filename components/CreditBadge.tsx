@@ -92,16 +92,16 @@ export function CreditBadge() {
     balance
   });
 
-  // Show "Activate License" button for non-logged-in users
+  // Show "Login" button for non-logged-in users
   if (!authLoading && !user) {
-    console.log('✅ [CreditBadge] Rendering: Activate License button');
+    console.log('✅ [CreditBadge] Rendering: Login button');
     return (
       <a
-        href="/activate"
+        href="/login"
         className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full font-semibold text-sm hover:from-purple-700 hover:to-blue-700 transition-all hover:scale-105 shadow-lg"
       >
         <Zap className="w-4 h-4" />
-        <span>Activate License</span>
+        <span>Login</span>
       </a>
     );
   }
