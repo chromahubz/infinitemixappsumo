@@ -42,6 +42,13 @@ ENV NEXT_PUBLIC_FIREWORKS_API_KEY=$NEXT_PUBLIC_FIREWORKS_API_KEY
 ENV NEXT_PUBLIC_GOOGLE_API_KEY=$NEXT_PUBLIC_GOOGLE_API_KEY
 ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
 
+# Debug: Show what env vars we have (masked)
+RUN echo "=== Build Environment Check ===" && \
+    echo "NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL:-NOT_SET}" && \
+    echo "NEXT_PUBLIC_SUPABASE_ANON_KEY length: ${#NEXT_PUBLIC_SUPABASE_ANON_KEY}" && \
+    echo "NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-NOT_SET}" && \
+    echo "==============================="
+
 # Build the application (with env vars available)
 RUN npm run build
 
