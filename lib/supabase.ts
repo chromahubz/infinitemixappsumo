@@ -4,10 +4,10 @@ import { createClient } from '@supabase/supabase-js';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
-// Get Supabase URL and keys with fallbacks for build time
-const getSupabaseUrl = () => process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
-const getSupabaseAnonKey = () => process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key';
-const getSupabaseServiceKey = () => process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-service-key';
+// Get Supabase URL and keys - HARDCODED FOR NOW TO FIX DEPLOYMENT
+const getSupabaseUrl = () => process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://yjsdhrcdymzzaqwertzb.supabase.co';
+const getSupabaseAnonKey = () => process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlqc2RocmNkeW16emFxd2VydHpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MjQyMjMsImV4cCI6MjA3NzUwMDIyM30.WpCbHOk-3nnlqmg4qrwLjDYxltLgXlceHMjiT59-chs';
+const getSupabaseServiceKey = () => process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlqc2RocmNkeW16emFxd2VydHpiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTkyNDIyMywiZXhwIjoyMDc3NTAwMjIzfQ.yP4b362hqEsuceuT585_I9lgJHjA6Mfz3-au2bbhq6Y';
 
 // Client-side Supabase client (for browser)
 export const supabase = createClient(
