@@ -363,25 +363,18 @@ export async function activateLicense(
       };
     }
 
-    // Validate license key format
-    if (!licenseKey.startsWith('APPSUMO-')) {
+    // Verify license with AppSumo API
+    const { verifyAppSumoLicense, getCreditsForTier } = await import('./appsumo-api');
+    const verification = await verifyAppSumoLicense(licenseKey, email);
+
+    if (!verification.valid) {
       return {
         success: false,
-        error: 'Invalid license key format'
+        error: verification.error || 'Invalid license key'
       };
     }
 
-    // Parse plan tier from license key (or validate with AppSumo API)
-    // For now, assume format: APPSUMO-{TIER}-{RANDOM}
-    const tierMatch = licenseKey.match(/APPSUMO-(\w+)-/);
-    let planTier: PlanTier = 'creator'; // Default
-
-    if (tierMatch) {
-      const tier = tierMatch[1].toLowerCase();
-      if (tier === 'creator' || tier === 'pro' || tier === 'studio' || tier === 'agency') {
-        planTier = tier as PlanTier;
-      }
-    }
+    const planTier = verification.tier as PlanTier;
 
     // Create user account with magic link
     console.log(`[License] Attempting to create user account for ${email}`);

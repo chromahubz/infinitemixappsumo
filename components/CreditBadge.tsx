@@ -18,25 +18,15 @@ export function CreditBadge() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  // 🔍 DEBUG: Log component mount
   useEffect(() => {
-    console.log('🔍 [CreditBadge] Component mounted');
-    console.log('🔍 [CreditBadge] Auth state:', { user: !!user, session: !!session, authLoading });
-  }, []);
-
-  useEffect(() => {
-    console.log('🔍 [CreditBadge] Auth effect triggered:', { authLoading, hasUser: !!user, hasSession: !!session });
-
     // Only fetch balance if user is logged in
     if (!authLoading && user && session) {
-      console.log('🔍 [CreditBadge] User is logged in, fetching balance...');
       fetchBalance();
       // Refresh balance every 30 seconds
       const interval = setInterval(fetchBalance, 30000);
       return () => clearInterval(interval);
     } else if (!authLoading && !user) {
       // User not logged in
-      console.log('🔍 [CreditBadge] User NOT logged in, will show Activate button');
       setBalance(null);
       setLoading(false);
     }
@@ -82,19 +72,8 @@ export function CreditBadge() {
     }
   }
 
-  // 🔍 DEBUG: Log render state
-  console.log('🔍 [CreditBadge] Render state:', {
-    authLoading,
-    hasUser: !!user,
-    loading,
-    error,
-    hasBalance: !!balance,
-    balance
-  });
-
   // Show "Login" button for non-logged-in users
   if (!authLoading && !user) {
-    console.log('✅ [CreditBadge] Rendering: Login button');
     return (
       <a
         href="/login"
@@ -108,7 +87,6 @@ export function CreditBadge() {
 
   // Show loading state
   if (loading) {
-    console.log('⏳ [CreditBadge] Rendering: Loading state');
     return (
       <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-400 rounded-full font-semibold text-sm">
         <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
@@ -119,19 +97,16 @@ export function CreditBadge() {
 
   // Show error state
   if (error) {
-    console.log('❌ [CreditBadge] Rendering: Error state (hidden)');
     return null;
   }
 
   // Don't show badge if no balance
   if (!balance) {
-    console.log('❌ [CreditBadge] Rendering: No balance (hidden)');
     return null;
   }
 
   // Don't show badge for unlimited users
   if (balance.unlimited || balance.credits === -1) {
-    console.log('✅ [CreditBadge] Rendering: Unlimited Free badge');
     return (
       <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-full border-2 border-green-200 font-semibold text-sm">
         <CheckCircle className="w-4 h-4" />
@@ -160,8 +135,6 @@ export function CreditBadge() {
       return <AlertCircle className="w-4 h-4" />;
     }
   };
-
-  console.log('✅ [CreditBadge] Rendering: Credit badge with balance', balance);
 
   return (
     <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 font-semibold text-sm ${getColorClasses()} transition-all hover:scale-105`}>
