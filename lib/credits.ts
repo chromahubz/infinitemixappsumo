@@ -532,7 +532,7 @@ export async function sendMagicLink(email: string): Promise<{ success: boolean; 
     const { error } = await supabaseAdmin.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL || 'https://infinitemix.app'}/auth/callback`
       }
     });
 
