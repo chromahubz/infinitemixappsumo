@@ -405,22 +405,36 @@ export async function activateLicense(
                          authError.status === 422;
 
       if (userExists) {
-        console.log('[License] User already exists, looking up by email...');
+        console.log('[License] User already exists, looking up via admin API...');
 
-        // Use getUserByEmail instead of listUsers (more efficient)
-        const { data: { user: existingUser }, error: getUserError } = await supabaseAdmin.auth.admin.getUserByEmail(email);
+        // Get all users and find by email (inefficient but works)
+        // TODO: Replace with proper RPC function for production
+        const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
 
-        if (getUserError || !existingUser) {
-          console.error('[License] Failed to get user by email:', getUserError);
+        if (listError) {
+          console.error('[License] Failed to list users:', listError);
+          // Fall back to sending magic link
+          await sendMagicLink(email);
           return {
             success: false,
-            error: 'User exists but failed to retrieve: ' + (getUserError?.message || 'Unknown error')
+            error: `Account exists. Check your email for login link. Activate manually with key: ${licenseKey}`
+          };
+        }
+
+        const existingUser = users?.find(u => u.email === email);
+
+        if (!existingUser) {
+          console.error('[License] User should exist but not found');
+          await sendMagicLink(email);
+          return {
+            success: false,
+            error: `Account exists. Check your email for login link. Activate manually with key: ${licenseKey}`
           };
         }
 
         console.log('[License] Found existing user:', existingUser.id);
 
-        // User exists, just create license
+        // User exists, create license
         const { data: license, error: licenseError } = await supabaseAdmin
           .from('appsumo_licenses')
           .insert({
@@ -442,13 +456,12 @@ export async function activateLicense(
           };
         }
 
-        // Send magic link for login
+        // Send magic link
         console.log(`[License] Sending magic link to existing user ${email}`);
         const magicLinkResult = await sendMagicLink(email);
 
         if (!magicLinkResult.success) {
           console.error('[License] Failed to send magic link:', magicLinkResult.error);
-          // Don't fail the whole activation
         }
 
         return {
