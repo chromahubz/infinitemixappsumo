@@ -253,14 +253,16 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="bg-white rounded-2xl p-8 shadow-xl">
-              <div className="aspect-video bg-gradient-to-br from-purple-900 to-blue-900 rounded-lg flex items-center justify-center mb-6">
-                <Play className="w-20 h-20 text-white opacity-80" />
+              <div className="aspect-video bg-black rounded-lg overflow-hidden mb-6">
+                <iframe
+                  src="https://drive.google.com/file/d/1LdBOMMWwrSrNA9m02sb13tzD7Fdkk_BP/preview"
+                  className="w-full h-full"
+                  allow="autoplay"
+                  title="InfiniteMix Demo Video"
+                ></iframe>
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">See InfiniteMix in Action</h3>
               <p className="text-gray-700 mb-4">Watch how creators produce viral lofi mixes, study playlists, and background music for content in minutes</p>
-              <button className="w-full py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors">
-                Watch Tutorial Video
-              </button>
             </div>
           </div>
         </div>
