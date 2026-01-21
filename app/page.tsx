@@ -253,16 +253,27 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="bg-white rounded-2xl p-8 shadow-xl">
-              <div className="aspect-video bg-black rounded-lg overflow-hidden mb-6">
+              <div className="aspect-video bg-black rounded-lg overflow-hidden mb-6 relative">
                 <iframe
                   src="https://drive.google.com/file/d/1LdBOMMWwrSrNA9m02sb13tzD7Fdkk_BP/preview"
-                  className="w-full h-full"
-                  allow="autoplay"
+                  className="w-full h-full border-0"
+                  allow="autoplay; fullscreen"
+                  allowFullScreen
                   title="InfiniteMix Demo Video"
+                  loading="lazy"
                 ></iframe>
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">See InfiniteMix in Action</h3>
               <p className="text-gray-700 mb-4">Watch how creators produce viral lofi mixes, study playlists, and background music for content in minutes</p>
+              <a
+                href="https://drive.google.com/file/d/1LdBOMMWwrSrNA9m02sb13tzD7Fdkk_BP/view"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 font-medium"
+              >
+                <Play className="w-4 h-4" />
+                Open in new tab if video doesn't load
+              </a>
             </div>
           </div>
         </div>
