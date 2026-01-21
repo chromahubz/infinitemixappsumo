@@ -58,7 +58,10 @@ export default function LandingPage() {
               >
                 Start Creating Free <ArrowRight className="w-5 h-5" />
               </Link>
-              <button className="flex items-center gap-2 px-8 py-4 bg-white text-purple-600 text-lg font-bold rounded-lg border-2 border-purple-600 hover:bg-purple-50 transition-all w-full sm:w-auto justify-center">
+              <button
+                onClick={() => document.getElementById('demo-video')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+                className="flex items-center gap-2 px-8 py-4 bg-white text-purple-600 text-lg font-bold rounded-lg border-2 border-purple-600 hover:bg-purple-50 transition-all w-full sm:w-auto justify-center"
+              >
                 <Play className="w-5 h-5" /> Watch Demo
               </button>
             </div>
@@ -252,7 +255,7 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
-            <div className="bg-white rounded-2xl p-8 shadow-xl">
+            <div id="demo-video" className="bg-white rounded-2xl p-8 shadow-xl">
               <div className="aspect-video bg-black rounded-lg overflow-hidden mb-6 relative">
                 <iframe
                   src="https://drive.google.com/file/d/1LdBOMMWwrSrNA9m02sb13tzD7Fdkk_BP/preview"
