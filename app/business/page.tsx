@@ -207,23 +207,61 @@ export default function OpportunityPage() {
             </div>
           </div>
 
-          <div className="bg-blue-50 rounded-2xl p-10 border-2 border-blue-200">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">Real Numbers: What Lofi Girl Makes</h3>
-            <div className="grid md:grid-cols-3 gap-6 mb-6">
-              <div className="bg-white rounded-xl p-6 shadow text-center">
-                <div className="text-4xl font-bold text-gray-900 mb-2">15.6M</div>
-                <div className="text-gray-600 font-medium">Subscribers</div>
-              </div>
-              <div className="bg-white rounded-xl p-6 shadow text-center">
-                <div className="text-4xl font-bold text-green-600 mb-2">$38K-116K</div>
-                <div className="text-gray-600 font-medium">Monthly Revenue</div>
-              </div>
-              <div className="bg-white rounded-xl p-6 shadow text-center">
-                <div className="text-4xl font-bold text-blue-600 mb-2">2.5B</div>
-                <div className="text-gray-600 font-medium">Total Views</div>
+          <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-10 border-2 border-blue-200">
+            <h3 className="text-3xl font-bold text-gray-900 mb-4 text-center">Real Numbers: What Lofi Girl Makes</h3>
+            <p className="text-center text-gray-600 mb-8 text-lg">The most successful lofi channel on YouTube - here's the proof</p>
+
+            {/* Screenshot Placeholder - Add your Lofi Girl screenshot here */}
+            <div className="bg-white rounded-xl p-6 shadow-2xl mb-8 border-4 border-purple-200">
+              <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg p-8 text-center">
+                <p className="text-white text-lg mb-4">📸 Add Lofi Girl YouTube Channel Screenshot Here</p>
+                <p className="text-gray-400 text-sm mb-2">Save your screenshot to: <code className="bg-gray-700 px-2 py-1 rounded">/public/lofi-girl-channel.png</code></p>
+                <p className="text-gray-400 text-sm">Then uncomment the img tag below:</p>
+                {/* <img src="/lofi-girl-channel.png" alt="Lofi Girl YouTube Channel" className="w-full rounded-lg mt-4" /> */}
               </div>
             </div>
-            <p className="text-center text-gray-700">
+
+            <div className="grid md:grid-cols-3 gap-6 mb-6">
+              <div className="bg-white rounded-xl p-6 shadow-lg text-center border-2 border-blue-200">
+                <div className="text-4xl font-bold text-gray-900 mb-2">15.6M</div>
+                <div className="text-gray-600 font-medium">Subscribers</div>
+                <div className="text-xs text-gray-500 mt-2">327 total videos</div>
+              </div>
+              <div className="bg-white rounded-xl p-6 shadow-lg text-center border-2 border-green-200">
+                <div className="text-4xl font-bold text-green-600 mb-2">$38K-116K</div>
+                <div className="text-gray-600 font-medium">Monthly Revenue</div>
+                <div className="text-xs text-gray-500 mt-2">From YouTube ads alone</div>
+              </div>
+              <div className="bg-white rounded-xl p-6 shadow-lg text-center border-2 border-purple-200">
+                <div className="text-4xl font-bold text-blue-600 mb-2">2.5B</div>
+                <div className="text-gray-600 font-medium">Total Views</div>
+                <div className="text-xs text-gray-500 mt-2">Across all content</div>
+              </div>
+            </div>
+
+            <div className="bg-yellow-50 border-2 border-yellow-300 rounded-xl p-6 mb-6">
+              <h4 className="font-bold text-gray-900 mb-3 text-lg">🔥 Their Most Viral Videos:</h4>
+              <div className="grid md:grid-cols-2 gap-3 text-sm">
+                <div className="flex justify-between items-center bg-white px-4 py-2 rounded-lg">
+                  <span className="text-gray-700">1 A.M Study Session 📚</span>
+                  <span className="font-bold text-purple-600">128M views</span>
+                </div>
+                <div className="flex justify-between items-center bg-white px-4 py-2 rounded-lg">
+                  <span className="text-gray-700">Best of lofi 2018 🎵</span>
+                  <span className="font-bold text-purple-600">56M views</span>
+                </div>
+                <div className="flex justify-between items-center bg-white px-4 py-2 rounded-lg">
+                  <span className="text-gray-700">Best of lofi hip hop 2021 ✨</span>
+                  <span className="font-bold text-purple-600">51M views</span>
+                </div>
+                <div className="flex justify-between items-center bg-white px-4 py-2 rounded-lg">
+                  <span className="text-gray-700">2 A.M Study Session 🌙</span>
+                  <span className="font-bold text-purple-600">23M views</span>
+                </div>
+              </div>
+            </div>
+
+            <p className="text-center text-gray-700 text-lg">
               <strong>Started in 2015 with simple lofi beats.</strong> They built their empire using AI-generated and curated music,
               professional mixing tools, and consistent uploads. <span className="text-green-600 font-bold">Now you can do the same with InfiniteMix.</span>
             </p>
