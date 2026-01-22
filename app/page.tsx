@@ -285,6 +285,55 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Real Mixes Section */}
+      <section className="py-20 bg-gradient-to-br from-purple-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Real Mixes Created with InfiniteMix
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Listen to actual lofi mixes generated and mixed by our platform
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-shadow">
+              <div className="aspect-video bg-black rounded-lg overflow-hidden">
+                <iframe
+                  src="https://www.youtube.com/embed/BmnqYrLwbOM"
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title="InfiniteMix Sample 1"
+                ></iframe>
+              </div>
+            </div>
+            <div className="bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-shadow">
+              <div className="aspect-video bg-black rounded-lg overflow-hidden">
+                <iframe
+                  src="https://www.youtube.com/embed/yz0K_RYGpW8"
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title="InfiniteMix Sample 2"
+                ></iframe>
+              </div>
+            </div>
+            <div className="bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-shadow">
+              <div className="aspect-video bg-black rounded-lg overflow-hidden">
+                <iframe
+                  src="https://www.youtube.com/embed/JQAK3iJO05I"
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title="InfiniteMix Sample 3"
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Core Features */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
