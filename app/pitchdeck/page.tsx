@@ -82,7 +82,7 @@ export default function PitchDeckPage() {
             <div className="bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border-2 border-blue-200">
               <Rocket className="w-10 h-10 text-blue-600 mb-3" />
               <h3 className="font-bold text-gray-900 mb-2">Product Ready</h3>
-              <p className="text-gray-600">Beta-tested platform ready for launch. Pre-launch waitlist building momentum</p>
+              <p className="text-gray-600">Web platform ready for launch. iOS mobile app in demo phase. Pre-launch waitlist building momentum</p>
             </div>
             <div className="bg-gradient-to-br from-green-50 to-white p-6 rounded-xl border-2 border-green-200">
               <DollarSign className="w-10 h-10 text-green-600 mb-3" />
@@ -293,7 +293,7 @@ export default function PitchDeckPage() {
               <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border-2 border-white/20">
                 <div className="aspect-video bg-black rounded-lg overflow-hidden">
                   <iframe
-                    src="https://www.youtube.com/embed/BmnqYrLwbOM"
+                    src="https://www.youtube.com/embed/BmnqYrLwbOM?modestbranding=1&rel=0&showinfo=0"
                     className="w-full h-full"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
@@ -303,7 +303,7 @@ export default function PitchDeckPage() {
               <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border-2 border-white/20">
                 <div className="aspect-video bg-black rounded-lg overflow-hidden">
                   <iframe
-                    src="https://www.youtube.com/embed/yz0K_RYGpW8"
+                    src="https://www.youtube.com/embed/yz0K_RYGpW8?modestbranding=1&rel=0&showinfo=0"
                     className="w-full h-full"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
@@ -313,7 +313,7 @@ export default function PitchDeckPage() {
               <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border-2 border-white/20">
                 <div className="aspect-video bg-black rounded-lg overflow-hidden">
                   <iframe
-                    src="https://www.youtube.com/embed/JQAK3iJO05I"
+                    src="https://www.youtube.com/embed/JQAK3iJO05I?modestbranding=1&rel=0&showinfo=0"
                     className="w-full h-full"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
@@ -696,6 +696,13 @@ export default function PitchDeckPage() {
                       <td className="text-center p-4">Extra fee</td>
                       <td className="text-center p-4">Limited</td>
                     </tr>
+                    <tr>
+                      <td className="p-4 font-semibold">Mobile App</td>
+                      <td className="text-center p-4 bg-green-50 font-bold text-green-600">✓ iOS (demo)</td>
+                      <td className="text-center p-4">Desktop only</td>
+                      <td className="text-center p-4">✗</td>
+                      <td className="text-center p-4">✗</td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -798,6 +805,7 @@ export default function PitchDeckPage() {
                   <ul className="text-sm space-y-1 opacity-90">
                     <li>• 1-2 senior engineers + contractors</li>
                     <li>• AI model training & API costs</li>
+                    <li>• iOS mobile app (currently in demo phase)</li>
                     <li>• Product iterations & features</li>
                     <li>• Development tools & infrastructure</li>
                   </ul>

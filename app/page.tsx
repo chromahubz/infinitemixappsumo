@@ -300,7 +300,7 @@ export default function LandingPage() {
             <div className="bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-shadow">
               <div className="aspect-video bg-black rounded-lg overflow-hidden">
                 <iframe
-                  src="https://www.youtube.com/embed/BmnqYrLwbOM"
+                  src="https://www.youtube.com/embed/BmnqYrLwbOM?modestbranding=1&rel=0&showinfo=0"
                   className="w-full h-full"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
@@ -311,7 +311,7 @@ export default function LandingPage() {
             <div className="bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-shadow">
               <div className="aspect-video bg-black rounded-lg overflow-hidden">
                 <iframe
-                  src="https://www.youtube.com/embed/yz0K_RYGpW8"
+                  src="https://www.youtube.com/embed/yz0K_RYGpW8?modestbranding=1&rel=0&showinfo=0"
                   className="w-full h-full"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
@@ -322,7 +322,7 @@ export default function LandingPage() {
             <div className="bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-shadow">
               <div className="aspect-video bg-black rounded-lg overflow-hidden">
                 <iframe
-                  src="https://www.youtube.com/embed/JQAK3iJO05I"
+                  src="https://www.youtube.com/embed/JQAK3iJO05I?modestbranding=1&rel=0&showinfo=0"
                   className="w-full h-full"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
