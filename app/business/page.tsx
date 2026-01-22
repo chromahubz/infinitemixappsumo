@@ -211,14 +211,16 @@ export default function OpportunityPage() {
             <h3 className="text-3xl font-bold text-gray-900 mb-4 text-center">Real Numbers: What Lofi Girl Makes</h3>
             <p className="text-center text-gray-600 mb-8 text-lg">The most successful lofi channel on YouTube - here's the proof</p>
 
-            {/* Screenshot Placeholder - Add your Lofi Girl screenshot here */}
+            {/* Lofi Girl YouTube Screenshot */}
             <div className="bg-white rounded-xl p-6 shadow-2xl mb-8 border-4 border-purple-200">
-              <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg p-8 text-center">
-                <p className="text-white text-lg mb-4">📸 Add Lofi Girl YouTube Channel Screenshot Here</p>
-                <p className="text-gray-400 text-sm mb-2">Save your screenshot to: <code className="bg-gray-700 px-2 py-1 rounded">/public/lofi-girl-channel.png</code></p>
-                <p className="text-gray-400 text-sm">Then uncomment the img tag below:</p>
-                {/* <img src="/lofi-girl-channel.png" alt="Lofi Girl YouTube Channel" className="w-full rounded-lg mt-4" /> */}
-              </div>
+              <img
+                src="https://i.ibb.co/1GptSrWK/download-16.webp"
+                alt="Lofi Girl YouTube Channel - 15.6M Subscribers with viral videos"
+                className="w-full rounded-lg"
+              />
+              <p className="text-center text-gray-600 text-sm mt-4 font-semibold">
+                Real screenshot from Lofi Girl's YouTube channel showing 128M+ views on individual videos
+              </p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-6 mb-6">
