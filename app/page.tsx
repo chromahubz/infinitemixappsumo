@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import {
-  Sparkle, Lightning, MusicNotes, MagicWand, Clock, TrendingUp, CheckCircle, ArrowRight,
+  Sparkle, Lightning, MusicNotes, MagicWand, Clock, TrendUp, CheckCircle, ArrowRight,
   Play, Users, Star, Upload, Sliders, Image as ImageIcon, Video, Download, Headphones,
   ChartBar, Repeat, Palette, FileAudio, Microphone, Radio as RadioIcon, Disc, ListMusic,
   Globe, Shield, Rocket, Target, Medal, CaretDown, CaretUp, Smiley, Heart, Fire
@@ -79,7 +79,7 @@ export default function LandingPage() {
                 <span className="text-gray-700 font-semibold">10,000+ Active Users</span>
               </div>
               <div className="flex items-center gap-2 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm">
-                <TrendingUp className="w-5 h-5 text-green-600" weight="bold" />
+                <TrendUp className="w-5 h-5 text-green-600" weight="bold" />
                 <span className="text-gray-700 font-semibold">500K+ Mixes Created</span>
               </div>
             </div>
