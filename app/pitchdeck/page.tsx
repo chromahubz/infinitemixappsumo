@@ -48,16 +48,16 @@ export default function PitchDeckPage() {
             </p>
             <div className="flex flex-wrap justify-center gap-6 text-sm opacity-90">
               <div className="flex items-center gap-2">
-                <Users className="w-5 h-5" />
-                <span>10,000+ Users</span>
+                <Zap className="w-5 h-5" />
+                <span>5 Minutes to Professional Mix</span>
               </div>
               <div className="flex items-center gap-2">
-                <Video className="w-5 h-5" />
-                <span>500K+ Mixes Created</span>
+                <DollarSign className="w-5 h-5" />
+                <span>$10B+ Market Opportunity</span>
               </div>
               <div className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5" />
-                <span>Growing 40% MoM</span>
+                <Rocket className="w-5 h-5" />
+                <span>Pre-Launch • Seed Round</span>
               </div>
             </div>
           </div>
@@ -81,13 +81,13 @@ export default function PitchDeckPage() {
             </div>
             <div className="bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border-2 border-blue-200">
               <Rocket className="w-10 h-10 text-blue-600 mb-3" />
-              <h3 className="font-bold text-gray-900 mb-2">Traction</h3>
-              <p className="text-gray-600">10K users, 500K+ mixes, 40% MoM growth in user acquisition</p>
+              <h3 className="font-bold text-gray-900 mb-2">Product Ready</h3>
+              <p className="text-gray-600">Beta-tested platform ready for launch. Pre-launch waitlist building momentum</p>
             </div>
             <div className="bg-gradient-to-br from-green-50 to-white p-6 rounded-xl border-2 border-green-200">
               <DollarSign className="w-10 h-10 text-green-600 mb-3" />
               <h3 className="font-bold text-gray-900 mb-2">Business Model</h3>
-              <p className="text-gray-600">SaaS + credits model. LTV:CAC ratio of 3:1, 6-month payback</p>
+              <p className="text-gray-600">Flexible pricing ($29-$199) + credit system. Enterprise white-label ready</p>
             </div>
             <div className="bg-gradient-to-br from-yellow-50 to-white p-6 rounded-xl border-2 border-yellow-200">
               <Shield className="w-10 h-10 text-yellow-600 mb-3" />
@@ -180,19 +180,19 @@ export default function PitchDeckPage() {
                   <ul className="space-y-2 text-gray-700">
                     <li className="flex items-center gap-2">
                       <Zap className="w-4 h-4 text-purple-600" />
-                      <span><strong>AI Music Generation:</strong> Kie.ai integration for royalty-free tracks</span>
+                      <span><strong>AI Music Generation:</strong> Advanced ML models for royalty-free track creation</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <Zap className="w-4 h-4 text-purple-600" />
-                      <span><strong>Harmonic Analysis:</strong> Essentia.js for BPM/key detection</span>
+                      <span><strong>Audio Analysis:</strong> Real-time BPM and key detection engine</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <Zap className="w-4 h-4 text-purple-600" />
-                      <span><strong>Smart Sequencing:</strong> Proprietary algorithm for optimal track order</span>
+                      <span><strong>Smart Sequencing:</strong> Proprietary harmonic mixing algorithm</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <Zap className="w-4 h-4 text-purple-600" />
-                      <span><strong>Video Processing:</strong> FFmpeg-powered MP4 export</span>
+                      <span><strong>Video Processing:</strong> High-performance media encoding pipeline</span>
                     </li>
                   </ul>
                 </div>
@@ -218,6 +218,15 @@ export default function PitchDeckPage() {
                     </li>
                   </ul>
                 </div>
+              </div>
+
+              <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-6 rounded-xl mt-6">
+                <h4 className="font-bold mb-3 text-lg">Our Secret Sauce: Custom Harmonic Mixing Algorithm</h4>
+                <p className="opacity-95 leading-relaxed">
+                  Our proprietary in-house algorithm analyzes BPM, musical key, energy levels, and harmonic compatibility
+                  to create seamless transitions between tracks. Unlike traditional DJ software that requires manual beatmatching,
+                  our AI automatically sequences songs in the optimal order for maximum listener engagement and retention.
+                </p>
               </div>
 
               <div className="bg-green-50 p-6 rounded-lg border-2 border-green-200">
@@ -340,100 +349,110 @@ export default function PitchDeckPage() {
         </div>
       </section>
 
-      {/* Slide 4: Traction */}
+      {/* Slide 4: Why Now & Go-to-Market */}
       <section className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-6">
           <div className="bg-gradient-to-br from-green-50 to-white rounded-2xl shadow-xl p-10 border-2 border-green-200">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold text-gray-900">04. Traction & Metrics</h2>
+              <h2 className="text-3xl font-bold text-gray-900">04. Why Now & Go-to-Market Strategy</h2>
               <div className="text-sm font-bold text-green-600 bg-green-100 px-4 py-2 rounded-full">
-                40% MoM Growth
+                Perfect Timing
               </div>
             </div>
 
             <div className="space-y-6">
-              <div className="grid md:grid-cols-4 gap-4">
-                <div className="bg-white p-6 rounded-xl border-2 border-green-200 text-center">
-                  <Users className="w-8 h-8 text-green-600 mx-auto mb-2" />
-                  <div className="text-3xl font-bold text-gray-900 mb-1">10,000+</div>
-                  <div className="text-sm text-gray-600">Active Users</div>
+              <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-8 rounded-xl">
+                <h3 className="text-2xl font-bold mb-4">Why This Moment is Critical</h3>
+                <p className="text-lg opacity-95 leading-relaxed mb-4">
+                  The convergence of three major trends creates an unprecedented opportunity to capture the creator economy's
+                  music production needs before the market gets saturated.
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="bg-white p-6 rounded-xl border-2 border-blue-200">
+                  <Rocket className="w-10 h-10 text-blue-600 mb-3" />
+                  <h4 className="font-bold text-gray-900 mb-2">AI Music Breakthrough</h4>
+                  <p className="text-sm text-gray-700">
+                    2024-2026: AI music quality crossed the "good enough" threshold. Udio, Suno, and enterprise APIs
+                    now produce radio-quality tracks. We're riding this wave.
+                  </p>
                 </div>
-                <div className="bg-white p-6 rounded-xl border-2 border-blue-200 text-center">
-                  <Video className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-                  <div className="text-3xl font-bold text-gray-900 mb-1">500K+</div>
-                  <div className="text-sm text-gray-600">Mixes Created</div>
+
+                <div className="bg-white p-6 rounded-xl border-2 border-green-200">
+                  <Globe className="w-10 h-10 text-green-600 mb-3" />
+                  <h4 className="font-bold text-gray-900 mb-2">Creator Economy Boom</h4>
+                  <p className="text-sm text-gray-700">
+                    500M+ creators globally need content tools. YouTube pays $15B+ annually to creators.
+                    Music content channels are exploding — this is our window.
+                  </p>
                 </div>
-                <div className="bg-white p-6 rounded-xl border-2 border-purple-200 text-center">
-                  <TrendingUp className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-                  <div className="text-3xl font-bold text-gray-900 mb-1">40%</div>
-                  <div className="text-sm text-gray-600">MoM User Growth</div>
-                </div>
-                <div className="bg-white p-6 rounded-xl border-2 border-yellow-200 text-center">
-                  <Star className="w-8 h-8 text-yellow-600 mx-auto mb-2" />
-                  <div className="text-3xl font-bold text-gray-900 mb-1">4.9/5</div>
-                  <div className="text-sm text-gray-600">User Rating</div>
+
+                <div className="bg-white p-6 rounded-xl border-2 border-purple-200">
+                  <Clock className="w-10 h-10 text-purple-600 mb-3" />
+                  <h4 className="font-bold text-gray-900 mb-2">Lofi Gold Rush</h4>
+                  <p className="text-sm text-gray-700">
+                    Lofi music: 15B+ monthly views, 40% YoY growth. Channels earning $38K-116K/month.
+                    Market is hot but unsaturated — first-mover advantage available.
+                  </p>
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-white p-6 rounded-xl border-2 border-gray-200">
-                  <h4 className="font-bold text-gray-900 mb-4">User Economics (Cohort Analysis):</h4>
-                  <div className="space-y-3 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Average Revenue Per User (ARPU):</span>
-                      <span className="font-bold">$45/month</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Customer Acquisition Cost (CAC):</span>
-                      <span className="font-bold">$15</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Lifetime Value (LTV):</span>
-                      <span className="font-bold">$540</span>
-                    </div>
-                    <div className="flex justify-between border-t-2 pt-2">
-                      <span className="text-gray-900 font-bold">LTV:CAC Ratio:</span>
-                      <span className="font-bold text-green-600">36:1</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Payback Period:</span>
-                      <span className="font-bold">0.3 months</span>
-                    </div>
+              <div className="bg-yellow-50 p-6 rounded-lg border-2 border-yellow-200">
+                <h4 className="font-bold text-gray-900 mb-4">Go-to-Market Strategy (First 18 Months):</h4>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <h5 className="font-bold text-yellow-700 mb-3">Phase 1: Launch & Validate (Months 1-6)</h5>
+                    <ul className="space-y-2 text-sm text-gray-700">
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>Beta Launch:</strong> 500 hand-picked creators (YouTube, TikTok)</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>Content Marketing:</strong> SEO + tutorials targeting "lofi music creation"</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>Community Building:</strong> Discord server for early adopters</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>Lifetime Deals:</strong> Launch on ProductHunt, AppSumo for quick cash + users</span>
+                      </li>
+                    </ul>
                   </div>
-                </div>
 
-                <div className="bg-white p-6 rounded-xl border-2 border-gray-200">
-                  <h4 className="font-bold text-gray-900 mb-4">Growth Metrics:</h4>
-                  <div className="space-y-3 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Monthly Active Users (MAU):</span>
-                      <span className="font-bold">8,500</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Activation Rate (1st mix):</span>
-                      <span className="font-bold text-green-600">72%</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Retention (30-day):</span>
-                      <span className="font-bold text-green-600">65%</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Viral Coefficient:</span>
-                      <span className="font-bold">1.3</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Net Promoter Score (NPS):</span>
-                      <span className="font-bold text-green-600">72</span>
-                    </div>
+                  <div>
+                    <h5 className="font-bold text-yellow-700 mb-3">Phase 2: Scale & Monetize (Months 7-18)</h5>
+                    <ul className="space-y-2 text-sm text-gray-700">
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>Paid Acquisition:</strong> YouTube ads, influencer partnerships ($50K/month)</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>Viral Loop:</strong> Branded watermarks on free tier → organic growth</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>Enterprise Outreach:</strong> Target music labels, podcast networks, agencies</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>Platform Partnerships:</strong> Integrate with YouTube Studio, Spotify for Creators</span>
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
 
               <div className="bg-gradient-to-r from-green-500 to-blue-500 text-white p-6 rounded-xl">
-                <h4 className="font-bold mb-2 text-lg">Product-Market Fit Achieved</h4>
+                <h4 className="font-bold mb-2 text-lg">The Window is Closing Fast</h4>
                 <p className="opacity-95">
-                  72% of users create their first mix within 24 hours. 65% retention at 30 days (industry avg: 25%).
-                  Viral growth with 1.3 coefficient — users bringing in 1.3 new users organically.
+                  Big players (Adobe, Canva) are eyeing this space but haven't moved yet. We have 12-18 months to capture
+                  market share before competition intensifies. First mover advantage in the lofi/music creator niche
+                  will create defensible moats through network effects and brand recognition.
                 </p>
               </div>
             </div>
@@ -600,11 +619,11 @@ export default function PitchDeckPage() {
                       <td className="text-center p-4 bg-green-50 font-bold text-green-600">5 minutes</td>
                       <td className="text-center p-4">6+ months</td>
                       <td className="text-center p-4">1 week</td>
-                      <td className="text-center p-4">2-3 hours</td>
+                      <td className="text-center p-4">days</td>
                     </tr>
                     <tr>
                       <td className="p-4 font-semibold">Cost</td>
-                      <td className="text-center p-4 bg-green-50 font-bold text-green-600">$29-199 one-time</td>
+                      <td className="text-center p-4 bg-green-50 font-bold text-green-600">Starting from $29</td>
                       <td className="text-center p-4">$600+/year</td>
                       <td className="text-center p-4">$300+/year</td>
                       <td className="text-center p-4">$200+/year</td>
@@ -792,7 +811,7 @@ export default function PitchDeckPage() {
 
           <div className="text-center">
             <a
-              href="mailto:invest@infinitemix.com"
+              href="mailto:contact@unitar.app"
               className="inline-flex items-center gap-3 px-12 py-5 bg-white text-purple-900 text-xl font-bold rounded-lg hover:bg-gray-100 transition-all shadow-2xl"
             >
               <Rocket className="w-6 h-6" />
@@ -811,8 +830,8 @@ export default function PitchDeckPage() {
           </div>
           <p className="text-gray-400 mb-4">Democratizing music production for the creator economy</p>
           <div className="flex items-center justify-center gap-6 text-sm text-gray-400">
-            <a href="mailto:invest@infinitemix.com" className="hover:text-white transition-colors">
-              invest@infinitemix.com
+            <a href="mailto:contact@unitar.app" className="hover:text-white transition-colors">
+              contact@unitar.app
             </a>
             <span>•</span>
             <Link href="/" className="hover:text-white transition-colors">
