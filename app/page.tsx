@@ -40,16 +40,16 @@ export default function LandingPage() {
               LIMITED APPSUMO DEAL - 77% OFF
             </div>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 mb-6 leading-tight">
-              <span className="block">MONETIZE LOFI & ANY GENRE</span>
+              <span className="block">TURN YOUR MUSIC INTO</span>
               <span className="block bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                IN SECONDS, NOT HOURS
+                VIRAL VIDEOS
               </span>
             </h1>
             <p className="text-2xl md:text-3xl text-gray-700 mb-4 leading-relaxed font-medium">
-              Create viral lofi beats, study mixes, and music videos that make money on YouTube — done in seconds
+              Auto music mixing that creates professional-quality content in under 5 minutes
             </p>
             <p className="text-lg md:text-xl text-gray-600 mb-8 leading-relaxed">
-              Perfect for monetizing lofi channels, chill beats, EDM, hip-hop, and any genre. Generate AI music or upload your own tracks, and get YouTube-ready videos with professional crossfades instantly. Zero music production skills required.
+              No music production skills needed. No expensive software. Just upload, click, and download YouTube-ready videos with perfect harmonic transitions.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
               <Link
