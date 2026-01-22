@@ -40,16 +40,16 @@ export default function LandingPage() {
               LIMITED APPSUMO DEAL - 77% OFF
             </div>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 mb-6 leading-tight">
-              <span className="block">MONETIZE LOFI & ANY GENRE</span>
+              <span className="block">TURN YOUR MUSIC INTO</span>
               <span className="block bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                IN SECONDS, NOT HOURS
+                VIRAL VIDEOS
               </span>
             </h1>
             <p className="text-2xl md:text-3xl text-gray-700 mb-4 leading-relaxed font-medium">
-              Create viral lofi beats, study mixes, and music videos that make money on YouTube — done in seconds
+              Auto music mixing that creates professional-quality content in under 5 minutes
             </p>
             <p className="text-lg md:text-xl text-gray-600 mb-8 leading-relaxed">
-              Perfect for monetizing lofi channels, chill beats, EDM, hip-hop, and any genre. Generate AI music or upload your own tracks, and get YouTube-ready videos with professional crossfades instantly. Zero music production skills required.
+              No music production skills needed. No expensive software. Just upload, click, and download YouTube-ready videos with perfect harmonic transitions.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
               <Link
@@ -58,10 +58,7 @@ export default function LandingPage() {
               >
                 Start Creating Free <ArrowRight className="w-5 h-5" />
               </Link>
-              <button
-                onClick={() => document.getElementById('demo-video')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-                className="flex items-center gap-2 px-8 py-4 bg-white text-purple-600 text-lg font-bold rounded-lg border-2 border-purple-600 hover:bg-purple-50 transition-all w-full sm:w-auto justify-center"
-              >
+              <button className="flex items-center gap-2 px-8 py-4 bg-white text-purple-600 text-lg font-bold rounded-lg border-2 border-purple-600 hover:bg-purple-50 transition-all w-full sm:w-auto justify-center">
                 <Play className="w-5 h-5" /> Watch Demo
               </button>
             </div>
@@ -255,28 +252,15 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
-            <div id="demo-video" className="bg-white rounded-2xl p-8 shadow-xl">
-              <div className="aspect-video bg-black rounded-lg overflow-hidden mb-6 relative">
-                <iframe
-                  src="https://drive.google.com/file/d/1LdBOMMWwrSrNA9m02sb13tzD7Fdkk_BP/preview"
-                  className="w-full h-full border-0"
-                  allow="autoplay; fullscreen"
-                  allowFullScreen
-                  title="InfiniteMix Demo Video"
-                  loading="lazy"
-                ></iframe>
+            <div className="bg-white rounded-2xl p-8 shadow-xl">
+              <div className="aspect-video bg-gradient-to-br from-purple-900 to-blue-900 rounded-lg flex items-center justify-center mb-6">
+                <Play className="w-20 h-20 text-white opacity-80" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">See InfiniteMix in Action</h3>
               <p className="text-gray-700 mb-4">Watch how creators produce viral lofi mixes, study playlists, and background music for content in minutes</p>
-              <a
-                href="https://drive.google.com/file/d/1LdBOMMWwrSrNA9m02sb13tzD7Fdkk_BP/view"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 font-medium"
-              >
-                <Play className="w-4 h-4" />
-                Open in new tab if video doesn't load
-              </a>
+              <button className="w-full py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors">
+                Watch Tutorial Video
+              </button>
             </div>
           </div>
         </div>

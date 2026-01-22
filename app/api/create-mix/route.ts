@@ -7,8 +7,9 @@ import ffmpegStatic from 'ffmpeg-static';
 import axios from 'axios';
 import { getUserFromRequest, checkAndDeductCredits, calculateCreditsForMix } from '@/lib/credits';
 
-// Increase timeout for processing (10000 seconds for longer mixes)
-export const maxDuration = 10000;
+// Vercel hobby plan max: 300 seconds (5 minutes)
+// For longer mixes, deploy to Railway where timeout limits are higher
+export const maxDuration = 300;
 
 // Set FFmpeg path - prioritize system FFmpeg for Railway/Docker
 const systemFFmpegPath = '/usr/bin/ffmpeg';

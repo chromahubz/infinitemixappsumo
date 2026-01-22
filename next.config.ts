@@ -7,6 +7,17 @@ const nextConfig: NextConfig = {
     // Force dynamic rendering on all routes to prevent caching issues
   },
 
+  // Redirects
+  async redirects() {
+    return [
+      {
+        source: '/landing',
+        destination: '/',
+        permanent: true,
+      },
+    ];
+  },
+
   // Allow ESLint warnings during production builds (don't fail on warnings)
   eslint: {
     ignoreDuringBuilds: true,
