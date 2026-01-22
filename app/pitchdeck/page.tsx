@@ -242,6 +242,40 @@ export default function PitchDeckPage() {
         </div>
       </section>
 
+      {/* Product Demo Videos */}
+      <section className="py-16 bg-gradient-to-br from-gray-900 to-purple-900 text-white">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">See InfiniteMix in Action</h2>
+            <p className="text-xl opacity-90">Watch how easy it is to create professional music mixes in minutes</p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border-2 border-white/20">
+              <h3 className="text-lg font-bold mb-3 text-center">Tutorial 1: Getting Started</h3>
+              <div className="aspect-video bg-black rounded-lg overflow-hidden">
+                <iframe
+                  src="https://drive.google.com/file/d/1LdBOMMWwrSrNA9m02sb13tzD7Fdkk_BP/preview"
+                  className="w-full h-full"
+                  allow="autoplay"
+                  allowFullScreen
+                ></iframe>
+              </div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border-2 border-white/20">
+              <h3 className="text-lg font-bold mb-3 text-center">Tutorial 2: Advanced Features</h3>
+              <div className="aspect-video bg-black rounded-lg overflow-hidden">
+                <iframe
+                  src="https://drive.google.com/file/d/1rHGN6NMEI7DWKvDdHZHVNgtPkad3UG1f/preview"
+                  className="w-full h-full"
+                  allow="autoplay"
+                  allowFullScreen
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Slide 3: Market Size */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-5xl mx-auto px-6">
@@ -419,26 +453,46 @@ export default function PitchDeckPage() {
             </div>
 
             <div className="space-y-6">
-              <div className="grid md:grid-cols-3 gap-4">
-                <div className="bg-purple-50 p-6 rounded-xl border-2 border-purple-200">
-                  <h4 className="font-bold text-gray-900 mb-3">Freemium SaaS</h4>
-                  <div className="text-2xl font-bold text-purple-600 mb-2">$19-49/mo</div>
-                  <p className="text-sm text-gray-600 mb-3">Tiered subscription with credit-based AI usage</p>
-                  <div className="text-xs text-gray-500">
-                    <div>• Free: Manual mode only</div>
-                    <div>• Pro: $19/mo, 2K credits</div>
-                    <div>• Studio: $39/mo, 10K credits</div>
+              <div className="bg-blue-50 p-6 rounded-xl border-2 border-blue-200 mb-6">
+                <h4 className="font-bold text-gray-900 mb-3 text-center">Flexible One-Time Pricing Model</h4>
+                <p className="text-sm text-gray-600 text-center mb-4">Adjustable tiers based on market demand and user acquisition strategy</p>
+                <div className="grid md:grid-cols-4 gap-3">
+                  <div className="bg-white p-4 rounded-lg border border-gray-200 text-center">
+                    <div className="text-xs font-bold text-gray-500 mb-1">Creator</div>
+                    <div className="text-2xl font-bold text-blue-600 mb-2">$29</div>
+                    <div className="text-xs text-gray-600 mb-2">2,000 credits</div>
+                    <div className="text-xs text-gray-500">~10-20 mixes</div>
+                  </div>
+                  <div className="bg-white p-4 rounded-lg border-2 border-purple-300 text-center">
+                    <div className="text-xs font-bold text-purple-600 mb-1">Pro</div>
+                    <div className="text-2xl font-bold text-purple-600 mb-2">$69</div>
+                    <div className="text-xs text-gray-600 mb-2">5,000 credits</div>
+                    <div className="text-xs text-gray-500">~30-50 mixes</div>
+                  </div>
+                  <div className="bg-white p-4 rounded-lg border border-gray-200 text-center">
+                    <div className="text-xs font-bold text-gray-500 mb-1">Studio</div>
+                    <div className="text-2xl font-bold text-blue-600 mb-2">$119</div>
+                    <div className="text-xs text-gray-600 mb-2">10,000 credits</div>
+                    <div className="text-xs text-gray-500">~60-90 mixes</div>
+                  </div>
+                  <div className="bg-white p-4 rounded-lg border border-gray-200 text-center">
+                    <div className="text-xs font-bold text-gray-500 mb-1">Agency+</div>
+                    <div className="text-2xl font-bold text-blue-600 mb-2">$199</div>
+                    <div className="text-xs text-gray-600 mb-2">18,000 credits</div>
+                    <div className="text-xs text-gray-500">~120-160 mixes</div>
                   </div>
                 </div>
+              </div>
 
-                <div className="bg-blue-50 p-6 rounded-xl border-2 border-blue-200">
-                  <h4 className="font-bold text-gray-900 mb-3">Lifetime Deals</h4>
-                  <div className="text-2xl font-bold text-blue-600 mb-2">$199-599</div>
-                  <p className="text-sm text-gray-600 mb-3">One-time payment for early adopters (AppSumo, ProductHunt)</p>
-                  <div className="text-xs text-gray-500">
-                    <div>• Quick cash for growth</div>
-                    <div>• Build initial user base</div>
-                    <div>• Create testimonials</div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="bg-purple-50 p-6 rounded-xl border-2 border-purple-200">
+                  <h4 className="font-bold text-gray-900 mb-3">Credit-Based Usage</h4>
+                  <p className="text-sm text-gray-600 mb-3">AI mix generation: 4 credits per minute</p>
+                  <div className="text-xs text-gray-700 space-y-1">
+                    <div>• 15 min mix = 60 credits</div>
+                    <div>• 30 min mix = 120 credits</div>
+                    <div>• 1 hour mix = 240 credits</div>
+                    <div className="font-bold text-purple-600 pt-2">• Manual mode: Unlimited (FREE)</div>
                   </div>
                 </div>
 
@@ -550,7 +604,7 @@ export default function PitchDeckPage() {
                     </tr>
                     <tr>
                       <td className="p-4 font-semibold">Cost</td>
-                      <td className="text-center p-4 bg-green-50 font-bold text-green-600">$19-49/mo</td>
+                      <td className="text-center p-4 bg-green-50 font-bold text-green-600">$29-199 one-time</td>
                       <td className="text-center p-4">$600+/year</td>
                       <td className="text-center p-4">$300+/year</td>
                       <td className="text-center p-4">$200+/year</td>
