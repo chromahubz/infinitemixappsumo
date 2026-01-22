@@ -37,7 +37,7 @@ export default function LandingPage() {
           <div className="text-center max-w-5xl mx-auto mb-12">
             <div className="inline-flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-full font-bold text-sm mb-6 animate-pulse">
               <Zap className="w-4 h-4" />
-              LIMITED APPSUMO DEAL - 77% OFF
+              AI-POWERED MUSIC MIXING
             </div>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 mb-6 leading-tight">
               <span className="block">TURN YOUR MUSIC INTO</span>
@@ -199,7 +199,7 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <div className="mt-6 pt-6 border-t border-white/20">
-                  <p className="text-xs italic">"Used this 30 mins before my housewarming party. Everyone thought I hired a professional DJ. Best $69 I ever spent." - Mike T.</p>
+                  <p className="text-xs italic">"Used this 30 mins before my housewarming party. Everyone thought I hired a professional DJ. Absolutely worth it!" - Mike T.</p>
                 </div>
               </div>
               <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-purple-200">
@@ -749,7 +749,7 @@ export default function LandingPage() {
                 ))}
               </div>
               <p className="text-gray-700 mb-6 leading-relaxed">
-                "The BPM and key detection is scary accurate. I tested it against Traktor and got identical results. For the price of one month of Adobe CC, I got a lifetime tool that replaced my entire mixing workflow. Best AppSumo purchase ever."
+                "The BPM and key detection is scary accurate. I tested it against Traktor and got identical results. InfiniteMix replaced my entire mixing workflow and I couldn't be happier with the results."
               </p>
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">
@@ -856,32 +856,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* AppSumo Deal */}
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-3xl shadow-2xl p-12 text-center text-white">
-            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full font-bold text-lg mb-8">
-              <Award className="w-6 h-6" />
-              Best Deal on AppSumo
-            </div>
-            <h2 className="text-4xl md:text-6xl font-bold mb-6">
-              Get the Best Deal on AppSumo
-            </h2>
-            <p className="text-xl md:text-2xl mb-10 opacity-90 max-w-2xl mx-auto">
-              Lifetime access to InfiniteMix. One-time payment. No monthly fees. Exclusively available on AppSumo.
-            </p>
-            <a
-              href="https://appsumo.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-3 px-12 py-5 bg-white text-purple-600 text-xl font-bold rounded-lg hover:bg-gray-100 transition-all shadow-xl hover:shadow-2xl"
-            >
-              <Rocket className="w-6 h-6" />
-              View Deal on AppSumo
-            </a>
-          </div>
-        </div>
-      </section>
 
       {/* FAQ */}
       <section className="py-20 bg-gray-50">
@@ -899,7 +873,7 @@ export default function LandingPage() {
             {[
               {
                 q: 'Can I use the generated music and mixes commercially?',
-                a: 'Yes, absolutely. Your AppSumo license includes full commercial usage rights for all AI-generated music and final mixes. You can monetize YouTube videos, use in client projects, and create content for commercial purposes without any restrictions or additional licensing fees.',
+                a: 'Yes, absolutely. InfiniteMix includes full commercial usage rights for all AI-generated music and final mixes. You can monetize YouTube videos, use in client projects, and create content for commercial purposes without any restrictions or additional licensing fees.',
               },
               {
                 q: 'How does the harmonic mixing algorithm work?',
@@ -975,9 +949,9 @@ export default function LandingPage() {
             className="inline-flex items-center gap-2 px-12 py-5 bg-white text-purple-600 text-xl font-bold rounded-lg hover:bg-gray-100 transition-all shadow-xl hover:shadow-2xl mb-6"
           >
             <Rocket className="w-6 h-6" />
-            Get Lifetime Access
+            Get Started Now
           </Link>
-          <p className="text-sm opacity-75">Limited time AppSumo exclusive offer</p>
+          <p className="text-sm opacity-75">Start creating professional mixes today</p>
         </div>
       </section>
 

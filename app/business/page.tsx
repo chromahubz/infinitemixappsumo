@@ -196,13 +196,13 @@ export default function OpportunityPage() {
                 <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-6 text-white">
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-bold text-lg">InfiniteMix</span>
-                    <span className="font-bold text-3xl">$69</span>
+                    <span className="font-bold text-3xl">Accessible</span>
                   </div>
-                  <p className="text-sm opacity-90">One-time payment • Everything included • Ready in 5 minutes</p>
+                  <p className="text-sm opacity-90">Everything included • Ready in 5 minutes</p>
                 </div>
               </div>
               <p className="text-gray-700 text-center font-semibold">
-                You get the same tools as $100K+ channels for a one-time $69 payment
+                You get the same tools as $100K+ channels without the massive investment
               </p>
             </div>
           </div>
@@ -363,7 +363,7 @@ export default function OpportunityPage() {
               <div className="space-y-4">
                 {[
                   { text: 'Zero music production knowledge needed', icon: '✅' },
-                  { text: '$69 one-time payment (AppSumo deal)', icon: '✅' },
+                  { text: 'Affordable and accessible to everyone', icon: '✅' },
                   { text: 'AI handles all mixing automatically', icon: '✅' },
                   { text: 'Built-in video generation', icon: '✅' },
                   { text: 'AI analyzes keys & harmonies', icon: '✅' },
@@ -376,7 +376,7 @@ export default function OpportunityPage() {
                 ))}
               </div>
               <div className="bg-green-600 text-white p-6 rounded-xl">
-                <p className="text-xl font-bold">Total barrier to entry: $69 and 30 minutes to learn the tool</p>
+                <p className="text-xl font-bold">Total barrier to entry: Minimal cost and 30 minutes to learn the tool</p>
               </div>
             </div>
           </div>
@@ -589,11 +589,11 @@ export default function OpportunityPage() {
                   <Rocket className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">AppSumo Deal Won't Last</h3>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3">Early Adopter Advantage</h3>
                   <p className="text-gray-700 leading-relaxed">
-                    <strong>$69 lifetime vs $29/month later.</strong> This pricing is promotional. When InfiniteMix
-                    goes to SaaS pricing, you'll be paying $348/year instead of a one-time $69.
-                    Early adopters save thousands while building their empire.
+                    <strong>Get in now while the barrier to entry is low.</strong> As more creators discover
+                    AI-powered music mixing, the market becomes more competitive. Early adopters build
+                    their channels and audiences before the niche gets crowded.
                   </p>
                 </div>
               </div>
@@ -626,7 +626,7 @@ export default function OpportunityPage() {
                 'Auto-generated descriptions',
                 'Multiple genre support',
                 'Manual upload option',
-                'Lifetime access (one-time payment)',
+                'Full commercial usage rights',
               ].map((feature, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
@@ -643,7 +643,7 @@ export default function OpportunityPage() {
             <Rocket className="w-8 h-8" />
             Start Building Your Channel Now
           </Link>
-          <p className="text-sm opacity-75">$69 one-time • Lifetime access • 60-day money-back guarantee</p>
+          <p className="text-sm opacity-75">Try it free • Start creating immediately</p>
         </div>
       </section>
 
