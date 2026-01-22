@@ -2,11 +2,10 @@
 
 import { useState } from 'react';
 import {
-  Sparkle, Lightning, MusicNotes, MagicWand, Clock, TrendUp, CheckCircle, ArrowRight,
-  Play, Users, Star, Upload, Sliders, Image as ImageIcon, Video, Download, Headphones,
-  ChartBar, Repeat, Palette, FileAudio, Microphone, Radio as RadioIcon, Disc, ListMusic,
-  Globe, Shield, Rocket, Target, Medal, CaretDown, CaretUp, Smiley, Heart, Fire
-} from '@phosphor-icons/react';
+  Sparkles, Zap, Music, Wand2, Clock, TrendingUp, CheckCircle, ArrowRight, Play, Users, Star,
+  Upload, Sliders, Image, Video, Download, Headphones, BarChart3, Repeat, Palette, FileAudio,
+  Mic2, Radio, Disc3, ListMusic, Globe, Shield, Rocket, Target, Award, ChevronDown, ChevronUp
+} from 'lucide-react';
 import Link from 'next/link';
 
 export default function LandingPage() {
@@ -39,9 +38,9 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="text-center max-w-5xl mx-auto mb-12">
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-full font-bold text-sm mb-6 shadow-lg animate-bounce">
-              <Lightning className="w-5 h-5" weight="fill" />
+              <Zap className="w-5 h-5" />
               AUTOMATE MUSIC MIXING
-              <Sparkle className="w-4 h-4" weight="fill" />
+              <Sparkles className="w-4 h-4" />
             </div>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 mb-6 leading-tight">
               <span className="block">TURN YOUR MUSIC INTO</span>
@@ -71,15 +70,15 @@ export default function LandingPage() {
             </div>
             <div className="flex flex-wrap items-center justify-center gap-8 text-sm">
               <div className="flex items-center gap-2 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm">
-                <Star className="w-5 h-5 text-yellow-500" weight="fill" />
+                <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
                 <span className="text-gray-700 font-semibold">4.9/5 Average Rating</span>
               </div>
               <div className="flex items-center gap-2 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm">
-                <Users className="w-5 h-5 text-blue-600" weight="fill" />
+                <Users className="w-5 h-5 text-blue-600" />
                 <span className="text-gray-700 font-semibold">10,000+ Active Users</span>
               </div>
               <div className="flex items-center gap-2 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm">
-                <TrendUp className="w-5 h-5 text-green-600" weight="bold" />
+                <TrendingUp className="w-5 h-5 text-green-600" />
                 <span className="text-gray-700 font-semibold">500K+ Mixes Created</span>
               </div>
             </div>
