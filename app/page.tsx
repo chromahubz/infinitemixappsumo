@@ -37,7 +37,7 @@ export default function LandingPage() {
           <div className="text-center max-w-5xl mx-auto mb-12">
             <div className="inline-flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-full font-bold text-sm mb-6 animate-pulse">
               <Zap className="w-4 h-4" />
-              AI-POWERED MUSIC MIXING
+              AUTOMATE MUSIC MIXING
             </div>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 mb-6 leading-tight">
               <span className="block">TURN YOUR MUSIC INTO</span>
