@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import {
-  Sparkles, Zap, Music, Wand2, Clock, TrendingUp, CheckCircle, ArrowRight, Play, Users, Star,
-  Upload, Sliders, Image, Video, Download, Headphones, BarChart3, Repeat, Palette, FileAudio,
-  Mic2, Radio, Disc3, ListMusic, Globe, Shield, Rocket, Target, Award, ChevronDown, ChevronUp
-} from 'lucide-react';
+  Sparkle, Lightning, MusicNotes, MagicWand, Clock, TrendingUp, CheckCircle, ArrowRight,
+  Play, Users, Star, Upload, Sliders, Image as ImageIcon, Video, Download, Headphones,
+  ChartBar, Repeat, Palette, FileAudio, Microphone, Radio as RadioIcon, Disc, ListMusic,
+  Globe, Shield, Rocket, Target, Medal, CaretDown, CaretUp, Smiley, Heart, Fire
+} from '@phosphor-icons/react';
 import Link from 'next/link';
 
 export default function LandingPage() {
@@ -31,13 +32,16 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-purple-50 via-white to-blue-50 py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDEyOCwgMTI4LCAxMjgsIDAuMDUpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-50"></div>
+      <section className="relative py-20 overflow-hidden" style={{
+        background: 'radial-gradient(at 27% 37%, hsla(215, 98%, 61%, 0.5) 0px, transparent 0%), radial-gradient(at 97% 21%, hsla(125, 98%, 72%, 0.3) 0px, transparent 50%), radial-gradient(at 52% 99%, hsla(354, 98%, 61%, 0.3) 0px, transparent 50%), radial-gradient(at 10% 29%, hsla(256, 96%, 67%, 0.4) 0px, transparent 50%), radial-gradient(at 97% 96%, hsla(38, 60%, 74%, 0.3) 0px, transparent 50%), radial-gradient(at 33% 50%, hsla(222, 67%, 73%, 0.4) 0px, transparent 50%), radial-gradient(at 79% 53%, hsla(343, 68%, 79%, 0.3) 0px, transparent 50%)'
+      }}>
+        <div className="absolute inset-0 bg-white/40 backdrop-blur-3xl"></div>
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="text-center max-w-5xl mx-auto mb-12">
-            <div className="inline-flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-full font-bold text-sm mb-6 animate-pulse">
-              <Zap className="w-4 h-4" />
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-full font-bold text-sm mb-6 shadow-lg animate-bounce">
+              <Lightning className="w-5 h-5" weight="fill" />
               AUTOMATE MUSIC MIXING
+              <Sparkle className="w-4 h-4" weight="fill" />
             </div>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 mb-6 leading-tight">
               <span className="block">TURN YOUR MUSIC INTO</span>
@@ -66,17 +70,17 @@ export default function LandingPage() {
               </button>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-8 text-sm">
-              <div className="flex items-center gap-2">
-                <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
-                <span className="text-gray-700 font-medium">4.9/5 Average Rating</span>
+              <div className="flex items-center gap-2 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm">
+                <Star className="w-5 h-5 text-yellow-500" weight="fill" />
+                <span className="text-gray-700 font-semibold">4.9/5 Average Rating</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-blue-600" />
-                <span className="text-gray-700 font-medium">10,000+ Active Users</span>
+              <div className="flex items-center gap-2 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm">
+                <Users className="w-5 h-5 text-blue-600" weight="fill" />
+                <span className="text-gray-700 font-semibold">10,000+ Active Users</span>
               </div>
-              <div className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-green-600" />
-                <span className="text-gray-700 font-medium">500K+ Mixes Created</span>
+              <div className="flex items-center gap-2 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm">
+                <TrendingUp className="w-5 h-5 text-green-600" weight="bold" />
+                <span className="text-gray-700 font-semibold">500K+ Mixes Created</span>
               </div>
             </div>
           </div>

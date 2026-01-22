@@ -17,6 +17,7 @@
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
     "@fingerprintjs/fingerprintjs": "^4.2.0",
+    "@phosphor-icons/react": "^2.1.7",
     "@supabase/ssr": "^0.0.10",
     "@supabase/supabase-js": "^2.39.0",
     "axios": "^1.12.2",
