@@ -258,27 +258,67 @@ export default function PitchDeckPage() {
             <h2 className="text-3xl font-bold mb-4">See InfiniteMix in Action</h2>
             <p className="text-xl opacity-90">Watch how easy it is to create professional music mixes in minutes</p>
           </div>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border-2 border-white/20">
-              <h3 className="text-lg font-bold mb-3 text-center">Tutorial 1: Getting Started</h3>
-              <div className="aspect-video bg-black rounded-lg overflow-hidden">
-                <iframe
-                  src="https://drive.google.com/file/d/1LdBOMMWwrSrNA9m02sb13tzD7Fdkk_BP/preview"
-                  className="w-full h-full"
-                  allow="autoplay"
-                  allowFullScreen
-                ></iframe>
+
+          <div className="mb-8">
+            <h3 className="text-2xl font-bold mb-4 text-center">Tutorial Videos</h3>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border-2 border-white/20">
+                <h4 className="text-lg font-bold mb-3 text-center">Tutorial 1: Getting Started</h4>
+                <div className="aspect-video bg-black rounded-lg overflow-hidden">
+                  <iframe
+                    src="https://drive.google.com/file/d/1LdBOMMWwrSrNA9m02sb13tzD7Fdkk_BP/preview"
+                    className="w-full h-full"
+                    allow="autoplay"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border-2 border-white/20">
+                <h4 className="text-lg font-bold mb-3 text-center">Tutorial 2: Advanced Features</h4>
+                <div className="aspect-video bg-black rounded-lg overflow-hidden">
+                  <iframe
+                    src="https://drive.google.com/file/d/1rHGN6NMEI7DWKvDdHZHVNgtPkad3UG1f/preview"
+                    className="w-full h-full"
+                    allow="autoplay"
+                    allowFullScreen
+                  ></iframe>
+                </div>
               </div>
             </div>
-            <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border-2 border-white/20">
-              <h3 className="text-lg font-bold mb-3 text-center">Tutorial 2: Advanced Features</h3>
-              <div className="aspect-video bg-black rounded-lg overflow-hidden">
-                <iframe
-                  src="https://drive.google.com/file/d/1rHGN6NMEI7DWKvDdHZHVNgtPkad3UG1f/preview"
-                  className="w-full h-full"
-                  allow="autoplay"
-                  allowFullScreen
-                ></iframe>
+          </div>
+
+          <div>
+            <h3 className="text-2xl font-bold mb-4 text-center">Real Mixes Created with InfiniteMix</h3>
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border-2 border-white/20">
+                <div className="aspect-video bg-black rounded-lg overflow-hidden">
+                  <iframe
+                    src="https://www.youtube.com/embed/BmnqYrLwbOM"
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border-2 border-white/20">
+                <div className="aspect-video bg-black rounded-lg overflow-hidden">
+                  <iframe
+                    src="https://www.youtube.com/embed/yz0K_RYGpW8"
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border-2 border-white/20">
+                <div className="aspect-video bg-black rounded-lg overflow-hidden">
+                  <iframe
+                    src="https://www.youtube.com/embed/JQAK3iJO05I"
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
               </div>
             </div>
           </div>
