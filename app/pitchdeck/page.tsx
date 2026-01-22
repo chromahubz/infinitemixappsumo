@@ -715,76 +715,77 @@ export default function PitchDeckPage() {
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">07. The Ask</h2>
-            <p className="text-xl opacity-90">Raising to scale product, team, and go-to-market</p>
+            <p className="text-xl opacity-90">Raising to launch, prove model, and scale to Series A</p>
           </div>
 
           <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-10 border-2 border-white/20 mb-8">
             <div className="grid md:grid-cols-3 gap-8 mb-8">
               <div className="text-center">
-                <div className="text-5xl font-bold mb-2">$1.5M</div>
+                <div className="text-5xl font-bold mb-2">$1.2M-1.5M</div>
                 <div className="text-lg opacity-90">Seed Round</div>
               </div>
               <div className="text-center">
-                <div className="text-5xl font-bold mb-2">$8M</div>
+                <div className="text-5xl font-bold mb-2">$5M-6M</div>
                 <div className="text-lg opacity-90">Pre-Money Valuation</div>
               </div>
               <div className="text-center">
-                <div className="text-5xl font-bold mb-2">18%</div>
+                <div className="text-5xl font-bold mb-2">18-20%</div>
                 <div className="text-lg opacity-90">Equity Offered</div>
               </div>
             </div>
 
             <div className="border-t-2 border-white/20 pt-8">
-              <h3 className="text-2xl font-bold mb-6">Use of Funds:</h3>
+              <h3 className="text-2xl font-bold mb-6">Use of Funds (18-Month Runway):</h3>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="bg-white/5 p-6 rounded-xl">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="font-bold">Product & Engineering</span>
-                    <span className="text-2xl font-bold">45%</span>
+                    <span className="font-bold">Marketing & Growth</span>
+                    <span className="text-2xl font-bold">40%</span>
                   </div>
                   <ul className="text-sm space-y-1 opacity-90">
-                    <li>• Hire 3 senior engineers</li>
-                    <li>• Improve AI music quality</li>
-                    <li>• Build enterprise features</li>
-                    <li>• Mobile app development</li>
+                    <li>• Paid acquisition ($30-50K/month)</li>
+                    <li>• Content marketing team (2 people)</li>
+                    <li>• Influencer partnerships</li>
+                    <li>• Community building & events</li>
                   </ul>
                 </div>
 
                 <div className="bg-white/5 p-6 rounded-xl">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="font-bold">Sales & Marketing</span>
+                    <span className="font-bold">Product & Engineering</span>
                     <span className="text-2xl font-bold">35%</span>
                   </div>
                   <ul className="text-sm space-y-1 opacity-90">
-                    <li>• Content marketing team</li>
-                    <li>• Paid acquisition ($200K/mo)</li>
-                    <li>• Partnership development</li>
-                    <li>• Creator community building</li>
+                    <li>• 1-2 senior engineers + contractors</li>
+                    <li>• AI model training & API costs</li>
+                    <li>• Product iterations & features</li>
+                    <li>• Development tools & infrastructure</li>
                   </ul>
                 </div>
 
                 <div className="bg-white/5 p-6 rounded-xl">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="font-bold">Operations & Infrastructure</span>
+                    <span className="font-bold">Operations</span>
                     <span className="text-2xl font-bold">15%</span>
                   </div>
                   <ul className="text-sm space-y-1 opacity-90">
-                    <li>• Cloud infrastructure scaling</li>
+                    <li>• Cloud/server infrastructure</li>
                     <li>• Customer support team</li>
-                    <li>• Legal & compliance</li>
-                    <li>• Finance & accounting</li>
+                    <li>• Legal, compliance, accounting</li>
+                    <li>• Admin & operations tools</li>
                   </ul>
                 </div>
 
                 <div className="bg-white/5 p-6 rounded-xl">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="font-bold">Runway & Reserves</span>
-                    <span className="text-2xl font-bold">5%</span>
+                    <span className="font-bold">Buffer & Reserves</span>
+                    <span className="text-2xl font-bold">10%</span>
                   </div>
                   <ul className="text-sm space-y-1 opacity-90">
-                    <li>• 18-month runway</li>
-                    <li>• Emergency reserves</li>
-                    <li>• Contingency fund</li>
+                    <li>• Emergency fund</li>
+                    <li>• Unexpected opportunities</li>
+                    <li>• Contingency buffer</li>
+                    <li>• Strategic partnerships</li>
                   </ul>
                 </div>
               </div>
@@ -792,20 +793,23 @@ export default function PitchDeckPage() {
           </div>
 
           <div className="bg-green-500/20 backdrop-blur-sm p-8 rounded-xl border-2 border-green-400/30 mb-8">
-            <h3 className="text-2xl font-bold mb-4">Milestones (18 Months):</h3>
+            <h3 className="text-2xl font-bold mb-4">18-Month Milestones:</h3>
             <div className="grid md:grid-cols-3 gap-6 text-center">
               <div>
-                <div className="text-3xl font-bold mb-2">100K</div>
+                <div className="text-3xl font-bold mb-2">25K-30K</div>
                 <div className="opacity-90">Paid Users</div>
               </div>
               <div>
-                <div className="text-3xl font-bold mb-2">$10M</div>
-                <div className="opacity-90">ARR</div>
+                <div className="text-3xl font-bold mb-2">$2M-2.5M</div>
+                <div className="opacity-90">Total Revenue</div>
               </div>
               <div>
                 <div className="text-3xl font-bold mb-2">Series A</div>
                 <div className="opacity-90">Ready</div>
               </div>
+            </div>
+            <div className="mt-6 text-center opacity-90">
+              <p className="text-sm">Target: $3M ARR run-rate • CAC &lt;$30 • Retention &gt;40% • PMF proven</p>
             </div>
           </div>
 
