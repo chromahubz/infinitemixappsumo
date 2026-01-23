@@ -509,7 +509,6 @@ export default function Landing9() {
           <Link href="/software" className="inline-block px-12 py-5 bg-black text-white text-sm uppercase tracking-wide hover:bg-gray-800 transition-colors">
             Start Creating Free
           </Link>
-          <p className="mt-8 text-gray-600">No credit card required • 5 free mixes to start</p>
         </div>
       </section>
 
