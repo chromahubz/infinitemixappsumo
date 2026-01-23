@@ -521,7 +521,6 @@ export default function Landing4() {
           <Link href="/software" className="inline-block px-12 py-5 bg-white text-indigo-600 font-bold text-lg rounded-lg hover:bg-gray-100 transition-all shadow-2xl hover:shadow-3xl transform hover:scale-105">
             Start Creating Free
           </Link>
-          <p className="mt-6 opacity-75">No credit card required • 5 free mixes to start</p>
         </div>
       </section>
 

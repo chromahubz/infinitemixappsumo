@@ -526,7 +526,6 @@ export default function Landing6() {
             <Link href="/software" className="inline-block px-12 py-5 bg-[#e0e5ec] text-gray-700 font-bold text-lg rounded-3xl transition-all hover:text-gray-900" style={{ boxShadow: '10px 10px 20px rgba(163, 177, 198, 0.6), -10px -10px 20px rgba(255, 255, 255, 0.8)' }}>
               Start Creating Free
             </Link>
-            <p className="mt-6 text-gray-600">No credit card required • 5 free mixes to start</p>
           </div>
         </div>
       </section>
